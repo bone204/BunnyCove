@@ -11,6 +11,17 @@ export const ResponseCodes = {
   UNAUTHORIZED: 'unauthorized',
   FORBIDDEN: 'forbidden',
 
+  // Authentication & User Management Codes
+  REGISTER_SUCCESSFUL: 'register_successful',
+  LOGIN_SUCCESSFUL: 'login_successful',
+  LOGOUT_SUCCESSFUL: 'logout_successful',
+  TOKEN_REFRESHED: 'token_refreshed',
+  INVALID_CREDENTIALS: 'invalid_credentials',
+  EMAIL_ALREADY_EXISTS: 'email_already_exists',
+  USER_NOT_FOUND: 'user_not_found',
+  INVALID_REFRESH_TOKEN: 'invalid_refresh_token',
+  ACCESS_DENIED: 'access_denied',
+
   // Room Management Codes
   ROOM_CREATED: 'room_created',
   ROOM_JOINED: 'room_joined',

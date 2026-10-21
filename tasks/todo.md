@@ -1,6 +1,6 @@
 # Bunny Cove - Task Tracking & Implementation Checklist
 
-## Project Status: Phase 1 Completed (Server Foundation & 2-Player Room System)
+## Project Status: In Progress (Phase 2: Authentication, Swagger & PostgreSQL)
 
 ### Phase 0: Project Setup & Specification
 - [x] Create workspace directories (`mobile` and `server`)
@@ -13,28 +13,40 @@
 
 ### Phase 1: Server Foundation & 2-Player Room Gateway (NestJS)
 - [x] 1.1 Scaffold NestJS project in `server/` with clean TypeScript setup
-- [x] 1.2 Install and configure WebSockets & validation packages (`@nestjs/websockets`, `@nestjs/platform-socket.io`, `socket.io`, `class-validator`, `class-transformer`)
-- [x] 1.3 Implement Common Architecture Layer:
-  - [x] `src/common/constants/response-codes.ts` (Standardized response codes)
-  - [x] `src/common/interceptors/transform.interceptor.ts` (Unified `{ success: true, code, data }` format)
-  - [x] `src/common/filters/all-exceptions.filter.ts` (Centralized structured error handling)
-- [x] 1.4 Implement 2-Player Room Module:
-  - [x] DTOs with schema validation (`create-room.dto.ts`, `join-room.dto.ts`, `ready-room.dto.ts`)
-  - [x] `RoomService`: In-memory room manager, 6-character cute room code generator (`BUNNY-XX`), 2-player limit check, 30s disconnect grace period
-  - [x] `RoomGateway`: Socket.IO gateway handling `room:create`, `room:join`, `room:ready`, `room:leave`
-- [x] 1.5 Setup Prisma ORM & Database Schema:
-  - [x] Initialize `prisma/schema.prisma` with `User`, `MatchHistory`, `UserStats`
-  - [x] Configure `prisma.config.ts` and successfully generated Prisma Client v7.10.1
-- [x] 1.6 Verification & Testing:
-  - [x] Verified TypeScript build (`npm run build`) succeeded with 0 errors
-  - [x] Ran automated WebSocket test script (`test/verify-room-gateway.mjs`) simulating 2 players joining room and checking ready state: All tests passed!
+- [x] 1.2 Install and configure WebSockets & validation packages
+- [x] 1.3 Implement Common Architecture Layer (`response-codes.ts`, `transform.interceptor.ts`, `all-exceptions.filter.ts`)
+- [x] 1.4 Implement 2-Player Room Module with generic Pluggable Game Engine architecture (`IGameEngine`, `GameRegistryService`)
+- [x] 1.5 Setup Prisma ORM 7 with PostgreSQL schema (`User`, `MatchHistory`, `UserStats`)
+- [x] 1.6 Verification & Testing: All automated WebSocket tests passed cleanly
+
+---
+
+### Phase 2: Authentication (JWT Access/Refresh, Login/Logout), Swagger UI & PostgreSQL Setup
+- [x] 2.1 Install Dependencies:
+  - `@nestjs/swagger`
+  - `@nestjs/jwt`, `@nestjs/passport`, `passport`, `passport-jwt`, `bcrypt`, `@types/bcrypt`, `cookie-parser`, `@types/cookie-parser`, `@prisma/adapter-pg`, `pg`, `@types/pg`
+- [x] 2.2 PostgreSQL Setup & Prisma Service:
+  - Create `docker-compose.yml` for local PostgreSQL instance (port 5432)
+  - Create `src/common/prisma/prisma.service.ts` with PrismaPg adapter & in-memory fallback, plus `prisma.module.ts`
+  - Update `prisma/schema.prisma` with `hashedRefreshToken` and generate client
+- [x] 2.3 Setup Swagger Documentation:
+  - Configure `DocumentBuilder` in `src/main.ts` at `/api/docs` with BearerAuth & custom title
+- [x] 2.4 Implement Auth Module (3-Layer Clean Architecture):
+  - DTOs: `register.dto.ts`, `login.dto.ts`, `refresh-token.dto.ts` with Swagger decorators (`@ApiProperty`) and `class-validator`
+  - Strategy & Guards: `jwt.strategy.ts`, `jwt-auth.guard.ts`
+  - `AuthService`: Password hashing via bcrypt, sign short-lived Access Token (15m) & long-lived Refresh Token (7d), token rotation, logout clearing
+  - `AuthController`: `POST /auth/register`, `POST /auth/login`, `POST /auth/refresh`, `POST /auth/logout`, `GET /auth/me`
+  - Register new response codes in `src/common/constants/response-codes.ts`
+- [x] 2.5 Verification & Automated Testing:
+  - Compile build (`npm run build`)
+  - Run verification script `test/verify-auth-flow.mjs` testing full register -> login -> profile -> refresh -> logout cycle -> All 6 steps passed!
 
 ---
 
 ### Upcoming Phases
-- [ ] Phase 2: Implement Realtime In-Room Chat & Bunny Stickers on Server
-- [ ] Phase 3: Implement Caro (Gomoku) 15x15 Game Engine on Server
-- [ ] Phase 4: Implement Bingo 5x5 Game Engine on Server
-- [ ] Phase 5: Initialize Flutter Client in `mobile/` with Cozy Pastel Theme & ScreenUtil
-- [ ] Phase 6: Connect Flutter Mobile with Server (Room, Games, Chat)
-- [ ] Phase 7: iOS Specific Polish (Haptics, Audio, Slide Transitions)
+- [ ] Phase 3: Implement Realtime In-Room Chat & Bunny Stickers on Server
+- [ ] Phase 4: Implement Caro (Gomoku) 15x15 Game Engine on Server
+- [ ] Phase 5: Implement Bingo 5x5 Game Engine on Server
+- [ ] Phase 6: Initialize Flutter Client in `mobile/` with Cozy Pastel Theme & ScreenUtil
+- [ ] Phase 7: Connect Flutter Mobile with Server (Room, Games, Chat, Auth)
+- [ ] Phase 8: iOS Specific Polish (Haptics, Audio, Slide Transitions)

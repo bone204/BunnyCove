@@ -12,9 +12,10 @@ model User {
   displayName  String
   email        String?   @unique
   appleId      String?   @unique
-  avatarUrl    String?
-  passwordHash String?
-  createdAt    DateTime  @default(now())
+  avatarUrl          String?
+  passwordHash       String?
+  hashedRefreshToken String?
+  createdAt          DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
   matchesAsP1  MatchHistory[] @relation("Player1Matches")
