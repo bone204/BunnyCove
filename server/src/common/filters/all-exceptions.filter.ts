@@ -1,0 +1,68 @@
+import {
+  ExceptionFilter,
+  Catch,
+  ArgumentsHost,
+  HttpException,
+  HttpStatus,
+  Logger,
+} from '@nestjs/common';
+import { Response } from 'express';
+import { ResponseCodes } from '../constants/response-codes.js';
+
+@Catch()
+export class AllExceptionsFilter implements ExceptionFilter {
+  private readonly logger = new Logger(AllExceptionsFilter.name);
+
+  catch(exception: unknown, host: ArgumentsHost) {
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse<Response>();
+
+    // Skip if not HTTP (e.g. WebSocket context handled by gateway)
+    if (!response || typeof response.status !== 'function') {
+      this.logger.error(
+        JSON.stringify({
+          level: 'ERROR',
+          message: 'Unhandled non-HTTP exception',
+          error: exception instanceof Error ? exception.message : exception,
+        }),
+      );
+      return;
+    }
+
+    let status = HttpStatus.INTERNAL_SERVER_ERROR;
+    let code: string = ResponseCodes.SERVER_ERROR;
+    let message = 'An unexpected internal server error occurred';
+    let details: unknown = null;
+
+    if (exception instanceof HttpException) {
+      status = exception.getStatus();
+      const res = exception.getResponse();
+
+      if (typeof res === 'string') {
+        message = res;
+      } else if (typeof res === 'object' && res !== null) {
+        const errorObj = res as Record<string, any>;
+        message = errorObj.message || exception.message;
+        code = errorObj.code || (status === 404 ? ResponseCodes.NOT_FOUND : ResponseCodes.VALIDATION_ERROR);
+        details = errorObj.error || errorObj.details || null;
+      }
+    } else if (exception instanceof Error) {
+      this.logger.error(
+        JSON.stringify({
+          level: 'ERROR',
+          message: exception.message,
+          stack: exception.stack,
+        }),
+      );
+    }
+
+    response.status(status).json({
+      success: false,
+      error: {
+        code,
+        message,
+        details,
+      },
+    });
+  }
+}
