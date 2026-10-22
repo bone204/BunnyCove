@@ -51,7 +51,7 @@ export class EmailService {
 
     if (!this.transporter) {
       this.logger.log(
-        `\n======================================================\n🐰 [DEV EMAIL FALLBACK] KÍCH HOẠT TÀI KHOẢN BUNNY COVE\nTo: ${to} (${displayName})\nMã OTP xác thực (2 phút): [ ${otp} ]\n======================================================\n`,
+        `\n======================================================\n🐰 [DEV EMAIL FALLBACK] BUNNY COVE ACCOUNT VERIFICATION\nTo: ${to} (${displayName})\nVerification OTP (2 mins): [ ${otp} ]\n======================================================\n`,
       );
       return true;
     }
@@ -63,11 +63,11 @@ export class EmailService {
         subject,
         html,
       });
-      this.logger.log(`✅ Verification email sent to ${to}`);
+      this.logger.log(`✅ Verification email sent to ${to} [OTP: ${otp}]`);
       return true;
     } catch (error: any) {
       this.logger.error(`❌ Failed to send verification email to ${to}: ${error.message}`);
-      // Log OTP to console so player/tester can still proceed
+      // Rescue log so developers and automated test suites can proceed
       this.logger.warn(`🐰 [RESCUE LOG] OTP for ${to} is: [ ${otp} ]`);
       return false;
     }
@@ -80,7 +80,7 @@ export class EmailService {
 
     if (!this.transporter) {
       this.logger.log(
-        `\n======================================================\n🔐 [DEV EMAIL FALLBACK] ĐẶT LẠI MẬT KHẨU BUNNY COVE\nTo: ${to} (${displayName})\nMã OTP đặt lại mật khẩu (2 phút): [ ${otp} ]\n======================================================\n`,
+        `\n======================================================\n🔐 [DEV EMAIL FALLBACK] BUNNY COVE PASSWORD RESET\nTo: ${to} (${displayName})\nPassword Reset OTP (2 mins): [ ${otp} ]\n======================================================\n`,
       );
       return true;
     }
@@ -92,10 +92,11 @@ export class EmailService {
         subject,
         html,
       });
-      this.logger.log(`✅ Password reset email sent to ${to}`);
+      this.logger.log(`✅ Password reset email sent to ${to} [Reset OTP: ${otp}]`);
       return true;
     } catch (error: any) {
       this.logger.error(`❌ Failed to send reset password email to ${to}: ${error.message}`);
+      // Rescue log so developers and automated test suites can proceed
       this.logger.warn(`🔐 [RESCUE LOG] Reset OTP for ${to} is: [ ${otp} ]`);
       return false;
     }

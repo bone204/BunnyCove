@@ -62,16 +62,16 @@ async function runEmailVerificationSuite() {
       currentToEmail = toMatch[1].trim().toLowerCase();
     }
 
-    // Match verification OTP: "[ 123456 ]"
-    const verifyOtpMatch = text.match(/(?:xác thực|OTP for).*?\[\s*(\d{6})\s*\]/i);
+    // Match verification OTP: "[ 123456 ]" or "[OTP: 123456]"
+    const verifyOtpMatch = text.match(/(?:xác thực|verification|OTP).*?\[(?:\s*OTP:\s*)?\s*(\d{6})\s*\]/i);
     if (verifyOtpMatch) {
       const email = currentToEmail || 'latest';
       capturedOtps.verify[email] = verifyOtpMatch[1];
       capturedOtps.verify['latest'] = verifyOtpMatch[1];
     }
 
-    // Match reset OTP: "[ 123456 ]"
-    const resetOtpMatch = text.match(/(?:đặt lại mật khẩu|Reset OTP for).*?\[\s*(\d{6})\s*\]/i);
+    // Match reset OTP: "[ 123456 ]" or "[Reset OTP: 123456]"
+    const resetOtpMatch = text.match(/(?:đặt lại mật khẩu|reset|Reset OTP).*?\[(?:\s*Reset OTP:\s*)?\s*(\d{6})\s*\]/i);
     if (resetOtpMatch) {
       const email = currentToEmail || 'latest';
       capturedOtps.reset[email] = resetOtpMatch[1];
