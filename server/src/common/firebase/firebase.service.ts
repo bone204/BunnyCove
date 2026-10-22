@@ -31,20 +31,28 @@ export class FirebaseService implements OnModuleInit {
 
   private initFirebase(): void {
     // 1. Try loading from service account file path if defined
-    const serviceAccountPath = process.env.FIREBASE_SERVICE_ACCOUNT_PATH;
-    if (serviceAccountPath && fs.existsSync(path.resolve(serviceAccountPath))) {
-      try {
-        const fileContent = fs.readFileSync(path.resolve(serviceAccountPath), 'utf-8');
-        const serviceAccount = JSON.parse(fileContent);
+    const rawPath = process.env.FIREBASE_SERVICE_ACCOUNT_PATH;
+    if (rawPath) {
+      const candidatePaths = [
+        path.resolve(rawPath),
+        path.resolve(process.cwd(), rawPath),
+        path.resolve(process.cwd(), 'server', rawPath),
+      ];
+      const foundPath = candidatePaths.find((p) => fs.existsSync(p));
+      if (foundPath) {
+        try {
+          const fileContent = fs.readFileSync(foundPath, 'utf-8');
+          const serviceAccount = JSON.parse(fileContent);
 
-        this.firebaseApp = initializeApp({
-          credential: cert(serviceAccount),
-        });
-        this.isConfigured = true;
-        this.logger.log(`☁️ Firebase Admin initialized from service account file: ${serviceAccountPath}`);
-        return;
-      } catch (err: any) {
-        this.logger.error(`Failed to initialize Firebase from file: ${err.message}`);
+          this.firebaseApp = initializeApp({
+            credential: cert(serviceAccount),
+          });
+          this.isConfigured = true;
+          this.logger.log(`☁️ Firebase Admin initialized from service account file: ${foundPath}`);
+          return;
+        } catch (err: any) {
+          this.logger.error(`Failed to initialize Firebase from file (${foundPath}): ${err.message}`);
+        }
       }
     }
 
