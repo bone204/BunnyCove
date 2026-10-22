@@ -46,6 +46,16 @@
   - Added `POST /upload/chat-image` (multiplayer in-room chat ready, 1200px limit, WebP auto-compression)
   - Upgraded Prisma `MessageType` to include `IMAGE`
   - Automated integration test `test/verify-upload-flow.mjs` passed 100%
+- [x] 2.7 Email Verification & Password Reset via Gmail (2-minute OTP):
+  - [x] Update `prisma/schema.prisma` with `isEmailVerified` and `emailVerifiedAt`
+  - [x] Add response codes in `response-codes.ts` and 120s OTP TTL in `defaults.ts`
+  - [x] Install `nodemailer` and `@types/nodemailer`
+  - [x] Create `EmailModule`, `EmailService` with Gmail SMTP, dev fallback, and Bunny Cove HTML templates
+  - [x] Add DTOs: `verify-email.dto.ts`, `resend-verification.dto.ts`, `forgot-password.dto.ts`, `reset-password.dto.ts`
+  - [x] Implement `AuthService` methods (`verifyEmail`, `resendVerification`, `forgotPassword`, `resetPassword`) with Redis TTL
+  - [x] Add Swagger endpoints in `AuthController`
+  - [x] Create automated persistent test suite `server/test/verify-email-flow.mjs` and plug into `verify-all.mjs`
+  - [x] Run `npm run test:verify` and verify 100% pass (All 4 test suites passing)
 
 ---
 

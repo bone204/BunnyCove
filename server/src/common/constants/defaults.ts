@@ -13,6 +13,20 @@ export const AppDefaults = {
       const randomHex = crypto.randomBytes(4).toString('hex');
       return `bunny_${randomHex}`;
     },
+    // OTP Expiration: 2 minutes (120 seconds) per user specification
+    OTP_TTL_SECONDS: 120,
+    RESEND_COOLDOWN_SECONDS: 60,
+    MAX_OTP_ATTEMPTS: 5,
+    generateOtp(): string {
+      return Math.floor(100000 + Math.random() * 900000).toString();
+    },
+  },
+
+  // Email Configuration
+  EMAIL: {
+    DEFAULT_FROM: 'Bunny Cove <noreply@bunny-cove.com>',
+    SUBJECT_VERIFY: '🐰 [Bunny Cove] Mã xác thực tài khoản của bạn',
+    SUBJECT_RESET_PASSWORD: '🔐 [Bunny Cove] Yêu cầu đặt lại mật khẩu',
   },
 
   // Cloudinary storage folders

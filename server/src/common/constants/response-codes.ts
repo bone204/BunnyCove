@@ -22,6 +22,18 @@ export const ResponseCodes = {
   INVALID_REFRESH_TOKEN: 'invalid_refresh_token',
   ACCESS_DENIED: 'access_denied',
 
+  // Email & Password Reset Codes
+  VERIFICATION_EMAIL_SENT: 'verification_email_sent',
+  EMAIL_VERIFIED_SUCCESSFUL: 'email_verified_successful',
+  RESET_PASSWORD_EMAIL_SENT: 'reset_password_email_sent',
+  PASSWORD_RESET_SUCCESSFUL: 'password_reset_successful',
+  INVALID_OTP: 'invalid_otp',
+  OTP_EXPIRED: 'otp_expired',
+  OTP_TOO_MANY_ATTEMPTS: 'otp_too_many_attempts',
+  EMAIL_ALREADY_VERIFIED: 'email_already_verified',
+  EMAIL_NOT_VERIFIED: 'email_not_verified',
+  COOLDOWN_ACTIVE: 'cooldown_active',
+
   // Room Management Codes
   ROOM_CREATED: 'room_created',
   ROOM_JOINED: 'room_joined',

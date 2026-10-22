@@ -8,8 +8,14 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcrypt';
 import { PrismaService } from '../../common/prisma/prisma.service.js';
+import { RedisService } from '../../common/redis/redis.service.js';
+import { EmailService } from '../email/email.service.js';
 import { RegisterDto } from './dto/register.dto.js';
 import { LoginDto } from './dto/login.dto.js';
+import { VerifyEmailDto } from './dto/verify-email.dto.js';
+import { ResendVerificationDto } from './dto/resend-verification.dto.js';
+import { ForgotPasswordDto } from './dto/forgot-password.dto.js';
+import { ResetPasswordDto } from './dto/reset-password.dto.js';
 import { ResponseCodes } from '../../common/constants/response-codes.js';
 import { AppDefaults, DEFAULT_AVATAR_URL } from '../../common/constants/defaults.js';
 
@@ -26,6 +32,7 @@ export interface AuthResult {
     displayName: string;
     email: string | null;
     avatarUrl: string | null;
+    isEmailVerified: boolean;
   };
   tokens: AuthTokens;
 }
@@ -42,10 +49,13 @@ export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
+    private readonly redis: RedisService,
+    private readonly emailService: EmailService,
   ) {}
 
   async register(dto: RegisterDto): Promise<AuthResult> {
-    const existingUser = await this.findUserByIdentifier(dto.email);
+    const cleanEmail = dto.email.trim().toLowerCase();
+    const existingUser = await this.findUserByIdentifier(cleanEmail);
     if (existingUser) {
       throw new ConflictException({
         code: ResponseCodes.EMAIL_ALREADY_EXISTS,
@@ -66,9 +76,10 @@ export class AuthService {
         data: {
           username,
           displayName: dto.displayName,
-          email: dto.email.toLowerCase(),
+          email: cleanEmail,
           passwordHash,
           avatarUrl: defaultAvatar,
+          isEmailVerified: false,
         },
       });
     } catch {
@@ -77,14 +88,28 @@ export class AuthService {
         id: `mock-uuid-${Date.now()}`,
         username,
         displayName: dto.displayName,
-        email: dto.email.toLowerCase(),
+        email: cleanEmail,
         passwordHash,
         avatarUrl: defaultAvatar,
+        isEmailVerified: false,
+        emailVerifiedAt: null,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
       this.inMemoryUsers.set(createdUser.id, createdUser);
     }
+
+    // Generate 6-digit verification OTP with 2-minute (120s) lifespan
+    const otp = AppDefaults.AUTH.generateOtp();
+    await this.redis.set(`otp:verify:${cleanEmail}`, otp, AppDefaults.AUTH.OTP_TTL_SECONDS);
+    await this.redis.set(`cooldown:verify:${cleanEmail}`, '1', AppDefaults.AUTH.RESEND_COOLDOWN_SECONDS);
+
+    // Dispatch verification email (console fallback or Gmail SMTP)
+    this.emailService
+      .sendVerificationEmail(createdUser.email, createdUser.displayName, otp)
+      .catch((err) => {
+        this.logger.error(`Error sending verification email to ${cleanEmail}: ${err.message}`);
+      });
 
     const tokens = await this.generateTokens(createdUser.id, createdUser.email, createdUser.username);
     await this.updateRefreshTokenHash(createdUser.id, tokens.refreshToken);
@@ -97,6 +122,7 @@ export class AuthService {
         displayName: createdUser.displayName,
         email: createdUser.email,
         avatarUrl: createdUser.avatarUrl,
+        isEmailVerified: false,
       },
       tokens,
     };
@@ -131,8 +157,199 @@ export class AuthService {
         displayName: user.displayName,
         email: user.email,
         avatarUrl: user.avatarUrl,
+        isEmailVerified: !!user.isEmailVerified,
       },
       tokens,
+    };
+  }
+
+  async verifyEmail(dto: VerifyEmailDto): Promise<{ success: boolean; code: string; message: string }> {
+    const cleanEmail = dto.email.trim().toLowerCase();
+    const user = await this.findUserByIdentifier(cleanEmail);
+
+    if (!user) {
+      throw new BadRequestException({
+        code: ResponseCodes.USER_NOT_FOUND,
+        message: 'No account found with this email address',
+      });
+    }
+
+    if (user.isEmailVerified) {
+      throw new BadRequestException({
+        code: ResponseCodes.EMAIL_ALREADY_VERIFIED,
+        message: 'Email address is already verified',
+      });
+    }
+
+    const storedOtp = await this.redis.get(`otp:verify:${cleanEmail}`);
+    if (!storedOtp) {
+      throw new BadRequestException({
+        code: ResponseCodes.OTP_EXPIRED,
+        message: 'OTP has expired or does not exist. Please request a new code.',
+      });
+    }
+
+    if (storedOtp !== dto.otp.trim()) {
+      throw new BadRequestException({
+        code: ResponseCodes.INVALID_OTP,
+        message: 'Invalid OTP code',
+      });
+    }
+
+    // Invalidate used OTP
+    await this.redis.del(`otp:verify:${cleanEmail}`);
+
+    const verifiedAt = new Date();
+    try {
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: {
+          isEmailVerified: true,
+          emailVerifiedAt: verifiedAt,
+        },
+      });
+    } catch {
+      const memUser = this.inMemoryUsers.get(user.id);
+      if (memUser) {
+        memUser.isEmailVerified = true;
+        memUser.emailVerifiedAt = verifiedAt;
+      }
+    }
+
+    this.logger.log(`Email verified successfully for: ${cleanEmail} (${user.id})`);
+    return {
+      success: true,
+      code: ResponseCodes.EMAIL_VERIFIED_SUCCESSFUL,
+      message: 'Email verified successfully',
+    };
+  }
+
+  async resendVerification(dto: ResendVerificationDto): Promise<{ success: boolean; code: string; message: string }> {
+    const cleanEmail = dto.email.trim().toLowerCase();
+    const user = await this.findUserByIdentifier(cleanEmail);
+
+    if (!user) {
+      throw new BadRequestException({
+        code: ResponseCodes.USER_NOT_FOUND,
+        message: 'No account found with this email address',
+      });
+    }
+
+    if (user.isEmailVerified) {
+      throw new BadRequestException({
+        code: ResponseCodes.EMAIL_ALREADY_VERIFIED,
+        message: 'Email address is already verified',
+      });
+    }
+
+    const isCooldown = await this.redis.exists(`cooldown:verify:${cleanEmail}`);
+    if (isCooldown) {
+      throw new BadRequestException({
+        code: ResponseCodes.COOLDOWN_ACTIVE,
+        message: `Please wait ${AppDefaults.AUTH.RESEND_COOLDOWN_SECONDS} seconds before requesting a new OTP`,
+      });
+    }
+
+    const otp = AppDefaults.AUTH.generateOtp();
+    await this.redis.set(`otp:verify:${cleanEmail}`, otp, AppDefaults.AUTH.OTP_TTL_SECONDS);
+    await this.redis.set(`cooldown:verify:${cleanEmail}`, '1', AppDefaults.AUTH.RESEND_COOLDOWN_SECONDS);
+
+    await this.emailService.sendVerificationEmail(user.email, user.displayName, otp);
+
+    this.logger.log(`Resent verification OTP to: ${cleanEmail}`);
+    return {
+      success: true,
+      code: ResponseCodes.VERIFICATION_EMAIL_SENT,
+      message: 'Verification code sent to your email',
+    };
+  }
+
+  async forgotPassword(dto: ForgotPasswordDto): Promise<{ success: boolean; code: string; message: string }> {
+    const cleanEmail = dto.email.trim().toLowerCase();
+    const user = await this.findUserByIdentifier(cleanEmail);
+
+    if (!user) {
+      throw new BadRequestException({
+        code: ResponseCodes.USER_NOT_FOUND,
+        message: 'No account found with this email address',
+      });
+    }
+
+    const isCooldown = await this.redis.exists(`cooldown:reset:${cleanEmail}`);
+    if (isCooldown) {
+      throw new BadRequestException({
+        code: ResponseCodes.COOLDOWN_ACTIVE,
+        message: `Please wait ${AppDefaults.AUTH.RESEND_COOLDOWN_SECONDS} seconds before requesting a new password reset OTP`,
+      });
+    }
+
+    const otp = AppDefaults.AUTH.generateOtp();
+    await this.redis.set(`otp:reset:${cleanEmail}`, otp, AppDefaults.AUTH.OTP_TTL_SECONDS);
+    await this.redis.set(`cooldown:reset:${cleanEmail}`, '1', AppDefaults.AUTH.RESEND_COOLDOWN_SECONDS);
+
+    await this.emailService.sendPasswordResetEmail(user.email, user.displayName, otp);
+
+    this.logger.log(`Password reset OTP dispatched to: ${cleanEmail}`);
+    return {
+      success: true,
+      code: ResponseCodes.RESET_PASSWORD_EMAIL_SENT,
+      message: 'Password reset OTP sent to your email',
+    };
+  }
+
+  async resetPassword(dto: ResetPasswordDto): Promise<{ success: boolean; code: string; message: string }> {
+    const cleanEmail = dto.email.trim().toLowerCase();
+    const user = await this.findUserByIdentifier(cleanEmail);
+
+    if (!user) {
+      throw new BadRequestException({
+        code: ResponseCodes.USER_NOT_FOUND,
+        message: 'No account found with this email address',
+      });
+    }
+
+    const storedOtp = await this.redis.get(`otp:reset:${cleanEmail}`);
+    if (!storedOtp) {
+      throw new BadRequestException({
+        code: ResponseCodes.OTP_EXPIRED,
+        message: 'OTP has expired or does not exist. Please request a new code.',
+      });
+    }
+
+    if (storedOtp !== dto.otp.trim()) {
+      throw new BadRequestException({
+        code: ResponseCodes.INVALID_OTP,
+        message: 'Invalid OTP code',
+      });
+    }
+
+    // Invalidate OTP
+    await this.redis.del(`otp:reset:${cleanEmail}`);
+
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(dto.newPassword, salt);
+
+    try {
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: {
+          passwordHash,
+          hashedRefreshToken: null, // Revoke all active sessions
+        },
+      });
+    } catch {
+      const memUser = this.inMemoryUsers.get(user.id);
+      if (memUser) {
+        memUser.passwordHash = passwordHash;
+        memUser.hashedRefreshToken = null;
+      }
+    }
+
+    this.logger.log(`Password reset successfully for user: ${cleanEmail} (${user.id})`);
+    return {
+      success: true,
+      code: ResponseCodes.PASSWORD_RESET_SUCCESSFUL,
+      message: 'Password reset successfully. Please log in with your new password.',
     };
   }
 

@@ -20,6 +20,10 @@ import { AuthService } from './auth.service.js';
 import { RegisterDto } from './dto/register.dto.js';
 import { LoginDto } from './dto/login.dto.js';
 import { RefreshTokenDto } from './dto/refresh-token.dto.js';
+import { VerifyEmailDto } from './dto/verify-email.dto.js';
+import { ResendVerificationDto } from './dto/resend-verification.dto.js';
+import { ForgotPasswordDto } from './dto/forgot-password.dto.js';
+import { ResetPasswordDto } from './dto/reset-password.dto.js';
 import { JwtAuthGuard } from './guards/jwt-auth.guard.js';
 import { ResponseCodes } from '../../common/constants/response-codes.js';
 import { AppDefaults } from '../../common/constants/defaults.js';
@@ -131,6 +135,82 @@ export class AuthController {
         expiresIn: result.tokens.expiresIn,
       },
     };
+  }
+
+  @Post('verify-email')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Verify email address with 6-digit OTP (valid for 2 minutes)' })
+  @ApiResponse({
+    status: 200,
+    description: 'Email verified successfully',
+    schema: {
+      example: {
+        success: true,
+        code: 'email_verified_successful',
+        message: 'Email verified successfully',
+      },
+    },
+  })
+  @ApiResponse({ status: 400, description: 'Invalid or expired OTP, or email already verified' })
+  async verifyEmail(@Body() dto: VerifyEmailDto) {
+    return this.authService.verifyEmail(dto);
+  }
+
+  @Post('resend-verification')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Resend email verification OTP (subject to 60-second cooldown)' })
+  @ApiResponse({
+    status: 200,
+    description: 'Verification email sent successfully',
+    schema: {
+      example: {
+        success: true,
+        code: 'verification_email_sent',
+        message: 'Verification code sent to your email',
+      },
+    },
+  })
+  @ApiResponse({ status: 400, description: 'Cooldown active or email already verified' })
+  async resendVerification(@Body() dto: ResendVerificationDto) {
+    return this.authService.resendVerification(dto);
+  }
+
+  @Post('forgot-password')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Request password reset OTP sent to registered email' })
+  @ApiResponse({
+    status: 200,
+    description: 'Password reset OTP dispatched to user email',
+    schema: {
+      example: {
+        success: true,
+        code: 'reset_password_email_sent',
+        message: 'Password reset OTP sent to your email',
+      },
+    },
+  })
+  @ApiResponse({ status: 400, description: 'Cooldown active or invalid email' })
+  async forgotPassword(@Body() dto: ForgotPasswordDto) {
+    return this.authService.forgotPassword(dto);
+  }
+
+  @Post('reset-password')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Reset account password using 6-digit OTP code' })
+  @ApiResponse({
+    status: 200,
+    description: 'Password reset successfully. Active sessions revoked.',
+    schema: {
+      example: {
+        success: true,
+        code: 'password_reset_successful',
+        message: 'Password reset successfully. Please log in with your new password.',
+      },
+    },
+  })
+  @ApiResponse({ status: 400, description: 'Invalid or expired OTP code' })
+  async resetPassword(@Body() dto: ResetPasswordDto) {
+    return this.authService.resetPassword(dto);
   }
 
   @Post('refresh')

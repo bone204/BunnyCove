@@ -7,6 +7,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const testSuites = [
   { name: 'Room Gateway Flow', file: 'verify-room-gateway.mjs' },
   { name: 'Auth & Swagger Flow', file: 'verify-auth-flow.mjs' },
+  { name: 'Email Verification & Password Reset Flow', file: 'verify-email-flow.mjs' },
   { name: 'Cloudinary Upload Flow', file: 'verify-upload-flow.mjs' },
 ];
 

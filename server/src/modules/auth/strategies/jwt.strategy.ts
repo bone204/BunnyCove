@@ -30,6 +30,8 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
           username: true,
           displayName: true,
           avatarUrl: true,
+          isEmailVerified: true,
+          emailVerifiedAt: true,
           createdAt: true,
         },
       });
@@ -47,6 +49,8 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         username: payload.username,
         displayName: payload.username || 'Bunny Player',
         avatarUrl: DEFAULT_AVATAR_URL,
+        isEmailVerified: false,
+        emailVerifiedAt: null,
       };
     }
   }
