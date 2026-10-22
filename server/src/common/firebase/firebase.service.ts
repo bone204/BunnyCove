@@ -1,5 +1,5 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { initializeApp, cert, type App } from 'firebase-admin/app';
+import { initializeApp, getApps, cert, type App } from 'firebase-admin/app';
 import { getMessaging, type Message } from 'firebase-admin/messaging';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
@@ -16,6 +16,7 @@ export interface PushNotificationResult {
   success: boolean;
   messageId?: string;
   error?: string;
+  errorCode?: string;
   isMock?: boolean;
 }
 
@@ -30,6 +31,14 @@ export class FirebaseService implements OnModuleInit {
   }
 
   private initFirebase(): void {
+    // 0. Reuse existing default app if already initialized (prevents duplicate app error in HMR/dev)
+    if (getApps().length > 0) {
+      this.firebaseApp = getApps()[0];
+      this.isConfigured = true;
+      this.logger.log('☁️ Firebase Admin reused existing default app instance');
+      return;
+    }
+
     // 1. Try loading from service account file path if defined
     const rawPath = process.env.FIREBASE_SERVICE_ACCOUNT_PATH;
     if (rawPath) {
@@ -133,7 +142,12 @@ export class FirebaseService implements OnModuleInit {
         return { success: true, messageId, isMock: false };
       } catch (err: any) {
         this.logger.error(`Failed to send FCM push notification: ${err.message}`);
-        return { success: false, error: err.message, isMock: false };
+        return {
+          success: false,
+          error: err.message,
+          errorCode: err.code || err.errorInfo?.code || 'messaging/unknown-error',
+          isMock: false,
+        };
       }
     }
 

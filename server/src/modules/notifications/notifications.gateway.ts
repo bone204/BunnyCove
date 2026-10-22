@@ -44,7 +44,7 @@ export class NotificationsGateway implements OnGatewayConnection, OnGatewayDisco
   }
 
   @SubscribeMessage('notification:subscribe')
-  handleSubscribe(
+  async handleSubscribe(
     @ConnectedSocket() client: Socket,
     @MessageBody() payload: { userId: string },
   ) {
@@ -60,7 +60,7 @@ export class NotificationsGateway implements OnGatewayConnection, OnGatewayDisco
     }
     this.userToSockets.get(userId)!.add(client.id);
 
-    client.join(`user:${userId}`);
+    await client.join(`user:${userId}`);
     this.logger.log(`Socket ${client.id} subscribed to notifications for user ${userId}`);
 
     return {

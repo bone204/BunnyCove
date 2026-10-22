@@ -17,7 +17,7 @@ async function request(endpoint, options = {}) {
   const response = await fetch(url, {
     headers: {
       'Content-Type': 'application/json',
-      ...(options.headers || {}),
+      ...options.headers,
     },
     method: options.method || 'GET',
     body: options.body ? JSON.stringify(options.body) : undefined,
@@ -34,12 +34,6 @@ async function request(endpoint, options = {}) {
   }
 
   return { status, data, setCookie };
-}
-
-function extractCookie(cookieHeader, name) {
-  if (!cookieHeader) return null;
-  const match = cookieHeader.match(new RegExp(`(?:^|;\\s*)${name}=([^;]+)`));
-  return match ? match[1] : null;
 }
 
 async function runFriendsNotificationsSuite() {

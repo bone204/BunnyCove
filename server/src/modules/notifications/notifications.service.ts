@@ -307,15 +307,28 @@ export class NotificationsService {
 
     if (params.metadata) {
       for (const [key, value] of Object.entries(params.metadata)) {
-        dataPayload[key] = typeof value === 'object' ? JSON.stringify(value) : String(value);
+        if (value !== undefined && value !== null) {
+          dataPayload[key] = typeof value === 'object' ? JSON.stringify(value) : String(value);
+        }
       }
     }
 
-    await this.firebaseService.sendPushNotification({
+    const result = await this.firebaseService.sendPushNotification({
       token: fcmToken,
       title: params.title,
       body: params.body,
       data: dataPayload,
     });
+
+    // Self-healing: Automatically clear unregistered or invalid tokens
+    if (
+      !result.success &&
+      (result.errorCode === 'messaging/registration-token-not-registered' ||
+        result.errorCode === 'messaging/invalid-registration-token' ||
+        result.errorCode === 'messaging/invalid-argument')
+    ) {
+      this.logger.warn(`Clearing invalid FCM token for user ${params.userId}: ${result.error}`);
+      await this.clearFcmToken(params.userId);
+    }
   }
 }

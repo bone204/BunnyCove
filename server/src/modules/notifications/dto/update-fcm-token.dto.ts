@@ -8,6 +8,6 @@ export class UpdateFcmTokenDto {
   })
   @IsString()
   @IsNotEmpty()
-  @MaxLength(500)
+  @MaxLength(2048)
   fcmToken: string;
 }

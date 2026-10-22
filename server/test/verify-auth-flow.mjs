@@ -1,4 +1,3 @@
-import http from 'node:http';
 import { spawn } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -17,7 +16,7 @@ async function request(endpoint, options = {}) {
   const response = await fetch(url, {
     headers: {
       'Content-Type': 'application/json',
-      ...(options.headers || {}),
+      ...options.headers,
     },
     method: options.method || 'GET',
     body: options.body ? JSON.stringify(options.body) : undefined,

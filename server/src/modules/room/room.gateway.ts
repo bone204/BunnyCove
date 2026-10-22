@@ -58,7 +58,7 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('room:create')
-  handleCreateRoom(
+  async handleCreateRoom(
     @ConnectedSocket() client: Socket,
     @MessageBody() dto: CreateRoomDto,
   ) {
@@ -69,7 +69,7 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
       dto.maxPlayers,
     );
 
-    client.join(roomCode);
+    await client.join(roomCode);
 
     return {
       success: true,
@@ -79,7 +79,7 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('room:join')
-  handleJoinRoom(
+  async handleJoinRoom(
     @ConnectedSocket() client: Socket,
     @MessageBody() dto: JoinRoomDto,
   ) {
@@ -100,7 +100,7 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
       };
     }
 
-    client.join(dto.roomCode.toUpperCase());
+    await client.join(dto.roomCode.toUpperCase());
 
     this.server.to(dto.roomCode.toUpperCase()).emit('room:player_joined', {
       success: true,
@@ -146,11 +146,11 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('room:leave')
-  handleLeaveRoom(@ConnectedSocket() client: Socket) {
+  async handleLeaveRoom(@ConnectedSocket() client: Socket) {
     const roomCode = this.roomService.leaveCurrentRoom(client.id);
 
     if (roomCode) {
-      client.leave(roomCode);
+      await client.leave(roomCode);
       this.server.to(roomCode).emit('room:player_left', {
         success: true,
         code: ResponseCodes.ROOM_LEFT,
