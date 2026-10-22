@@ -43,6 +43,7 @@ model User {
   avatarUrl          String?
   passwordHash       String?
   hashedRefreshToken String?
+  fcmToken           String?
   isEmailVerified    Boolean   @default(false)
   emailVerifiedAt    DateTime?
   createdAt          DateTime  @default(now())

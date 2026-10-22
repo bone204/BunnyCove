@@ -9,11 +9,13 @@ import { EmailModule } from './modules/email/email.module.js';
 import { UsersModule } from './modules/users/users.module.js';
 import { NotificationsModule } from './modules/notifications/notifications.module.js';
 import { FriendsModule } from './modules/friends/friends.module.js';
+import { FirebaseModule } from './common/firebase/firebase.module.js';
 
 @Module({
   imports: [
     PrismaModule,
     RedisModule,
+    FirebaseModule,
     EmailModule,
     AuthModule,
     UsersModule,

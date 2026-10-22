@@ -1,8 +1,10 @@
 import {
   Controller,
   Get,
+  Post,
   Patch,
   Delete,
+  Body,
   Param,
   Query,
   Req,
@@ -21,6 +23,7 @@ import {
 import type { Request } from 'express';
 import { NotificationsService } from './notifications.service.js';
 import { QueryNotificationsDto } from './dto/query-notifications.dto.js';
+import { UpdateFcmTokenDto } from './dto/update-fcm-token.dto.js';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
 import { ResponseCodes } from '../../common/constants/response-codes.js';
 
@@ -117,6 +120,50 @@ export class NotificationsController {
       success: true,
       code: ResponseCodes.NOTIFICATION_READ,
       data: updated,
+    };
+  }
+
+  @Post('fcm-token')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Register or update Firebase Cloud Messaging (FCM) device push token',
+    description: 'Enables system push notifications when the app is in the background or killed.',
+  })
+  @ApiResponse({ status: 200, description: 'FCM token registered successfully' })
+  async updateFcmToken(
+    @Req() request: Request,
+    @Body() dto: UpdateFcmTokenDto,
+  ) {
+    const userId = (request.user as any)?.id;
+    if (!userId) {
+      throw new BadRequestException('User identifier not found in session');
+    }
+
+    await this.notificationsService.updateFcmToken(userId, dto.fcmToken);
+    return {
+      success: true,
+      code: ResponseCodes.FCM_TOKEN_UPDATED,
+      data: null,
+    };
+  }
+
+  @Delete('fcm-token')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Remove FCM device token on logout',
+  })
+  @ApiResponse({ status: 200, description: 'FCM token cleared' })
+  async clearFcmToken(@Req() request: Request) {
+    const userId = (request.user as any)?.id;
+    if (!userId) {
+      throw new BadRequestException('User identifier not found in session');
+    }
+
+    await this.notificationsService.clearFcmToken(userId);
+    return {
+      success: true,
+      code: ResponseCodes.FCM_TOKEN_CLEARED,
+      data: null,
     };
   }
 

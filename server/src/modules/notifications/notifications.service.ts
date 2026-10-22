@@ -7,6 +7,7 @@ import { PrismaService } from '../../common/prisma/prisma.service.js';
 import { ResponseCodes } from '../../common/constants/response-codes.js';
 import { NotificationsGateway } from './notifications.gateway.js';
 import { QueryNotificationsDto } from './dto/query-notifications.dto.js';
+import { FirebaseService } from '../../common/firebase/firebase.service.js';
 import { NotificationType } from '@prisma/client';
 
 export interface CreateNotificationParams {
@@ -24,10 +25,12 @@ export class NotificationsService {
 
   // In-memory fallback for testing / offline database mode
   private readonly inMemoryNotifications: Map<string, any> = new Map();
+  private readonly inMemoryFcmTokens: Map<string, string> = new Map();
 
   constructor(
     private readonly prisma: PrismaService,
     private readonly gateway: NotificationsGateway,
+    private readonly firebaseService: FirebaseService,
   ) {}
 
   async createNotification(params: CreateNotificationParams) {
@@ -75,6 +78,11 @@ export class NotificationsService {
 
     // Dispatch real-time WebSocket push event to user if currently connected
     this.gateway.sendNotificationToUser(params.userId, createdNotification);
+
+    // Dispatch remote FCM push notification to user device (e.g. when app is in background or offline)
+    this.dispatchFcmPush(params, createdNotification).catch((err) => {
+      this.logger.warn(`Failed to dispatch FCM push: ${err.message}`);
+    });
 
     return createdNotification;
   }
@@ -246,5 +254,68 @@ export class NotificationsService {
 
   isUserOnline(userId: string): boolean {
     return this.gateway.isUserOnline(userId);
+  }
+
+  async updateFcmToken(userId: string, fcmToken: string) {
+    try {
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: { fcmToken },
+      });
+    } catch {
+      this.inMemoryFcmTokens.set(userId, fcmToken);
+    }
+
+    this.logger.log(`FCM device token updated for user ${userId}`);
+    return { success: true };
+  }
+
+  async clearFcmToken(userId: string) {
+    try {
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: { fcmToken: null },
+      });
+    } catch {
+      this.inMemoryFcmTokens.delete(userId);
+    }
+
+    this.logger.log(`FCM device token cleared for user ${userId}`);
+    return { success: true };
+  }
+
+  private async dispatchFcmPush(params: CreateNotificationParams, notification: any) {
+    let fcmToken: string | null = null;
+
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { id: params.userId },
+        select: { fcmToken: true },
+      });
+      fcmToken = user?.fcmToken || null;
+    } catch {
+      fcmToken = this.inMemoryFcmTokens.get(params.userId) || null;
+    }
+
+    if (!fcmToken) return;
+
+    // Build data payload with string key-value pairs required by FCM
+    const dataPayload: Record<string, string> = {
+      type: String(params.type),
+      notificationId: String(notification.id),
+    };
+
+    if (params.metadata) {
+      for (const [key, value] of Object.entries(params.metadata)) {
+        dataPayload[key] = typeof value === 'object' ? JSON.stringify(value) : String(value);
+      }
+    }
+
+    await this.firebaseService.sendPushNotification({
+      token: fcmToken,
+      title: params.title,
+      body: params.body,
+      data: dataPayload,
+    });
   }
 }

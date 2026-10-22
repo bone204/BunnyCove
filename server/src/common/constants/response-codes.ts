@@ -42,13 +42,15 @@ export const ResponseCodes = {
   CANNOT_FRIEND_SELF: 'cannot_friend_self',
   USER_BLOCKED: 'user_blocked',
 
-  // Notifications Codes
+  // Notifications & Push Codes
   NOTIFICATIONS_FETCHED: 'notifications_fetched',
   NOTIFICATION_READ: 'notification_read',
   ALL_NOTIFICATIONS_READ: 'all_notifications_read',
   NOTIFICATION_DELETED: 'notification_deleted',
   UNREAD_COUNT_FETCHED: 'unread_count_fetched',
   NOTIFICATION_NOT_FOUND: 'notification_not_found',
+  FCM_TOKEN_UPDATED: 'fcm_token_updated',
+  FCM_TOKEN_CLEARED: 'fcm_token_cleared',
 
   // Email & Password Reset Codes
   VERIFICATION_EMAIL_SENT: 'verification_email_sent',

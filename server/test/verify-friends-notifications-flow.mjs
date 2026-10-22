@@ -145,6 +145,20 @@ async function runFriendsNotificationsSuite() {
       throw new Error('Bob failed to subscribe to notifications');
     }
 
+    // ========================================================
+    // 2b. Register FCM Device Token for Bob
+    // ========================================================
+    console.log('\n🐰 [Step 2b] Registering FCM Device Push Token for Bob...');
+    const fcmTokenRes = await request('/notifications/fcm-token', {
+      method: 'POST',
+      headers: bobHeaders,
+      body: { fcmToken: 'fcm_sample_token_bob_device_ios_retina_123' },
+    });
+    console.log('✅ FCM token registered response:', JSON.stringify(fcmTokenRes.data));
+    if (fcmTokenRes.status !== 200 || fcmTokenRes.data?.code !== 'fcm_token_updated') {
+      throw new Error(`Failed to register FCM token: ${JSON.stringify(fcmTokenRes.data)}`);
+    }
+
     // Set up promise to intercept real-time notification on Bob's socket
     let bobReceivedNotificationPromise = new Promise((resolve) => {
       bobSocket.once('notification:new', (payload) => {
@@ -433,8 +447,21 @@ async function runFriendsNotificationsSuite() {
     }
     console.log('🎉 Unfriend verified successfully! Both friends lists cleared.');
 
+    // ========================================================
+    // 14b. Test Clearing FCM Token (Logout)
+    // ========================================================
+    console.log('\n🐰 [Step 14b] Testing clearing FCM token on logout...');
+    const clearFcmRes = await request('/notifications/fcm-token', {
+      method: 'DELETE',
+      headers: bobHeaders,
+    });
+    console.log('✅ FCM token cleared response:', JSON.stringify(clearFcmRes.data));
+    if (clearFcmRes.status !== 200 || clearFcmRes.data?.code !== 'fcm_token_cleared') {
+      throw new Error(`Failed to clear FCM token: ${JSON.stringify(clearFcmRes.data)}`);
+    }
+
     console.log('\n======================================================');
-    console.log('🌟 ALL FRIENDS & NOTIFICATIONS TESTS PASSED 100%! 🌟');
+    console.log('🌟 ALL FRIENDS, NOTIFICATIONS & FCM TESTS PASSED 100%! 🌟');
     console.log('======================================================\n');
   } finally {
     if (aliceSocket) aliceSocket.disconnect();
