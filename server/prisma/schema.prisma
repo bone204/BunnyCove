@@ -22,6 +22,7 @@ enum FriendshipStatus {
 enum MessageType {
   TEXT
   STICKER
+  IMAGE
   SYSTEM
 }
 

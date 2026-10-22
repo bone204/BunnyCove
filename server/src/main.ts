@@ -52,6 +52,7 @@ async function bootstrap() {
       'bearer',
     )
     .addTag('Authentication', 'User registration, login, token refresh, and profile')
+    .addTag('Upload & Media', 'Avatar and in-room chat image uploads via Cloudinary')
     .build();
 
   const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);

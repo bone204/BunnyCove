@@ -49,6 +49,13 @@ export const ResponseCodes = {
   // Chat Codes
   CHAT_MESSAGE_SENT: 'chat_message_sent',
   CHAT_STICKER_SENT: 'chat_sticker_sent',
+
+  // Media & Upload Codes
+  AVATAR_UPLOAD_SUCCESSFUL: 'avatar_upload_successful',
+  IMAGE_UPLOAD_SUCCESSFUL: 'image_upload_successful',
+  INVALID_FILE_TYPE: 'invalid_file_type',
+  FILE_TOO_LARGE: 'file_too_large',
+  NO_FILE_PROVIDED: 'no_file_provided',
 } as const;
 
 export type ResponseCode = (typeof ResponseCodes)[keyof typeof ResponseCodes];
