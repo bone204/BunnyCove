@@ -18,9 +18,14 @@ export const ResponseCodes = {
   TOKEN_REFRESHED: 'token_refreshed',
   INVALID_CREDENTIALS: 'invalid_credentials',
   EMAIL_ALREADY_EXISTS: 'email_already_exists',
+  USERNAME_ALREADY_EXISTS: 'username_already_exists',
   USER_NOT_FOUND: 'user_not_found',
   INVALID_REFRESH_TOKEN: 'invalid_refresh_token',
   ACCESS_DENIED: 'access_denied',
+  PROFILE_FETCHED: 'profile_fetched',
+  PROFILE_UPDATED: 'profile_updated',
+  STATS_FETCHED: 'stats_fetched',
+  MATCH_HISTORY_FETCHED: 'match_history_fetched',
 
   // Email & Password Reset Codes
   VERIFICATION_EMAIL_SENT: 'verification_email_sent',

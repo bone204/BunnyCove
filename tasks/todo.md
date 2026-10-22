@@ -56,6 +56,15 @@
   - [x] Add Swagger endpoints in `AuthController`
   - [x] Create automated persistent test suite `server/test/verify-email-flow.mjs` and plug into `verify-all.mjs`
   - [x] Run `npm run test:verify` and verify 100% pass (All 4 test suites passing)
+- [x] 2.8 User Profile, Game Statistics & Match History Architecture (`UsersModule`):
+  - [x] Create `UsersModule`, `UsersService`, and `UsersController`
+  - [x] Implement `GET /users/me`: Personal info, aggregated summary stats (win rate, streaks, points, friends count), and recent matches
+  - [x] Implement `PATCH /users/me`: Update display name and custom username (with uniqueness constraint check)
+  - [x] Implement `GET /users/me/stats`: Game-by-game statistics and ELO rank breakdown
+  - [x] Implement `GET /users/me/matches`: Paginated match history with opponent details
+  - [x] Implement `GET /users/:identifier`: Safe public profile lookup without leaking email/credentials
+  - [x] Create automated persistent test suite `server/test/verify-profile-flow.mjs` (All 9 steps passed 100%)
+  - [x] Register in `server/test/verify-all.mjs` (All 5 test suites passing cleanly)
 
 ---
 

@@ -6,6 +6,7 @@ import { UploadModule } from './modules/upload/upload.module.js';
 import { RoomModule } from './modules/room/room.module.js';
 import { GamesModule } from './modules/games/games.module.js';
 import { EmailModule } from './modules/email/email.module.js';
+import { UsersModule } from './modules/users/users.module.js';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { EmailModule } from './modules/email/email.module.js';
     RedisModule,
     EmailModule,
     AuthModule,
+    UsersModule,
     UploadModule,
     GamesModule,
     RoomModule,
