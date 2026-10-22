@@ -9,7 +9,12 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import type { Request, Response } from 'express';
 import { AuthService } from './auth.service.js';
 import { RegisterDto } from './dto/register.dto.js';
@@ -26,7 +31,28 @@ export class AuthController {
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Register a new player account' })
-  @ApiResponse({ status: 201, description: 'User account created successfully' })
+  @ApiResponse({
+    status: 201,
+    description: 'User account created successfully (returns user with default avatar)',
+    schema: {
+      example: {
+        success: true,
+        code: 'register_successful',
+        data: {
+          user: {
+            id: '6731d535-65cb-4935-842b-c2ddc5b7e7cf',
+            username: 'bunny_player',
+            displayName: 'Thỏ Hồng',
+            email: 'player@bunny.com',
+            avatarUrl: 'https://res.cloudinary.com/dcf2l7bst/image/upload/v1792641665/bunny-cove/avatars/test_bunny_avatar.png',
+          },
+          accessToken: 'eyJhbGciOi...',
+          refreshToken: 'eyJhbGciOi...',
+          expiresIn: 900,
+        },
+      },
+    },
+  })
   @ApiResponse({ status: 409, description: 'Email or username already exists' })
   async register(
     @Body() dto: RegisterDto,
@@ -57,7 +83,28 @@ export class AuthController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Log in with email/username and password' })
-  @ApiResponse({ status: 200, description: 'User logged in successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'User logged in successfully (returns user profile with current avatarUrl)',
+    schema: {
+      example: {
+        success: true,
+        code: 'login_successful',
+        data: {
+          user: {
+            id: '6731d535-65cb-4935-842b-c2ddc5b7e7cf',
+            username: 'bunny_player',
+            displayName: 'Thỏ Hồng',
+            email: 'player@bunny.com',
+            avatarUrl: 'https://res.cloudinary.com/dcf2l7bst/image/upload/v1792641665/bunny-cove/avatars/avatar_6731d535.webp',
+          },
+          accessToken: 'eyJhbGciOi...',
+          refreshToken: 'eyJhbGciOi...',
+          expiresIn: 900,
+        },
+      },
+    },
+  })
   @ApiResponse({ status: 401, description: 'Invalid credentials' })
   async login(
     @Body() dto: LoginDto,
@@ -145,7 +192,24 @@ export class AuthController {
   @Get('me')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get current authenticated user profile' })
-  @ApiResponse({ status: 200, description: 'Profile returned successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Profile returned successfully with avatarUrl',
+    schema: {
+      example: {
+        success: true,
+        code: 'success',
+        data: {
+          id: '6731d535-65cb-4935-842b-c2ddc5b7e7cf',
+          email: 'player@bunny.com',
+          username: 'bunny_player',
+          displayName: 'Thỏ Hồng',
+          avatarUrl: 'https://res.cloudinary.com/dcf2l7bst/image/upload/v1792641665/bunny-cove/avatars/avatar_6731d535.webp',
+          createdAt: '2026-10-22T03:00:00.000Z',
+        },
+      },
+    },
+  })
   getProfile(@Req() request: Request) {
     return {
       success: true,

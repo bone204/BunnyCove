@@ -57,6 +57,8 @@ export class AuthService {
 
     let createdUser: any;
 
+    const defaultAvatar = 'https://res.cloudinary.com/dcf2l7bst/image/upload/v1792641665/bunny-cove/avatars/test_bunny_avatar.png';
+
     try {
       createdUser = await this.prisma.user.create({
         data: {
@@ -64,7 +66,7 @@ export class AuthService {
           displayName: dto.displayName,
           email: dto.email.toLowerCase(),
           passwordHash,
-          avatarUrl: dto.avatarId || 'bunny-avatar-default',
+          avatarUrl: defaultAvatar,
         },
       });
     } catch {
@@ -75,7 +77,7 @@ export class AuthService {
         displayName: dto.displayName,
         email: dto.email.toLowerCase(),
         passwordHash,
-        avatarUrl: dto.avatarId || 'bunny-avatar-default',
+        avatarUrl: defaultAvatar,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -201,6 +203,22 @@ export class AuthService {
     }
 
     this.logger.log(`User logged out: ${userId}`);
+  }
+
+  async updateAvatar(userId: string, avatarUrl: string): Promise<void> {
+    try {
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: { avatarUrl },
+      });
+    } catch {
+      const memUser = this.inMemoryUsers.get(userId);
+      if (memUser) {
+        memUser.avatarUrl = avatarUrl;
+      }
+    }
+
+    this.logger.log(`Avatar updated for user: ${userId}`);
   }
 
   private async generateTokens(userId: string, email?: string, username?: string): Promise<AuthTokens> {
