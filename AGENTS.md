@@ -42,3 +42,12 @@ Before performing any action, architectural decision, or code implementation, yo
 ### 5. Constants & Zero Hard-coding Standards (Strict)
 - **Zero Hard-coded Paths & Defaults**: Absolutely NO hard-coded default URLs, mock/fake assets, CDN paths, fallback image generators, or magic strings in services, controllers, DTOs, or models.
 - **Dedicated Constants Folder**: All default URLs, fallback URLs, mock links, response codes, and asset paths MUST reside in dedicated files under `src/common/constants/` (e.g., `defaults.ts`, `response-codes.ts` on server; `lib/common/constants/` on mobile).
+
+---
+
+## 🛠️ Antigravity Customizations Architecture (Rules vs Skills)
+
+To maintain a clean and maintainable codebase, customizations are strictly categorized:
+- **Rules (`AGENTS.md` & `rule.md`)**: Always-active behavioral guidelines, coding conventions, architectural patterns, and negative constraints (such as Zero Hard-coding). They apply unconditionally to all coding tasks.
+- **Skills (`.agents/skills/`)**: On-demand procedural workflows / runbooks triggered by explicit commands or user intents (e.g., `/compact` in `.agents/skills/compact/SKILL.md`). Skills must NEVER contain coding rules or global constraints.
+
