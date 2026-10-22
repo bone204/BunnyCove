@@ -10,6 +10,7 @@ const testSuites = [
   { name: 'Email Verification & Password Reset Flow', file: 'verify-email-flow.mjs' },
   { name: 'Cloudinary Upload Flow', file: 'verify-upload-flow.mjs' },
   { name: 'User Profile & Statistics Flow', file: 'verify-profile-flow.mjs' },
+  { name: 'Friends & Notifications System Flow', file: 'verify-friends-notifications-flow.mjs' },
 ];
 
 async function runScript(suite) {

@@ -27,6 +27,29 @@ export const ResponseCodes = {
   STATS_FETCHED: 'stats_fetched',
   MATCH_HISTORY_FETCHED: 'match_history_fetched',
 
+  // Friends & Social Codes
+  FRIEND_REQUEST_SENT: 'friend_request_sent',
+  FRIEND_REQUEST_ACCEPTED: 'friend_request_accepted',
+  FRIEND_REQUEST_REJECTED: 'friend_request_rejected',
+  FRIEND_REQUEST_CANCELLED: 'friend_request_cancelled',
+  UNFRIENDED_SUCCESSFUL: 'unfriended_successful',
+  FRIENDS_FETCHED: 'friends_fetched',
+  FRIEND_REQUESTS_FETCHED: 'friend_requests_fetched',
+  FRIENDSHIP_STATUS_FETCHED: 'friendship_status_fetched',
+  ALREADY_FRIENDS: 'already_friends',
+  FRIEND_REQUEST_ALREADY_SENT: 'friend_request_already_sent',
+  FRIEND_REQUEST_NOT_FOUND: 'friend_request_not_found',
+  CANNOT_FRIEND_SELF: 'cannot_friend_self',
+  USER_BLOCKED: 'user_blocked',
+
+  // Notifications Codes
+  NOTIFICATIONS_FETCHED: 'notifications_fetched',
+  NOTIFICATION_READ: 'notification_read',
+  ALL_NOTIFICATIONS_READ: 'all_notifications_read',
+  NOTIFICATION_DELETED: 'notification_deleted',
+  UNREAD_COUNT_FETCHED: 'unread_count_fetched',
+  NOTIFICATION_NOT_FOUND: 'notification_not_found',
+
   // Email & Password Reset Codes
   VERIFICATION_EMAIL_SENT: 'verification_email_sent',
   EMAIL_VERIFIED_SUCCESSFUL: 'email_verified_successful',
