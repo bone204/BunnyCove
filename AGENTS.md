@@ -23,6 +23,8 @@ Before performing any action, architectural decision, or code implementation, yo
 - **Plan First**: For tasks involving 3+ steps or architectural choices, write/update a plan with checklists (`[ ]`, `[/]`, `[x]`) in `tasks/todo.md` and confirm before implementing.
 - **Lessons Learned**: Update `tasks/lessons.md` after any correction or feedback from the user.
 - **Verification**: Always verify changes before marking tasks complete.
+- **No Auto-Push (Strict User-Triggered Only)**: Never automatically run `git push`. Code must only be staged/committed locally. Remote push is executed ONLY when the user explicitly triggers `/push`, `/push-dev`, or gives an explicit push command.
+- **Mandatory Persistent Test Flows**: Every new API or backend feature MUST have an accompanying persistent test script under `server/test/` (e.g. `verify-[feature]-flow.mjs`) and be registered in `server/test/verify-all.mjs` (`npm run test:verify`). Tests must pass 100% before pushing.
 
 ### 3. Mobile Standards (Flutter - `mobile/`)
 - Architecture: Feature-based under `lib/features/[feature]/...`.

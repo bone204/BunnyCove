@@ -23,6 +23,8 @@ Applies to all 3 platforms: Mobile (Flutter), Web (Next.js), and Backend
   - You must register it in both `server/src/common/constants/response-codes.ts` and `web/src/shared/constants/response-codes.ts` to keep them in sync.
   - You must translate it in both `web/src/presentation/i18n/locales/vi.json` and `web/src/presentation/i18n/locales/en.json` under the `api.codes` path immediately.
 - **Zero Hard-Coding & Centralized Constants (Mandatory)**: All default URLs, CDN asset paths, fallback image generators, mock/fake links, response codes, and system defaults must NEVER be hard-coded into controllers, services, DTOs, or models. They must strictly reside in centralized constants files under the designated constants folder (e.g., `server/src/common/constants/defaults.ts` on backend, `lib/common/constants/` on mobile).
+- **No Auto-Push (Strict User-Triggered Only)**: The agent must NEVER automatically execute `git push` after code modifications. Code must only be prepared and committed locally. Remote push is executed ONLY when the user explicitly triggers `/push`, `/push-dev`, or gives an explicit push command.
+- **Mandatory Persistent Test Flows**: Every time a new API, WebSocket event, or backend feature is added or modified, a persistent, reproducible test script MUST be created or updated under `server/test/` (e.g. `verify-[feature]-flow.mjs`) and registered in `server/test/verify-all.mjs`. Tests must never be ad-hoc or session-only; they must remain committed in git and runnable at any time via `npm run test:verify`.
 - **Demand Elegance & Senior Standards**:
   - Always strive for the most minimal changes to avoid introducing unexpected bugs.
   - If a fix feels hacky, pause and design a clean, elegant, and optimal solution matching Senior Developer standards.
@@ -166,3 +168,9 @@ Backend code must follow clean layered architecture to ensure maintainability:
 ### 5. Error Handling & Structured Logging
 - **Centralized Error Handling**: Implement global error handler middlewares to catch all unhandled exceptions. Never leak server internal details or stack traces to the client (respond with HTTP 500 and a generic message, and write details to internal logs).
 - **Structured Logging**: Write logs in structured JSON format (using libraries like Winston, Pino, or Zap) categorized clearly by log levels (`INFO`, `WARN`, `ERROR`).
+
+### 6. Automated Verification & Test Flows
+- **Persistent Test Scripts**: Every API module must have an accompanying test flow under `server/test/` (e.g. `verify-auth-flow.mjs`, `verify-upload-flow.mjs`, `verify-room-gateway.mjs`).
+- **Pipeline Integration**: All test scripts must be plugged into `server/test/verify-all.mjs` (`npm run test:verify`).
+- **Verification Gate**: No code is eligible for push until `npm run test:verify` passes completely.
+
