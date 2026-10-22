@@ -2,12 +2,6 @@ import { IsEmail, IsNotEmpty, IsString, MinLength, MaxLength } from 'class-valid
 import { ApiProperty } from '@nestjs/swagger';
 
 export class RegisterDto {
-  @ApiProperty({ example: 'bunny_lover', description: 'Unique username for the player' })
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(3)
-  @MaxLength(30)
-  username: string;
 
   @ApiProperty({ example: 'Thỏ Trắng', description: 'Display name shown in games and chat' })
   @IsString()

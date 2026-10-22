@@ -59,7 +59,6 @@ async function runUploadVerification() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         email: testEmail,
-        username: `uploader_${Date.now()}`,
         password: 'Password123!',
         displayName: 'Avatar Tester',
       }),

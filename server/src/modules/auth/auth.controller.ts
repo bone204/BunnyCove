@@ -34,7 +34,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Register a new player account' })
   @ApiResponse({
     status: 201,
-    description: 'User account created successfully (returns user with default avatar)',
+    description: 'User account created successfully (returns user with auto-generated bunny_ username and default avatar)',
     schema: {
       example: {
         success: true,
@@ -42,7 +42,7 @@ export class AuthController {
         data: {
           user: {
             id: '6731d535-65cb-4935-842b-c2ddc5b7e7cf',
-            username: 'bunny_player',
+            username: 'bunny_a8f3d10c',
             displayName: 'Thỏ Hồng',
             email: 'player@bunny.com',
             avatarUrl: AppDefaults.DEFAULT_AVATAR_URL,
@@ -54,7 +54,7 @@ export class AuthController {
       },
     },
   })
-  @ApiResponse({ status: 409, description: 'Email or username already exists' })
+  @ApiResponse({ status: 409, description: 'An account with this email already exists' })
   async register(
     @Body() dto: RegisterDto,
     @Res({ passthrough: true }) response: Response,

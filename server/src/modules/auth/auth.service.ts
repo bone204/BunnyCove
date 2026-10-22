@@ -11,7 +11,7 @@ import { PrismaService } from '../../common/prisma/prisma.service.js';
 import { RegisterDto } from './dto/register.dto.js';
 import { LoginDto } from './dto/login.dto.js';
 import { ResponseCodes } from '../../common/constants/response-codes.js';
-import { DEFAULT_AVATAR_URL } from '../../common/constants/defaults.js';
+import { AppDefaults, DEFAULT_AVATAR_URL } from '../../common/constants/defaults.js';
 
 export interface AuthTokens {
   accessToken: string;
@@ -58,12 +58,13 @@ export class AuthService {
 
     let createdUser: any;
 
+    const username = await this.generateUniqueUsername();
     const defaultAvatar = DEFAULT_AVATAR_URL;
 
     try {
       createdUser = await this.prisma.user.create({
         data: {
-          username: dto.username.toLowerCase(),
+          username,
           displayName: dto.displayName,
           email: dto.email.toLowerCase(),
           passwordHash,
@@ -74,7 +75,7 @@ export class AuthService {
       // In-memory fallback
       createdUser = {
         id: `mock-uuid-${Date.now()}`,
-        username: dto.username.toLowerCase(),
+        username,
         displayName: dto.displayName,
         email: dto.email.toLowerCase(),
         passwordHash,
@@ -288,5 +289,17 @@ export class AuthService {
     }
 
     return this.inMemoryUsers.get(id);
+  }
+
+  private async generateUniqueUsername(): Promise<string> {
+    for (let attempt = 0; attempt < 5; attempt++) {
+      const candidate = AppDefaults.AUTH.generateUsername();
+      const existing = await this.findUserByIdentifier(candidate);
+      if (!existing) {
+        return candidate;
+      }
+    }
+    // Timestamp fallback in case of rare collision
+    return `${AppDefaults.AUTH.USERNAME_PREFIX}${Date.now().toString(36)}`;
   }
 }

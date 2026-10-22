@@ -3,7 +3,18 @@
  * Follows Bunny Cove Project Rule: Zero hard-coded paths or URLs in services/controllers.
  * All default, fallback, mock, and CDN URLs must be declared here.
  */
+import crypto from 'node:crypto';
+
 export const AppDefaults = {
+  // Auth defaults
+  AUTH: {
+    USERNAME_PREFIX: 'bunny_',
+    generateUsername(): string {
+      const randomHex = crypto.randomBytes(4).toString('hex');
+      return `bunny_${randomHex}`;
+    },
+  },
+
   // Cloudinary storage folders
   CLOUDINARY: {
     AVATARS_FOLDER: 'bunny-cove/avatars',

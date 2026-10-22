@@ -82,14 +82,13 @@ async function runVerification() {
     }
     console.log('✅ Swagger UI is active and accessible at /api/docs');
 
-    // 2. Test User Registration
+    // 2. Test User Registration (No username required - auto generated)
     console.log('\n👉 Step 2: Testing POST /auth/register...');
     const testEmail = `bunny_${Date.now()}@bunny.test`;
     const registerRes = await request('/auth/register', {
       method: 'POST',
       body: {
         email: testEmail,
-        username: `bunny_${Date.now()}`,
         password: 'Password123!',
         displayName: 'Bunny Tester',
       },
@@ -100,6 +99,11 @@ async function runVerification() {
     if (registerRes.status !== 201 || !registerRes.data.success) {
       throw new Error(`Registration failed with status ${registerRes.status}`);
     }
+    const autoUsername = registerRes.data.data.user.username;
+    if (!autoUsername || !autoUsername.startsWith('bunny_')) {
+      throw new Error(`Expected auto-generated username starting with 'bunny_', got: ${autoUsername}`);
+    }
+    console.log(`✅ Auto-generated username verified: ${autoUsername}`);
     if (!registerRes.data.data.accessToken || !registerRes.data.data.refreshToken) {
       throw new Error('Registration did not return access & refresh tokens');
     }
