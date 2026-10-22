@@ -14,10 +14,11 @@ Before performing any action, architectural decision, or code implementation, yo
 
 ## 🚨 Non-Negotiable Core Rules
 
-### 1. Language Standards
-- **User Communication**: Always explain, discuss, plan, and guide the user in clear, professional, structured **Vietnamese** (Tiếng Việt).
-- **Source Code**: All code (variables, functions, classes, interfaces, filenames) must be in **English**.
-- **Comments & Commits**: All comments (including `TODO`, `FIXME`) and git commit messages must be in **English**. No Vietnamese inside code files.
+### 1. Language Standards (Strict & Mandatory)
+- **User Communication**: Always explain, discuss, plan, and guide the user in clear, professional, structured **Vietnamese** (Tiếng Việt) in chat responses.
+- **Source Code**: All code (variables, functions, classes, interfaces, types, filenames) must be exclusively in **English**.
+- **Comments, Docstrings & Env Files**: ALL comments without exception (single-line `//`, multi-line `/* */`, hash `#` in `.env` / `.env.example`, dockerfiles, yaml, JSDoc/docstrings, and `TODO`/`FIXME` tags) must be 100% in **English**. Absolutely NO Vietnamese or non-English characters inside code comments, environment variable descriptions, or configuration files.
+- **Git Commits**: All git commit messages must follow Conventional Commits and be strictly in **English**.
 
 ### 2. Workflow Orchestration
 - **Plan First**: For tasks involving 3+ steps or architectural choices, write/update a plan with checklists (`[ ]`, `[/]`, `[x]`) in `tasks/todo.md` and confirm before implementing.

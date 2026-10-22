@@ -5,12 +5,14 @@ Applies to all 3 platforms: Mobile (Flutter), Web (Next.js), and Backend
 
 ## 📌 PART I: COMMON RULES
 
-### 1. Language & Communication Standards
-- **User Communication**: All explanations, discussions, plans, and guidelines sent to the user must be written in clear, structured, and technically precise Vietnamese. Avoid overusing English unless referring to specific technical terms that cannot be translated.
-- **Git Commit Messages**: All commit messages must be written in English.
-- **Source Code & Comments**:
-  - All source code must be written in English (variables, functions, classes, files, etc.).
-  - All comments in code (including `TODO`, `FIXME` tags) must be entirely in English. No Vietnamese inside the source code.
+### 1. Language & Communication Standards (Strict & Mandatory)
+- **User Communication**: All explanations, discussions, plans, and guidelines sent to the user in chat must be written in clear, structured, and technically precise Vietnamese. Avoid overusing English unless referring to specific technical terms that cannot be translated.
+- **Git Commit Messages**: All commit messages must follow Conventional Commits and be strictly written in English.
+- **Source Code & Configuration**:
+  - All source code must be written exclusively in English (variables, functions, classes, interfaces, types, filenames, etc.).
+- **Comments & Documentation (Zero Non-English Rule)**:
+  - ALL comments without exception (single-line `//`, multi-line `/* */`, hash `#` in `.env`, `.env.example`, dockerfiles, yaml, JSDoc/docstrings, and `TODO`/`FIXME` tags) must be 100% in English.
+  - Absolutely NO Vietnamese or non-English characters are permitted inside code comments, configuration files, environment files, or test scripts.
 
 ### 2. Workflow Orchestration
 - **Plan First**: For any non-trivial task (3+ steps or involving architectural decisions), you must create a plan before taking action.
