@@ -44,10 +44,30 @@ export class EmailService {
     }
   }
 
+  private isMockOrTestEmail(to: string): boolean {
+    const lower = to.trim().toLowerCase();
+    return (
+      lower.endsWith('.test') ||
+      lower.endsWith('.example') ||
+      lower.endsWith('@bunny.test') ||
+      lower.endsWith('@example.com') ||
+      lower.endsWith('@localhost') ||
+      process.env.NODE_ENV === 'test'
+    );
+  }
+
   async sendVerificationEmail(to: string, displayName: string, otp: string): Promise<boolean> {
     const subject = AppDefaults.EMAIL.SUBJECT_VERIFY;
     const from = process.env.GMAIL_USER || AppDefaults.EMAIL.DEFAULT_FROM;
     const html = this.buildVerificationEmailHtml(displayName, otp);
+
+    // Prevent live SMTP delivery to test/mock addresses to protect sender reputation
+    if (this.isMockOrTestEmail(to)) {
+      this.logger.log(
+        `\n======================================================\n🐰 [TEST/DEV EMAIL INTERCEPTED] BUNNY COVE ACCOUNT VERIFICATION\nTo: ${to} (${displayName})\nVerification OTP (2 mins): [ ${otp} ]\n======================================================\n`,
+      );
+      return true;
+    }
 
     if (!this.transporter) {
       this.logger.log(
@@ -77,6 +97,14 @@ export class EmailService {
     const subject = AppDefaults.EMAIL.SUBJECT_RESET_PASSWORD;
     const from = process.env.GMAIL_USER || AppDefaults.EMAIL.DEFAULT_FROM;
     const html = this.buildResetPasswordEmailHtml(displayName, otp);
+
+    // Prevent live SMTP delivery to test/mock addresses to protect sender reputation
+    if (this.isMockOrTestEmail(to)) {
+      this.logger.log(
+        `\n======================================================\n🔐 [TEST/DEV EMAIL INTERCEPTED] BUNNY COVE PASSWORD RESET\nTo: ${to} (${displayName})\nPassword Reset OTP (2 mins): [ ${otp} ]\n======================================================\n`,
+      );
+      return true;
+    }
 
     if (!this.transporter) {
       this.logger.log(

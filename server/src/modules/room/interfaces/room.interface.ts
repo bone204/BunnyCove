@@ -16,6 +16,7 @@ export interface Room {
   hostSocketId: string;
   players: Map<string, Player>;
   status: RoomStatus;
+  maxPlayers?: number;
   selectedGame?: string; // Dynamic game type (e.g. 'caro', 'bingo', etc.)
   gameState?: any;       // Dynamic game state managed by the active game engine
   createdAt: number;

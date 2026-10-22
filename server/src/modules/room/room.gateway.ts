@@ -66,6 +66,7 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
       client.id,
       dto.playerName,
       dto.avatarId,
+      dto.maxPlayers,
     );
 
     client.join(roomCode);

@@ -13,15 +13,20 @@ export class RoomService {
 
   constructor(private readonly gameRegistry: GameRegistryService) {}
 
-  // Generate cute code like BUNNY-84
+  // Generate cute code like BUNNY-842
   private generateRoomCode(): string {
-    const randomSuffix = Math.floor(10 + Math.random() * 90);
-    const prefixes = ['BUNNY', 'HOPPY', 'COVE', 'CARROT', 'CLOVER'];
+    const prefixes = ['BUNNY', 'HOPPY', 'COVE', 'CARROT', 'CLOVER', 'BERRY', 'LILY', 'DAISY'];
     const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
-    return `${prefix}-${randomSuffix}`;
+    const suffix = Math.floor(100 + Math.random() * 900);
+    return `${prefix}-${suffix}`;
   }
 
-  createRoom(socketId: string, playerName: string, avatarId?: string): { roomCode: string; room: any } {
+  createRoom(
+    socketId: string,
+    playerName: string,
+    avatarId?: string,
+    maxPlayers?: number,
+  ): { roomCode: string; room: any } {
     this.leaveCurrentRoom(socketId);
 
     let roomCode = this.generateRoomCode();
@@ -29,10 +34,13 @@ export class RoomService {
       roomCode = this.generateRoomCode();
     }
 
+    const cleanName = playerName?.trim() || 'Bunny Host';
+    const capacity = Math.min(16, Math.max(2, maxPlayers || 4));
+
     const hostPlayer: Player = {
       id: socketId,
       socketId,
-      name: playerName,
+      name: cleanName,
       avatarId: avatarId || 'bunny-default',
       isHost: true,
       isReady: false,
@@ -44,13 +52,14 @@ export class RoomService {
       hostSocketId: socketId,
       players: new Map([[socketId, hostPlayer]]),
       status: 'WAITING',
+      maxPlayers: capacity,
       createdAt: Date.now(),
     };
 
     this.rooms.set(roomCode, newRoom);
     this.socketToRoom.set(socketId, roomCode);
 
-    this.logger.log(`Room created: ${roomCode} by host: ${playerName} (${socketId})`);
+    this.logger.log(`Room created: ${roomCode} by host: ${cleanName} (${socketId}), max: ${capacity}`);
     return { roomCode, room: this.serializeRoom(newRoom) };
   }
 
@@ -67,16 +76,18 @@ export class RoomService {
       return { success: false, code: ResponseCodes.ROOM_NOT_FOUND, error: 'Room not found' };
     }
 
-    if (room.players.size >= 2 && !room.players.has(socketId)) {
-      return { success: false, code: ResponseCodes.ROOM_FULL, error: 'Room is already full (max 2 players)' };
+    const maxCapacity = room.maxPlayers || 4;
+    if (room.players.size >= maxCapacity && !room.players.has(socketId)) {
+      return { success: false, code: ResponseCodes.ROOM_FULL, error: `Room is already full (max ${maxCapacity} players)` };
     }
 
     this.leaveCurrentRoom(socketId);
 
+    const cleanName = playerName?.trim() || 'Bunny Guest';
     const guestPlayer: Player = {
       id: socketId,
       socketId,
-      name: playerName,
+      name: cleanName,
       avatarId: avatarId || 'bunny-guest',
       isHost: false,
       isReady: false,
@@ -86,11 +97,11 @@ export class RoomService {
     room.players.set(socketId, guestPlayer);
     this.socketToRoom.set(socketId, formattedCode);
 
-    this.logger.log(`Player ${playerName} (${socketId}) joined room ${formattedCode}`);
+    this.logger.log(`Player ${cleanName} (${socketId}) joined room ${formattedCode}`);
     return { success: true, code: ResponseCodes.ROOM_JOINED, room: this.serializeRoom(room) };
   }
 
-  setReady(socketId: string, isReady: boolean): { success: boolean; room?: any; bothReady?: boolean } {
+  setReady(socketId: string, isReady: boolean): { success: boolean; room?: any; bothReady?: boolean; allReady?: boolean } {
     const roomCode = this.socketToRoom.get(socketId);
     if (!roomCode) return { success: false };
 
@@ -103,13 +114,13 @@ export class RoomService {
     player.isReady = isReady;
 
     const playersList: Player[] = Array.from(room.players.values());
-    const bothReady = playersList.length === 2 && playersList.every((p: Player) => p.isReady);
+    const allReady = playersList.length >= 2 && playersList.every((p: Player) => p.isReady);
 
     if (room.status !== 'PLAYING') {
-      room.status = bothReady ? 'READY' : 'WAITING';
+      room.status = allReady ? 'READY' : 'WAITING';
     }
 
-    return { success: true, room: this.serializeRoom(room), bothReady };
+    return { success: true, room: this.serializeRoom(room), bothReady: allReady, allReady };
   }
 
   // --- Dynamic Pluggable Game Engine Integration ---
@@ -250,6 +261,12 @@ export class RoomService {
   }
 
   private removePlayerPermanently(socketId: string) {
+    const timer = this.disconnectTimers.get(socketId);
+    if (timer) {
+      clearTimeout(timer);
+      this.disconnectTimers.delete(socketId);
+    }
+
     const roomCode = this.socketToRoom.get(socketId);
     if (!roomCode) return;
 
@@ -288,6 +305,7 @@ export class RoomService {
       code: room.code,
       hostSocketId: room.hostSocketId,
       status: room.status,
+      maxPlayers: room.maxPlayers || 4,
       selectedGame: room.selectedGame,
       players: Array.from(room.players.values()),
       createdAt: room.createdAt,

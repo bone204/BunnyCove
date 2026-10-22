@@ -174,7 +174,13 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       }
     }
 
-    return this.inMemoryStore.has(key);
+    const item = this.inMemoryStore.get(key);
+    if (!item) return false;
+    if (item.expiresAt && Date.now() > item.expiresAt) {
+      this.inMemoryStore.delete(key);
+      return false;
+    }
+    return true;
   }
 
   isReady(): boolean {

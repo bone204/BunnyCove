@@ -112,6 +112,25 @@ async function runVerification() {
     }
     console.log('✅ Registration passed (Tokens & HTTP-only cookie issued)');
 
+    // 2b. Test Duplicate Email & Case-Insensitive Rejection
+    console.log('\n👉 Step 2b: Testing duplicate email collision and case insensitivity...');
+    const duplicateRes = await request('/auth/register', {
+      method: 'POST',
+      body: {
+        email: testEmail.toUpperCase(),
+        password: 'Password123!',
+        displayName: 'Imposter Bunny',
+      },
+    });
+
+    if (duplicateRes.status !== 409) {
+      throw new Error(`Expected 409 Conflict for duplicate email, got ${duplicateRes.status}: ${JSON.stringify(duplicateRes.data)}`);
+    }
+    if (duplicateRes.data.error?.code !== 'email_already_exists') {
+      throw new Error(`Expected error code 'email_already_exists', got: ${duplicateRes.data.error?.code}`);
+    }
+    console.log('✅ Duplicate email collision correctly rejected with 409 Conflict & email_already_exists code');
+
     // 3. Test User Login
     console.log('\n👉 Step 3: Testing POST /auth/login...');
     const loginRes = await request('/auth/login', {

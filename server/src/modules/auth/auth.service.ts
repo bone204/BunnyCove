@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcrypt';
+import crypto from 'node:crypto';
 import { PrismaService } from '../../common/prisma/prisma.service.js';
 import { RedisService } from '../../common/redis/redis.service.js';
 import { EmailService } from '../email/email.service.js';
@@ -55,6 +56,7 @@ export class AuthService {
 
   async register(dto: RegisterDto): Promise<AuthResult> {
     const cleanEmail = dto.email.trim().toLowerCase();
+    const cleanDisplayName = dto.displayName?.trim() || 'Bunny Player';
     const existingUser = await this.findUserByIdentifier(cleanEmail);
     if (existingUser) {
       throw new ConflictException({
@@ -67,44 +69,85 @@ export class AuthService {
     const passwordHash = await bcrypt.hash(dto.password, salt);
 
     let createdUser: any;
-
-    const username = await this.generateUniqueUsername();
+    let username = await this.generateUniqueUsername();
     const defaultAvatar = DEFAULT_AVATAR_URL;
 
     try {
       createdUser = await this.prisma.user.create({
         data: {
           username,
-          displayName: dto.displayName,
+          displayName: cleanDisplayName,
           email: cleanEmail,
           passwordHash,
           avatarUrl: defaultAvatar,
           isEmailVerified: false,
         },
       });
-    } catch {
-      // In-memory fallback
-      createdUser = {
-        id: `mock-uuid-${Date.now()}`,
-        username,
-        displayName: dto.displayName,
-        email: cleanEmail,
-        passwordHash,
-        avatarUrl: defaultAvatar,
-        isEmailVerified: false,
-        emailVerifiedAt: null,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-      this.inMemoryUsers.set(createdUser.id, createdUser);
+    } catch (err: any) {
+      // Handle unique constraint collisions from PostgreSQL (Prisma P2002)
+      if (err?.code === 'P2002') {
+        const target = err?.meta?.target;
+        const isEmailConflict =
+          (Array.isArray(target) && target.includes('email')) ||
+          target === 'email' ||
+          String(err?.message).includes('email');
+
+        if (isEmailConflict) {
+          throw new ConflictException({
+            code: ResponseCodes.EMAIL_ALREADY_EXISTS,
+            message: 'An account with this email address already exists',
+          });
+        }
+
+        // If collision happened on username, retry once with an guaranteed timestamped candidate
+        username = `${AppDefaults.AUTH.USERNAME_PREFIX}${Date.now().toString(36)}_${Math.floor(Math.random() * 1000)}`;
+        try {
+          createdUser = await this.prisma.user.create({
+            data: {
+              username,
+              displayName: cleanDisplayName,
+              email: cleanEmail,
+              passwordHash,
+              avatarUrl: defaultAvatar,
+              isEmailVerified: false,
+            },
+          });
+        } catch (retryErr: any) {
+          if (retryErr?.code === 'P2002') {
+            throw new ConflictException({
+              code: ResponseCodes.EMAIL_ALREADY_EXISTS,
+              message: 'An account with this email address already exists',
+            });
+          }
+          throw retryErr;
+        }
+      } else {
+        // Fall back to in-memory store only when database is unavailable / disconnected
+        createdUser = {
+          id: `mock-uuid-${Date.now()}`,
+          username,
+          displayName: cleanDisplayName,
+          email: cleanEmail,
+          passwordHash,
+          avatarUrl: defaultAvatar,
+          isEmailVerified: false,
+          emailVerifiedAt: null,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
+        this.inMemoryUsers.set(createdUser.id, createdUser);
+      }
     }
+
+    // Reset any previous failed OTP attempts for this email
+    await this.redis.del(`otp:attempts:verify:${cleanEmail}`);
 
     // Generate 6-digit verification OTP with 2-minute (120s) lifespan
     const otp = AppDefaults.AUTH.generateOtp();
     await this.redis.set(`otp:verify:${cleanEmail}`, otp, AppDefaults.AUTH.OTP_TTL_SECONDS);
     await this.redis.set(`cooldown:verify:${cleanEmail}`, '1', AppDefaults.AUTH.RESEND_COOLDOWN_SECONDS);
 
-    // Dispatch verification email (console fallback or Gmail SMTP)
+    // Dispatch verification email (intercepted for mock/test domains, live via SMTP for real users)
     this.emailService
       .sendVerificationEmail(createdUser.email, createdUser.displayName, otp)
       .catch((err) => {
@@ -189,15 +232,40 @@ export class AuthService {
       });
     }
 
-    if (storedOtp !== dto.otp.trim()) {
+    // Track OTP verification attempts to prevent brute force
+    const attemptKey = `otp:attempts:verify:${cleanEmail}`;
+    const currentAttempts = Number((await this.redis.get(attemptKey)) || '0');
+
+    if (currentAttempts >= AppDefaults.AUTH.MAX_OTP_ATTEMPTS) {
+      await this.redis.del(`otp:verify:${cleanEmail}`);
+      await this.redis.del(attemptKey);
       throw new BadRequestException({
-        code: ResponseCodes.INVALID_OTP,
-        message: 'Invalid OTP code',
+        code: ResponseCodes.OTP_TOO_MANY_ATTEMPTS,
+        message: 'Too many incorrect OTP attempts. Please request a new verification code.',
       });
     }
 
-    // Invalidate used OTP
+    if (storedOtp !== dto.otp.trim()) {
+      const newAttempts = currentAttempts + 1;
+      if (newAttempts >= AppDefaults.AUTH.MAX_OTP_ATTEMPTS) {
+        await this.redis.del(`otp:verify:${cleanEmail}`);
+        await this.redis.del(attemptKey);
+        throw new BadRequestException({
+          code: ResponseCodes.OTP_TOO_MANY_ATTEMPTS,
+          message: 'Too many incorrect OTP attempts. Please request a new verification code.',
+        });
+      }
+
+      await this.redis.set(attemptKey, String(newAttempts), AppDefaults.AUTH.OTP_TTL_SECONDS);
+      throw new BadRequestException({
+        code: ResponseCodes.INVALID_OTP,
+        message: `Invalid OTP code. You have ${AppDefaults.AUTH.MAX_OTP_ATTEMPTS - newAttempts} attempt(s) remaining.`,
+      });
+    }
+
+    // Invalidate used OTP and attempt counter
     await this.redis.del(`otp:verify:${cleanEmail}`);
+    await this.redis.del(attemptKey);
 
     const verifiedAt = new Date();
     try {
@@ -250,6 +318,9 @@ export class AuthService {
       });
     }
 
+    // Clear previous failed attempts counter
+    await this.redis.del(`otp:attempts:verify:${cleanEmail}`);
+
     const otp = AppDefaults.AUTH.generateOtp();
     await this.redis.set(`otp:verify:${cleanEmail}`, otp, AppDefaults.AUTH.OTP_TTL_SECONDS);
     await this.redis.set(`cooldown:verify:${cleanEmail}`, '1', AppDefaults.AUTH.RESEND_COOLDOWN_SECONDS);
@@ -282,6 +353,9 @@ export class AuthService {
         message: `Please wait ${AppDefaults.AUTH.RESEND_COOLDOWN_SECONDS} seconds before requesting a new password reset OTP`,
       });
     }
+
+    // Clear previous failed attempts counter
+    await this.redis.del(`otp:attempts:reset:${cleanEmail}`);
 
     const otp = AppDefaults.AUTH.generateOtp();
     await this.redis.set(`otp:reset:${cleanEmail}`, otp, AppDefaults.AUTH.OTP_TTL_SECONDS);
@@ -316,24 +390,52 @@ export class AuthService {
       });
     }
 
-    if (storedOtp !== dto.otp.trim()) {
+    // Track password reset OTP attempts to prevent brute force
+    const attemptKey = `otp:attempts:reset:${cleanEmail}`;
+    const currentAttempts = Number((await this.redis.get(attemptKey)) || '0');
+
+    if (currentAttempts >= AppDefaults.AUTH.MAX_OTP_ATTEMPTS) {
+      await this.redis.del(`otp:reset:${cleanEmail}`);
+      await this.redis.del(attemptKey);
       throw new BadRequestException({
-        code: ResponseCodes.INVALID_OTP,
-        message: 'Invalid OTP code',
+        code: ResponseCodes.OTP_TOO_MANY_ATTEMPTS,
+        message: 'Too many incorrect OTP attempts. Please request a new password reset code.',
       });
     }
 
-    // Invalidate OTP
+    if (storedOtp !== dto.otp.trim()) {
+      const newAttempts = currentAttempts + 1;
+      if (newAttempts >= AppDefaults.AUTH.MAX_OTP_ATTEMPTS) {
+        await this.redis.del(`otp:reset:${cleanEmail}`);
+        await this.redis.del(attemptKey);
+        throw new BadRequestException({
+          code: ResponseCodes.OTP_TOO_MANY_ATTEMPTS,
+          message: 'Too many incorrect OTP attempts. Please request a new password reset code.',
+        });
+      }
+
+      await this.redis.set(attemptKey, String(newAttempts), AppDefaults.AUTH.OTP_TTL_SECONDS);
+      throw new BadRequestException({
+        code: ResponseCodes.INVALID_OTP,
+        message: `Invalid OTP code. You have ${AppDefaults.AUTH.MAX_OTP_ATTEMPTS - newAttempts} attempt(s) remaining.`,
+      });
+    }
+
+    // Invalidate OTP and attempts counter
     await this.redis.del(`otp:reset:${cleanEmail}`);
+    await this.redis.del(attemptKey);
 
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(dto.newPassword, salt);
+    const verifiedAt = new Date();
 
     try {
       await this.prisma.user.update({
         where: { id: user.id },
         data: {
           passwordHash,
+          isEmailVerified: true, // Proved email ownership via OTP
+          emailVerifiedAt: verifiedAt,
           hashedRefreshToken: null, // Revoke all active sessions
         },
       });
@@ -341,6 +443,8 @@ export class AuthService {
       const memUser = this.inMemoryUsers.get(user.id);
       if (memUser) {
         memUser.passwordHash = passwordHash;
+        memUser.isEmailVerified = true;
+        memUser.emailVerifiedAt = verifiedAt;
         memUser.hashedRefreshToken = null;
       }
     }
@@ -385,7 +489,18 @@ export class AuthService {
 
     const user = await this.findUserById(resolvedUserId);
 
+    const tokenHash = crypto.createHash('sha256').update(refreshToken).digest('hex');
+
     if (!user || !user.hashedRefreshToken) {
+      // Check if this token was recently rotated during a concurrent request race condition
+      const cachedGraceTokens = await this.redis.get(`refresh:grace:${tokenHash}`);
+      if (cachedGraceTokens) {
+        try {
+          return JSON.parse(cachedGraceTokens);
+        } catch {
+          // Fall through
+        }
+      }
       throw new UnauthorizedException({
         code: ResponseCodes.ACCESS_DENIED,
         message: 'Access denied: No active refresh session found',
@@ -394,6 +509,15 @@ export class AuthService {
 
     const isRefreshTokenValid = await bcrypt.compare(refreshToken, user.hashedRefreshToken);
     if (!isRefreshTokenValid) {
+      // Check if this token was recently rotated during a concurrent request race condition
+      const cachedGraceTokens = await this.redis.get(`refresh:grace:${tokenHash}`);
+      if (cachedGraceTokens) {
+        try {
+          return JSON.parse(cachedGraceTokens);
+        } catch {
+          // Fall through
+        }
+      }
       throw new UnauthorizedException({
         code: ResponseCodes.INVALID_REFRESH_TOKEN,
         message: 'Invalid refresh token',
@@ -403,6 +527,9 @@ export class AuthService {
     // Generate new token pair (Token Rotation)
     const tokens = await this.generateTokens(user.id, user.email, user.username);
     await this.updateRefreshTokenHash(user.id, tokens.refreshToken);
+
+    // Cache previous token for 30s grace window to absorb duplicate requests from web/mobile clients
+    await this.redis.set(`refresh:grace:${tokenHash}`, JSON.stringify(tokens), 30);
 
     this.logger.log(`Tokens refreshed for user: ${user.id}`);
     return tokens;
@@ -484,7 +611,10 @@ export class AuthService {
     try {
       const user = await this.prisma.user.findFirst({
         where: {
-          OR: [{ email: cleanId }, { username: cleanId }],
+          OR: [
+            { email: { equals: cleanId, mode: 'insensitive' } },
+            { username: { equals: cleanId, mode: 'insensitive' } },
+          ],
         },
       });
       if (user) return user;
@@ -493,7 +623,9 @@ export class AuthService {
     }
 
     return Array.from(this.inMemoryUsers.values()).find(
-      (u) => u.email === cleanId || u.username === cleanId,
+      (u) =>
+        u.email?.trim().toLowerCase() === cleanId ||
+        u.username?.trim().toLowerCase() === cleanId,
     );
   }
 

@@ -336,7 +336,45 @@ async function runEmailVerificationSuite() {
     }
     console.log('✅ Login with new password succeeded! User confirmed verified: isEmailVerified = true');
 
-    console.log('\n🎉 ALL 12 EMAIL VERIFICATION & PASSWORD RESET TEST STEPS PASSED 100%! 🎉\n');
+    // ==========================================
+    // Step 13: Test OTP Brute Force Protection (Max 5 Attempts)
+    // ==========================================
+    console.log('\n👉 Step 13: Testing OTP Brute Force Protection (Max 5 attempts)...');
+    const bruteEmail = `brute_${Date.now()}@bunny.test`;
+    const bruteReg = await request('/auth/register', {
+      method: 'POST',
+      body: {
+        email: bruteEmail,
+        password: 'Password123!',
+        displayName: 'Brute Tester',
+      },
+    });
+    if (bruteReg.status !== 201) {
+      throw new Error(`Registration for brute force test failed with status: ${bruteReg.status}`);
+    }
+
+    // Submit 4 incorrect attempts (each returns 400 invalid_otp)
+    for (let i = 1; i <= 4; i++) {
+      const wrongRes = await request('/auth/verify-email', {
+        method: 'POST',
+        body: { email: bruteEmail, otp: `11111${i}` },
+      });
+      if (wrongRes.status !== 400 || wrongRes.data.error?.code !== 'invalid_otp') {
+        throw new Error(`Expected 400 invalid_otp on attempt ${i}, got: ${JSON.stringify(wrongRes.data)}`);
+      }
+    }
+
+    // 5th attempt must trigger otp_too_many_attempts
+    const fifthRes = await request('/auth/verify-email', {
+      method: 'POST',
+      body: { email: bruteEmail, otp: '999999' },
+    });
+    if (fifthRes.status !== 400 || fifthRes.data.error?.code !== 'otp_too_many_attempts') {
+      throw new Error(`Expected 400 otp_too_many_attempts on 5th attempt, got: ${JSON.stringify(fifthRes.data)}`);
+    }
+    console.log('✅ Brute force lockout triggered on 5th failed attempt with code: otp_too_many_attempts');
+
+    console.log('\n🎉 ALL 13 EMAIL VERIFICATION & PASSWORD RESET TEST STEPS PASSED 100%! 🎉\n');
   } finally {
     console.log('🧹 Terminating test server process...');
     child.kill();

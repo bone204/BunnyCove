@@ -9,4 +9,7 @@ export class CreateRoomDto {
   @IsString()
   @IsOptional()
   avatarId?: string;
+
+  @IsOptional()
+  maxPlayers?: number;
 }
