@@ -43,6 +43,7 @@ Format the response in Vietnamese with clear, high-density sections:
    - Các lưu ý về ESM NodeNext imports phải có đuôi `.js`.
    - File `.env` chứa credentials thực tế và được gitignore.
    - Cơ chế fallback linh hoạt (In-memory) giúp app không bao giờ crash kể cả khi offline.
+   - **Tuyệt đối không hard-code default URLs/paths**: Mọi URL mặc định, mock URL, CDN folder, fallback image generator phải tập trung tại folder `constants/` (ví dụ `server/src/common/constants/defaults.ts`), không được để chuỗi URL trực tiếp trong services/controllers/DTOs.
 
 5. **Kế hoạch Kế tiếp (Next Actionable Steps)**:
    - Liệt kê 2-3 tác vụ ưu tiên cao nhất cần thực hiện tiếp theo (ví dụ: Chat Realtime & Sticker Thỏ, Game Engine Caro/Bingo, hoặc khởi tạo Mobile Flutter).

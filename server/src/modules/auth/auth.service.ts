@@ -11,6 +11,7 @@ import { PrismaService } from '../../common/prisma/prisma.service.js';
 import { RegisterDto } from './dto/register.dto.js';
 import { LoginDto } from './dto/login.dto.js';
 import { ResponseCodes } from '../../common/constants/response-codes.js';
+import { DEFAULT_AVATAR_URL } from '../../common/constants/defaults.js';
 
 export interface AuthTokens {
   accessToken: string;
@@ -57,7 +58,7 @@ export class AuthService {
 
     let createdUser: any;
 
-    const defaultAvatar = 'https://res.cloudinary.com/dcf2l7bst/image/upload/v1792641665/bunny-cove/avatars/test_bunny_avatar.png';
+    const defaultAvatar = DEFAULT_AVATAR_URL;
 
     try {
       createdUser = await this.prisma.user.create({

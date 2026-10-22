@@ -3,6 +3,7 @@ import { Injectable, BadRequestException, Logger } from '@nestjs/common';
 import { v2 as cloudinary, UploadApiResponse, UploadApiErrorResponse } from 'cloudinary';
 import { Readable } from 'node:stream';
 import { ResponseCodes } from '../../common/constants/response-codes.js';
+import { AppDefaults } from '../../common/constants/defaults.js';
 
 export interface ChatImageUploadResult {
   imageUrl: string;
@@ -31,11 +32,11 @@ export class UploadService {
       this.logger.warn(
         'Cloudinary credentials not configured in .env. Returning avatar fallback URL.',
       );
-      return `https://api.dicebear.com/7.x/bottts/png?seed=${encodeURIComponent(userId)}`;
+      return AppDefaults.getFallbackAvatarUrl(userId);
     }
 
     const result = await this.uploadToCloudinaryStream(file.buffer, {
-      folder: 'bunny-cove/avatars',
+      folder: AppDefaults.CLOUDINARY.AVATARS_FOLDER,
       public_id: `avatar_${userId}`,
       overwrite: true,
       resource_type: 'image',
@@ -61,7 +62,7 @@ export class UploadService {
         'Cloudinary credentials not configured in .env. Returning chat image fallback.',
       );
       return {
-        imageUrl: `https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=800&auto=format&fit=crop&q=80`,
+        imageUrl: AppDefaults.FALLBACK_CHAT_IMAGE_URL,
         width: 800,
         height: 600,
         format: 'webp',
@@ -73,7 +74,7 @@ export class UploadService {
     const publicId = `chat_${Date.now()}_${cleanSender}`;
 
     const result = await this.uploadToCloudinaryStream(file.buffer, {
-      folder: `bunny-cove/chat/${safeRoom}`,
+      folder: `${AppDefaults.CLOUDINARY.CHAT_FOLDER}/${safeRoom}`,
       public_id: publicId,
       resource_type: 'image',
       transformation: [

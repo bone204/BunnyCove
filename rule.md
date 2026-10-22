@@ -22,6 +22,7 @@ Applies to all 3 platforms: Mobile (Flutter), Web (Next.js), and Backend
 - **Response Code Synchronization & Translation (Mandatory)**: Every time a new API response code or error code is created on the backend:
   - You must register it in both `server/src/common/constants/response-codes.ts` and `web/src/shared/constants/response-codes.ts` to keep them in sync.
   - You must translate it in both `web/src/presentation/i18n/locales/vi.json` and `web/src/presentation/i18n/locales/en.json` under the `api.codes` path immediately.
+- **Zero Hard-Coding & Centralized Constants (Mandatory)**: All default URLs, CDN asset paths, fallback image generators, mock/fake links, response codes, and system defaults must NEVER be hard-coded into controllers, services, DTOs, or models. They must strictly reside in centralized constants files under the designated constants folder (e.g., `server/src/common/constants/defaults.ts` on backend, `lib/common/constants/` on mobile).
 - **Demand Elegance & Senior Standards**:
   - Always strive for the most minimal changes to avoid introducing unexpected bugs.
   - If a fix feels hacky, pause and design a clean, elegant, and optimal solution matching Senior Developer standards.

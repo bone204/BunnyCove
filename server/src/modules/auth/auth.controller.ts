@@ -22,6 +22,7 @@ import { LoginDto } from './dto/login.dto.js';
 import { RefreshTokenDto } from './dto/refresh-token.dto.js';
 import { JwtAuthGuard } from './guards/jwt-auth.guard.js';
 import { ResponseCodes } from '../../common/constants/response-codes.js';
+import { AppDefaults } from '../../common/constants/defaults.js';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -44,7 +45,7 @@ export class AuthController {
             username: 'bunny_player',
             displayName: 'Thỏ Hồng',
             email: 'player@bunny.com',
-            avatarUrl: 'https://res.cloudinary.com/dcf2l7bst/image/upload/v1792641665/bunny-cove/avatars/test_bunny_avatar.png',
+            avatarUrl: AppDefaults.DEFAULT_AVATAR_URL,
           },
           accessToken: 'eyJhbGciOi...',
           refreshToken: 'eyJhbGciOi...',
@@ -96,7 +97,7 @@ export class AuthController {
             username: 'bunny_player',
             displayName: 'Thỏ Hồng',
             email: 'player@bunny.com',
-            avatarUrl: 'https://res.cloudinary.com/dcf2l7bst/image/upload/v1792641665/bunny-cove/avatars/avatar_6731d535.webp',
+            avatarUrl: AppDefaults.SWAGGER.EXAMPLE_AVATAR_URL,
           },
           accessToken: 'eyJhbGciOi...',
           refreshToken: 'eyJhbGciOi...',
@@ -204,7 +205,7 @@ export class AuthController {
           email: 'player@bunny.com',
           username: 'bunny_player',
           displayName: 'Thỏ Hồng',
-          avatarUrl: 'https://res.cloudinary.com/dcf2l7bst/image/upload/v1792641665/bunny-cove/avatars/avatar_6731d535.webp',
+          avatarUrl: AppDefaults.SWAGGER.EXAMPLE_AVATAR_URL,
           createdAt: '2026-10-22T03:00:00.000Z',
         },
       },

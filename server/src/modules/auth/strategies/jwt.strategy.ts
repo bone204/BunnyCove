@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PrismaService } from '../../../common/prisma/prisma.service.js';
+import { DEFAULT_AVATAR_URL } from '../../../common/constants/defaults.js';
 
 export interface JwtPayload {
   sub: string;
@@ -45,7 +46,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         email: payload.email,
         username: payload.username,
         displayName: payload.username || 'Bunny Player',
-        avatarUrl: 'https://res.cloudinary.com/dcf2l7bst/image/upload/v1792641665/bunny-cove/avatars/test_bunny_avatar.png',
+        avatarUrl: DEFAULT_AVATAR_URL,
       };
     }
   }

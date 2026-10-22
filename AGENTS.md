@@ -38,3 +38,7 @@ Before performing any action, architectural decision, or code implementation, yo
   - Success: `{ "success": true, "code": "STRING_CODE", "data": ... }`
   - Failure: `{ "success": false, "error": { "code": "STRING_CODE", "message": "...", "details": ... } }`
 - Validation & Logging: `class-validator` for DTOs; structured JSON logging (Winston/Pino).
+
+### 5. Constants & Zero Hard-coding Standards (Strict)
+- **Zero Hard-coded Paths & Defaults**: Absolutely NO hard-coded default URLs, mock/fake assets, CDN paths, fallback image generators, or magic strings in services, controllers, DTOs, or models.
+- **Dedicated Constants Folder**: All default URLs, fallback URLs, mock links, response codes, and asset paths MUST reside in dedicated files under `src/common/constants/` (e.g., `defaults.ts`, `response-codes.ts` on server; `lib/common/constants/` on mobile).
