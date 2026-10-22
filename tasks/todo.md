@@ -40,6 +40,12 @@
 - [x] 2.5 Verification & Automated Testing:
   - Compile build (`npm run build`)
   - Run verification script `test/verify-auth-flow.mjs` testing full register -> login -> profile -> refresh -> logout cycle -> All 6 steps passed!
+- [x] 2.6 Media & Image Upload Architecture (Cloudinary):
+  - Created `UploadModule`, `UploadService`, and `CloudinaryProvider`
+  - Added `POST /upload/avatar` (with 400x400 auto-face-crop, WebP, automatic overwrite per user)
+  - Added `POST /upload/chat-image` (multiplayer in-room chat ready, 1200px limit, WebP auto-compression)
+  - Upgraded Prisma `MessageType` to include `IMAGE`
+  - Automated integration test `test/verify-upload-flow.mjs` passed 100%
 
 ---
 
