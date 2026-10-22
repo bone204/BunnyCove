@@ -1,24 +1,25 @@
 # Bunny Cove 🐰🌸
 
-> **A cozy, intimate 2-player real-time mobile application for couples and close friends.**  
-> Featuring private rooms, pluggable turn-based mini-games (Caro & Bingo), and in-room real-time chat with cute bunny stickers.
+> **A cozy, vibrant social gaming universe and real-time multiplayer mini-game platform for friends, couples, and communities.**  
+> Featuring real-time game rooms, extensible pluggable mini-games, in-room social chat with stickers and image sharing, customizable player profiles, and a secure gaming ecosystem.
 
 ---
 
 ## 🌟 Highlights & Features
 
-- **🏡 Private 2-Player Rooms**:
+- **🏡 Real-Time Multiplayer Rooms**:
   - Instant room creation with cute room codes (e.g. `BUNNY-93`, `HOPPY-42`).
-  - Strict 2-player capacity, synchronized ready states, and automated 30s disconnection grace period.
-- **🎮 Pluggable Game Engine (Strategy Pattern)**:
-  - Modular game system powered by an abstract `IGameEngine` interface and a dynamic `GameRegistryService`.
-  - Adding future games (Chess, Battleship, Connect 4) requires zero modifications to the core room gateway.
-  - **Game 1 - Caro (Gomoku)**: 15x15 grid, server-authoritative win validation (5-in-a-row), turn countdown timer.
-  - **Game 2 - Bingo**: 5x5 board, auto-shuffle setup, synchronized number calling, and 5-line B-I-N-G-O tracking.
-- **💬 Real-Time In-Room Chat**:
-  - Instant messaging with cute bunny emoji sticker packs and canned quick reactions.
-- **🎨 Cozy Pastel Aesthetics**:
-  - Tailored pastel color palette (Peach, Soft Sage, Cream, Mauve) with smooth animations and native iOS haptic feedback.
+  - Flexible player capacity (1v1 duels, party mini-games, or group lobbies), synchronized ready states, and automated 30s disconnection grace period.
+- **🎮 Extensible Pluggable Game Engine (Strategy Pattern)**:
+  - Modular mini-game system powered by an abstract `IGameEngine` interface and a dynamic `GameRegistryService`.
+  - Seamlessly accommodates diverse mini-games (board games, party games, puzzle, strategy) with zero modifications to the core room gateway.
+  - Built-in launch games include Caro Gomoku 15x15 (server-authoritative validation, countdown timer) and Cozy Bingo (auto-shuffle boards, synchronized number calling), with continuous additions.
+- **💬 Real-Time Social Chat & Media**:
+  - Instant in-room messaging, cute bunny sticker packs, and instant image sharing powered by Cloudinary.
+- **👤 Identity, Security & Customization**:
+  - Auto-generated bunny handles (`bunny_xxxxxxxx`), custom display names, automated 2-minute email OTP verification via Gmail, password recovery, and Cloudinary auto-face-cropped avatars.
+- **🎨 Cozy Aesthetic Design**:
+  - Tailored energetic pastel palette (Strawberry Punch `#FF4B72`, Cherry Blossom `#FF839D`, Milk Cream `#FFF5F7`, Deep Berry `#3A1825`) with smooth animations and haptic feedback.
 
 ---
 

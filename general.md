@@ -3,14 +3,14 @@
 > **Tên dự án**: Bunny Cove 🐰  
 > **Nền tảng mục tiêu**: Mobile (ưu tiên tối ưu cho người dùng iOS) & Backend  
 > **Công nghệ chủ đạo**: Flutter (Mobile) + NestJS (Backend Server)  
-> **Mục tiêu cốt lõi**: Nền tảng kết nối 2 người (cặp đôi, bạn thân) thông qua phòng chơi riêng tư, tích hợp mini-game giải trí đối kháng theo lượt (Caro, Bingo) và hệ thống trò chuyện thời gian thực.
+> **Mục tiêu cốt lõi**: Nền tảng vũ trụ game ấm cúng (Cozy Social Gaming Universe) kết nối bạn bè, cặp đôi và cộng đồng thông qua hệ sinh thái phòng game đa dạng, kho mini-game cắm-rút phong phú (board games, party games, đối kháng trí tuệ) và hệ thống trò chuyện thời gian thực sinh động.
 
 ---
 
 ## 1. TỔNG QUAN VÀ ĐỊNH HƯỚNG DỰ ÁN
 
 ### 1.1. Tầm nhìn & Phong cách Trải nghiệm (Concept & Aesthetics)
-- **Concept "Cozy & Intimate"**: Ứng dụng tạo ra một không gian ấm cúng, thư giãn và gắn kết dành riêng cho 2 người.
+- **Concept "Cozy Social Gaming Universe"**: Ứng dụng tạo ra một không gian ấm cúng, vui tươi, thư giãn và gắn kết cộng đồng người chơi thông qua các mini-game đa dạng và phòng chơi linh hoạt.
 - **Phong cách thẩm mỹ (Aesthetics)**:
   - Tông màu chủ đạo: Pastel ấm áp (Kem `#FFFDF9`, Cam đào pastel `#FFB7A1`, Xanh xô thơm `#A7C4B5`, Hồng đất `#D4A5A5`, Chữ màu mận đậm `#4A3E3D`).
   - Hình tượng linh vật: Chú thỏ trắng dễ thương (Bunny mascot) xuyên suốt từ logo, sticker chat, tem cờ caro đến dấu dập bingo.
@@ -79,22 +79,22 @@ Bunny Cove/
 
 ## 3. ĐẶC TẢ CHI TIẾT CÁC TÍNH NĂNG CHÍNH
 
-### 3.1. Hệ thống Phòng 2 Người (2-Player Room System)
-- **Quy tắc phòng**: Mỗi phòng chỉ phục vụ **chính xác 2 người chơi**. Không cho phép người thứ 3 tham gia.
+### 3.1. Hệ thống Phòng Chơi Thời Gian Thực (Real-Time Multiplayer Room System)
+- **Quy tắc phòng linh hoạt**: Hỗ trợ đa dạng số lượng người chơi tùy theo chế độ và mini-game (1v1 đối kháng, party 4 người, hoặc phòng nhóm cộng đồng).
 - **Tạo phòng (Create Room)**:
-  - Người chơi 1 chọn "Tạo phòng" -> Server sinh một mã phòng duy nhất gồm 6 ký tự dễ nhớ (ví dụ: `BUNNY-92` hoặc `HOPE-78`).
-  - Người chơi 1 trở thành Chủ phòng (Host), hiển thị màn hình phòng chờ kèm mã phòng và mã QR.
+  - Người chơi chọn "Tạo phòng" -> Server sinh một mã phòng duy nhất gồm 6 ký tự dễ nhớ (ví dụ: `BUNNY-92` hoặc `HOPE-78`).
+  - Người tạo phòng trở thành Chủ phòng (Host), hiển thị màn hình phòng chờ kèm mã phòng và mã QR để mời bạn bè.
 - **Vào phòng (Join Room)**:
-  - Người chơi 2 nhập mã phòng hoặc quét QR Code / mở Universal Link trên iOS.
-  - Server kiểm tra: Nếu mã hợp lệ và phòng còn chỗ (< 2 người) -> Cho phép tham gia và bắn socket thông báo tới Chủ phòng. Nếu phòng đầy hoặc sai mã -> Trả về lỗi chuẩn (`room_full`, `room_not_found`).
+  - Người chơi nhập mã phòng hoặc quét QR Code / mở Universal Link trên iOS.
+  - Server kiểm tra: Nếu mã hợp lệ và phòng còn chỗ -> Cho phép tham gia và phát socket thông báo tới các thành viên trong phòng. Nếu phòng đầy hoặc sai mã -> Trả về lỗi chuẩn (`room_full`, `room_not_found`).
 - **Trạng thái Sẵn sàng (Ready State)**:
-  - Cả 2 người chơi đều phải bật trạng thái "Sẵn sàng (Ready)".
-  - Khi cả hai đã sẵn sàng, màn hình mở khóa danh sách chọn trò chơi (Caro hoặc Bingo).
+  - Các người chơi trong phòng bật trạng thái "Sẵn sàng (Ready)".
+  - Khi phòng đạt điều kiện sẵn sàng, màn hình mở khóa danh sách kho trò chơi mini phong phú để Chủ phòng hoặc các thành viên cùng bắt đầu ván đấu.
 - **Quản lý Kết nối & Mất mạng (Disconnection & Reconnection)**:
   - Hỗ trợ cơ chế Heartbeat (Ping/Pong) mỗi 5 giây.
   - Nếu một người chơi bị ngắt kết nối tạm thời (chuyển app xuống nền, mất sóng wifi), hệ thống kích hoạt thời gian chờ khoan hồng 30 giây (30-second Grace Period).
-  - Nếu kết nối lại trong 30s: Khôi phục tức thì toàn bộ trạng thái phòng và bàn cờ hiện tại.
-  - Nếu quá 30s: Xử lý người còn lại thắng cuộc hoặc hủy phòng an toàn.
+  - Nếu kết nối lại trong 30s: Khôi phục tức thì toàn bộ trạng thái phòng và bàn chơi hiện tại.
+  - Nếu quá 30s: Xử lý kết quả ván đấu hoặc cho phép tiếp tục phòng an toàn.
 
 ---
 

@@ -43,16 +43,15 @@
   - Nút **"Tạo phòng mới 🐰"**: Dùng Gradient Hồng dâu `#FF4B72` ➔ `#FF839D`, chữ trắng in đậm, bóng đổ phát sáng nhẹ màu hồng.
   - Khung **"Nhập mã phòng"**: Ô input nền kem blush, viền hồng sắc nét, font số to rõ nét (letter-spacing: 4px), nút "Vào phòng" viền hồng dâu nổi bật.
 
-### 3.2. Phòng Chờ 2 Người (2-Player Waiting Room)
-- **Khu vực đối đầu (Player Matchup)**:
-  - 2 thẻ người chơi hình viên thuốc lớn đối xứng nhau.
+### 3.2. Phòng Chờ Game Thời Gian Thực (Multiplayer Waiting Room)
+- **Khu vực thành viên phòng (Player Lobby / Matchup)**:
+  - Các thẻ người chơi hình viên thuốc lớn đối xứng hoặc xếp lưới dạng nhóm (hỗ trợ 1v1 đối kháng hoặc nhóm chơi nhiều người).
   - Chủ phòng (Host): Viền hồng dâu đậm kèm icon vương miện nhỏ.
-  - Khách (Guest): Viền hồng phấn kèm biểu tượng chào đón.
+  - Khách (Guest / Members): Viền hồng phấn kèm biểu tượng chào đón.
   - Huy hiệu **"READY"**: Khi bật sẵn sàng, nút chuyển sang màu Xanh Mint tươi `#2ED573` kèm hiệu ứng rung haptic nhẹ và icon cỏ 3 lá / cà rốt.
 - **Thanh mã phòng**: Hộp mã phòng `BUNNY-93` nền hồng sữa ngọt ngào, nút "Copy mã" và "Mã QR" màu hồng dâu sắc sảo.
 - **Carousel Chọn trò chơi**:
-  - Thẻ game Caro: Hình quả cà rốt cam 3D nổi trên nền hồng phấn.
-  - Thẻ game Bingo: Hình bảng số và chiếc tem dấu dập thỏ hồng rực rỡ.
+  - Kho mini-game phong phú hiển thị dạng trượt linh hoạt: Cờ Caro 15x15, Cozy Bingo, UNO, và các mini-game đối kháng / tiệc tùng tiếp theo.
 
 ### 3.3. Bàn Cờ Caro 15x15 (Cozy Gomoku)
 - **Khung bàn cờ**: Khối chữ nhật bo tròn 20px, nền trắng kem marshmallow, các đường kẻ lưới màu hồng mận nhạt `#FFCCD7` rõ nét từng giao điểm.
@@ -91,12 +90,12 @@ Dưới đây là các prompt chuẩn tiếng Anh được tinh chỉnh đặc b
 
 ### 🎯 Prompt 1: Master Style & UI Overview
 ```text
-High-end mobile UI design for an iOS app called 'Bunny Cove', a youthful and vibrant 2-player game app for couples and close friends. Color theme: energetic and stylish pink palette, combining vibrant strawberry pink (#FF4B72), cherry blossom pink (#FF839D), sweet milk cream background (#FFF5F7), pure white cards, and deep berry plum text (#3A1825) for crisp, bold contrast. Clean Cupertino iOS typography, border radius 24px, glossy soft drop-shadows with subtle pink glows, adorable minimalist bunny mascot details. Bright, youthful, warm, not washed out, no dull grey tones, high visual clarity. Mobile screen UI only, no physical device frames.
+High-end mobile UI design for an iOS app called 'Bunny Cove', a youthful and vibrant social gaming universe and multiplayer mini-game platform for friends and communities. Color theme: energetic and stylish pink palette, combining vibrant strawberry pink (#FF4B72), cherry blossom pink (#FF839D), sweet milk cream background (#FFF5F7), pure white cards, and deep berry plum text (#3A1825) for crisp, bold contrast. Clean Cupertino iOS typography, border radius 24px, glossy soft drop-shadows with subtle pink glows, adorable minimalist bunny mascot details. Bright, youthful, warm, not washed out, no dull grey tones, high visual clarity. Mobile screen UI only, no physical device frames.
 ```
 
-### 🎯 Prompt 2: 2-Player Room Screen
+### 🎯 Prompt 2: Multiplayer Room Screen
 ```text
-Mobile app UI design for Bunny Cove 2-player waiting room on iOS. Soft pink milk cream background (#FFF5F7). In the center, two rounded white cards facing each other for Player 1 (White bunny avatar with gold crown) and Player 2 (Pink bunny avatar with flower bow). Vivid pink ready badges, a stylish pill badge displaying room code 'BUNNY-93' with a copy button. Below, an interactive game selection carousel featuring 'Caro Gomoku 15x15' with a vibrant carrot icon and 'Bingo 5x5' with a glowing bunny stamp icon. High contrast deep berry text (#3A1825), playful micro-interactions, sleek modern aesthetic, vibrant and energetic pink accents.
+Mobile app UI design for Bunny Cove multiplayer waiting room on iOS. Soft pink milk cream background (#FFF5F7). In the center, stylish rounded white player cards for room members (White bunny avatar with gold crown, Pink bunny avatar with flower bow). Vivid pink ready badges, a stylish pill badge displaying room code 'BUNNY-93' with a copy button. Below, an interactive game selection carousel featuring 'Caro Gomoku 15x15' with a vibrant carrot icon, 'Bingo 5x5' with a glowing bunny stamp icon, and party game cards. High contrast deep berry text (#3A1825), playful micro-interactions, sleek modern aesthetic, vibrant and energetic pink accents.
 ```
 
 ### 🎯 Prompt 3: Caro (Gomoku) 15x15 Game Screen

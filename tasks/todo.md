@@ -11,11 +11,11 @@
 
 ---
 
-### Phase 1: Server Foundation & 2-Player Room Gateway (NestJS)
+### Phase 1: Server Foundation & Real-Time Room Gateway (NestJS)
 - [x] 1.1 Scaffold NestJS project in `server/` with clean TypeScript setup
 - [x] 1.2 Install and configure WebSockets & validation packages
 - [x] 1.3 Implement Common Architecture Layer (`response-codes.ts`, `transform.interceptor.ts`, `all-exceptions.filter.ts`)
-- [x] 1.4 Implement 2-Player Room Module with generic Pluggable Game Engine architecture (`IGameEngine`, `GameRegistryService`)
+- [x] 1.4 Implement Real-Time Room Module with generic Pluggable Game Engine architecture (`IGameEngine`, `GameRegistryService`)
 - [x] 1.5 Setup Prisma ORM 7 with PostgreSQL schema (`User`, `MatchHistory`, `UserStats`)
 - [x] 1.6 Verification & Testing: All automated WebSocket tests passed cleanly
 

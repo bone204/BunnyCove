@@ -37,7 +37,7 @@ async function bootstrap() {
   const swaggerConfig = new DocumentBuilder()
     .setTitle('🐰 Bunny Cove API')
     .setDescription(
-      'Cozy, vibrant pink real-time multiplayer 2-player games (Caro, Bingo) and chat API for Bunny Cove.',
+      'Cozy, vibrant social gaming universe and extensible real-time multiplayer mini-game platform API for Bunny Cove (Real-time rooms, pluggable mini-games, social chat, and player profiles).',
     )
     .setVersion('1.0')
     .addBearerAuth(

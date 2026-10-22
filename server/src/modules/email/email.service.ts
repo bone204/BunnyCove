@@ -121,7 +121,7 @@ export class EmailService {
             <td style="padding: 35px 30px 20px; text-align: center; background: linear-gradient(135deg, #FFF0F4 0%, #FFE4EC 100%);">
               <div style="font-size: 48px; line-height: 1;">🐰</div>
               <h1 style="margin: 12px 0 0; color: #E75480; font-size: 26px; font-weight: 800; letter-spacing: -0.5px;">Bunny Cove</h1>
-              <p style="margin: 6px 0 0; color: #8F5E6E; font-size: 14px; font-weight: 500;">Thế Giới Game 2 Người & Nhóm Siêu Dễ Thương</p>
+              <p style="margin: 6px 0 0; color: #8F5E6E; font-size: 14px; font-weight: 500;">Vũ Trụ Mini-Game & Không Gian Kết Nối Ấm Cúng</p>
             </td>
           </tr>
           <!-- Body -->
@@ -129,7 +129,7 @@ export class EmailService {
             <td style="padding: 30px 35px;">
               <h2 style="margin: 0 0 12px; color: #332026; font-size: 18px; font-weight: 700;">Chào bạn ${displayName} ơi! 🌸</h2>
               <p style="margin: 0 0 25px; color: #6E535C; font-size: 14px; line-height: 1.6;">
-                Cảm ơn bạn đã gia nhập thị trấn thỏ Bunny Cove. Để bắt đầu chơi Caro, Bingo và kết bạn, vui lòng nhập mã OTP xác thực dưới đây vào ứng dụng:
+                Cảm ơn bạn đã gia nhập thị trấn thỏ Bunny Cove. Để bắt đầu tham gia các phòng game, khám phá kho mini-game phong phú và kết nối cùng bạn bè, vui lòng nhập mã OTP xác thực dưới đây vào ứng dụng:
               </p>
               <!-- OTP Box -->
               <div style="background-color: #FFF0F5; border: 2px dashed #FF94B4; border-radius: 16px; padding: 22px; text-align: center; margin: 0 0 25px;">
@@ -176,7 +176,7 @@ export class EmailService {
             <td style="padding: 35px 30px 20px; text-align: center; background: linear-gradient(135deg, #FFF0F4 0%, #FFE4EC 100%);">
               <div style="font-size: 48px; line-height: 1;">🔐</div>
               <h1 style="margin: 12px 0 0; color: #E75480; font-size: 26px; font-weight: 800; letter-spacing: -0.5px;">Bunny Cove</h1>
-              <p style="margin: 6px 0 0; color: #8F5E6E; font-size: 14px; font-weight: 500;">Bảo Mật Tài Khoản Người Chơi</p>
+              <p style="margin: 6px 0 0; color: #8F5E6E; font-size: 14px; font-weight: 500;">Bảo Mật Tài Khoản Cư Dân Bunny Cove</p>
             </td>
           </tr>
           <!-- Body -->
