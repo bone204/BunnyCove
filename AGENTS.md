@@ -28,11 +28,16 @@ Before performing any action, architectural decision, or code implementation, yo
 - **Mandatory Persistent Test Flows**: Every new API or backend feature MUST have an accompanying persistent test script under `server/test/` (e.g. `verify-[feature]-flow.mjs`) and be registered in `server/test/verify-all.mjs` (`npm run test:verify`). Tests must pass 100% before pushing.
 
 ### 3. Mobile Standards (Flutter - `mobile/`)
-- Architecture: Feature-based under `lib/features/[feature]/...`.
-- State Management: **Cubit** (separate `cubit.dart` and `state.dart`), guard `if (isClosed) return;` before calling `emit()`.
-- Navigation: Use `NavigationUtils` with `_buildSlideRoute` in `AppRouter`. Delay before `Navigator.pop()` with `FocusManager.instance.primaryFocus?.unfocus()`.
-- UI: Wrap inputs in `GestureDetector` to dismiss keyboard. Use `flutter_screenutil` (`.w`, `.h`, `.sp`). Wrap pages in `SingleChildScrollView`.
-- Notifications: Use `CustomSnackBar.show` and `CustomDialog.show`.
+- **Feature-Driven Clean Architecture**:
+  - `lib/common_libs.dart`: Centralized barrel export for UI, routing, theme, constants, and widgets. Feature pages must import `common_libs.dart`.
+  - `lib/service_locator.dart`: GetIt (`sl`) dependency injection registered in 5 strict layers: External/Core -> DataSources -> Repositories -> UseCases -> Cubits.
+  - `lib/common/`: Shared code across features (`bloc/` for app-level state like `auth_state_cubit`, `locale_cubit`; `constants/` for routes, urls, images; `widgets/` for custom buttons, dialogs, snackbars).
+  - `lib/core/`: Application infrastructure (`config/routes` with `_buildSlideRoute`, `config/theme` with `AppColors`, `config/lang` with ARB l10n, `error/`, `network/dio_client.dart`, `usecases/`, `utils/navigation_utils.dart`).
+  - `lib/features/[feature]/`: Each feature contains `data/` (data_sources, models, repository), `domain/` (entities, repository, usecases), and `presentation/` (bloc/cubit, pages, widgets).
+- **State Management**: **Cubit** (separate `cubit.dart` and `state.dart`), always guard with `if (isClosed) return;` before calling `emit()`.
+- **Navigation & Routing**: Use `NavigationUtils` with `_buildSlideRoute` in `AppRouter`. Delay before `Navigator.pop()` with `FocusManager.instance.primaryFocus?.unfocus()`.
+- **UI & Responsiveness**: Wrap inputs in `GestureDetector` to dismiss keyboard. Use `flutter_screenutil` (`.w`, `.h`, `.sp`). Wrap pages in `SingleChildScrollView`.
+- **Dialogs & Alerts**: Always use `CustomSnackBar.show` and `CustomDialog.show`. Never use default ScaffoldMessenger.
 
 ### 4. Server Standards (NestJS - `server/`)
 - Architecture: 3-Layer Clean Architecture (Controller/Gateway -> Service/UseCase -> Repository).
