@@ -1,0 +1,138 @@
+{
+  "@@locale": "en",
+  "appName": "Bunny Cove",
+  "appTagline": "Cozy Social Gaming Universe",
+  "welcomeTitle": "Welcome to Bunny Cove 🐰",
+  "welcomeSubtitle": "Relax, connect, and enjoy cozy mini-games with friends",
+  "commonOk": "OK",
+  "commonCancel": "Cancel",
+  "commonSave": "Save",
+  "commonClose": "Close",
+  "commonRetry": "Try Again",
+  "commonLoading": "Loading...",
+  "commonError": "Error",
+  "commonSuccess": "Success",
+  "commonWarning": "Notice",
+  "commonBack": "Back",
+  "commonNext": "Next",
+  "commonConfirm": "Confirm",
+  "commonCopied": "Copied to clipboard!",
+  "noRouteDefined": "No route defined for {route}",
+  "@noRouteDefined": {
+    "placeholders": {
+      "route": {
+        "type": "String"
+      }
+    }
+  },
+  "signInTitle": "Sign In",
+  "signUpTitle": "Create Burrow",
+  "emailLabel": "Email Address",
+  "passwordLabel": "Password",
+  "usernameLabel": "Bunny Tag (Username)",
+  "displayNameLabel": "Display Name",
+  "forgotPassword": "Forgot Password?",
+  "signOut": "Sign Out",
+  "dontHaveAccount": "New to Bunny Cove? Create your burrow",
+  "alreadyHaveAccount": "Already have a burrow? Sign in",
+  "welcomeBack": "Welcome back, {name}! 🍵",
+  "@welcomeBack": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "createRoom": "Create Private Burrow",
+  "createRoomSubtitle": "Start a cozy room and invite a friend",
+  "joinRoom": "Join with Code",
+  "joinRoomSubtitle": "Enter a 6-character room code",
+  "quickMatch": "Quick Matchmaking",
+  "quickMatchSubtitle": "Play instantly with a fellow cozy wanderer",
+  "activeGames": "Cozy Game Collection",
+  "caroGameTitle": "Tatami Gomoku",
+  "caroGameSubtitle": "15x15 Caro with Carrot 🥕 & Ribbon 🎀",
+  "bingoGameTitle": "Cozy Bingo 5x5",
+  "bingoGameSubtitle": "Stamp bunny paws & spell B-I-N-G-O",
+  "roomTitle": "Burrow Room",
+  "roomCode": "Room Code: {code}",
+  "@roomCode": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "copyCode": "Copy Code",
+  "waitingForPlayer": "Waiting for a friend to hop in...",
+  "ready": "Ready! 🐰",
+  "notReady": "Waiting",
+  "toggleReady": "Tap when Ready",
+  "startGame": "Start Match",
+  "playerDisconnected": "Opponent disconnected! Waiting {seconds}s...",
+  "@playerDisconnected": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "playerReconnected": "Opponent hopped back in!",
+  "caroYourTurn": "Your Turn 🥕",
+  "caroOpponentTurn": "Friend's Turn 🎀",
+  "caroTimeRemaining": "{seconds}s remaining",
+  "@caroTimeRemaining": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "caroUndo": "Request Undo",
+  "caroDraw": "Offer Draw",
+  "caroSurrender": "Friendly Resign",
+  "caroWin": "Victory! 🥕",
+  "caroDefeat": "Well Played! 🎀",
+  "caroTie": "Peaceful Draw 🍵",
+  "bingoShuffle": "Shuffle Tiles",
+  "bingoConfirm": "Confirm Board",
+  "bingoYourTurn": "Call a number!",
+  "bingoOpponentTurn": "Friend is choosing...",
+  "bingoWin": "BINGO Champion! 🐰",
+  "languageLabel": "Language",
+  "languageEnglish": "English",
+  "languageVietnamese": "Tiếng Việt",
+  "connectionLostTitle": "Connection Interrupted",
+  "connectionLostContent": "Lost touch with the burrow server. Please check your internet connection.",
+  "code_success": "Action completed successfully.",
+  "code_server_error": "An unexpected glitch occurred in the burrow.",
+  "code_validation_error": "Please double-check your details.",
+  "code_not_found": "Requested item was not found.",
+  "code_unauthorized": "Please sign in to proceed.",
+  "code_forbidden": "Access is forbidden.",
+  "code_register_successful": "Burrow created! Welcome to Bunny Cove.",
+  "code_login_successful": "Welcome back to your burrow!",
+  "code_logout_successful": "Signed out safely.",
+  "code_token_refreshed": "Session refreshed.",
+  "code_invalid_credentials": "Incorrect email or password.",
+  "code_email_already_exists": "This email is already registered.",
+  "code_username_already_exists": "This bunny tag is already taken.",
+  "code_user_not_found": "Account not found.",
+  "code_invalid_refresh_token": "Session expired. Please sign in again.",
+  "code_access_denied": "Access was denied.",
+  "code_verification_email_sent": "Verification code sent to your email.",
+  "code_email_verified_successful": "Email successfully verified!",
+  "code_reset_password_email_sent": "Password reset code sent to your email.",
+  "code_password_reset_successful": "Password reset successfully.",
+  "code_invalid_otp": "Invalid verification code.",
+  "code_otp_expired": "Verification code has expired.",
+  "code_room_created": "Burrow room created!",
+  "code_room_joined": "Hopped into the room!",
+  "code_room_not_found": "Room code not found.",
+  "code_room_full": "This room is full.",
+  "code_not_your_turn": "Wait for your turn!",
+  "code_invalid_move": "Invalid move.",
+  "code_caro_move_success": "Move placed.",
+  "code_caro_win": "Caro victory achieved!",
+  "code_bingo_win": "BINGO completed!"
+}
