@@ -15,13 +15,13 @@ class SignInParams extends Equatable {
   List<Object?> get props => [email, password];
 }
 
-class SignInUseCase implements UseCase<Either<Failure, UserModel>, SignInParams> {
+class SignInUseCase implements UseCase<UserModel, SignInParams> {
   final AuthRepository repository;
 
   SignInUseCase(this.repository);
 
   @override
-  Future<Either<Failure, UserModel>> call(SignInParams param) {
-    return repository.signIn(email: param.email, password: param.password);
+  Future<Either<Failure, UserModel>> call(SignInParams params) {
+    return repository.signIn(email: params.email, password: params.password);
   }
 }

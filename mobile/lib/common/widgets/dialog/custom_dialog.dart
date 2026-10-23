@@ -1,131 +1,61 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../constants/app_colors.dart';
+import '../../../core/config/theme/color.dart';
 
-enum DialogType { success, error, warning, info }
+enum DialogType { info, warning, error, confirm }
 
-/// Reusable dialog adhering to Cozy Pastel aesthetics.
-class CustomDialog extends StatelessWidget {
-  final String? title;
-  final String? content;
-  final DialogType type;
-  final List<Widget>? actions;
-  final Widget? contentWidget;
-
-  const CustomDialog({
-    super.key,
-    this.title,
-    this.content,
-    this.type = DialogType.info,
-    this.actions,
-    this.contentWidget,
-  });
-
-  static Future<T?> show<T>(
+class CustomDialog {
+  static Future<bool?> show(
     BuildContext context, {
-    String? title,
-    String? content,
+    required String title,
+    required String message,
     DialogType type = DialogType.info,
-    List<Widget>? actions,
-    Widget? contentWidget,
-    bool barrierDismissible = true,
+    String confirmText = 'OK',
+    String? cancelText,
   }) {
-    return showDialog<T>(
+    return showDialog<bool>(
       context: context,
-      barrierDismissible: barrierDismissible,
-      builder: (context) => CustomDialog(
-        title: title,
-        content: content,
-        type: type,
-        actions: actions,
-        contentWidget: contentWidget,
-      ),
-    );
-  }
-
-  IconData _getIcon() {
-    switch (type) {
-      case DialogType.success:
-        return Icons.check_circle_rounded;
-      case DialogType.error:
-        return Icons.error_rounded;
-      case DialogType.warning:
-        return Icons.warning_rounded;
-      case DialogType.info:
-        return Icons.info_rounded;
-    }
-  }
-
-  Color _getColor() {
-    switch (type) {
-      case DialogType.success:
-        return AppColors.success;
-      case DialogType.error:
-        return AppColors.error;
-      case DialogType.warning:
-        return AppColors.warning;
-      case DialogType.info:
-        return AppColors.info;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final color = _getColor();
-
-    return Dialog(
-      backgroundColor: AppColors.surfaceCard,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(28.r),
-        side: const BorderSide(color: AppColors.border, width: 1),
-      ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.h),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              padding: EdgeInsets.all(16.w),
-              decoration: BoxDecoration(
-                color: color.withOpacity(0.12),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(_getIcon(), color: color, size: 40.sp),
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: AppColors.creamBackground,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: Text(
+            title,
+            style: const TextStyle(
+              color: AppColors.deepPlumText,
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
             ),
-            SizedBox(height: 16.h),
-            if (title != null) ...[
-              Text(
-                title!,
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                textAlign: TextAlign.center,
+          ),
+          content: Text(
+            message,
+            style: const TextStyle(
+              color: AppColors.deepPlumText,
+              fontSize: 14,
+            ),
+          ),
+          actions: [
+            if (cancelText != null)
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text(
+                  cancelText,
+                  style: const TextStyle(color: AppColors.mutedText),
+                ),
               ),
-              SizedBox(height: 8.h),
-            ],
-            if (content != null)
-              Text(
-                content!,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
-                textAlign: TextAlign.center,
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.peachPrimary,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
-            if (contentWidget != null) contentWidget!,
-            SizedBox(height: 20.h),
-            if (actions != null)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: actions!,
-              )
-            else
-              ElevatedButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('OK'),
+              child: Text(
+                confirmText,
+                style: const TextStyle(color: Colors.white),
               ),
+            ),
           ],
-        ),
-      ),
+        );
+      },
     );
   }
 }

@@ -1,18 +1,18 @@
 import 'package:equatable/equatable.dart';
 import '../../data/models/user_model.dart';
 
-abstract class AuthPresentationState extends Equatable {
-  const AuthPresentationState();
+abstract class AuthCubitState extends Equatable {
+  const AuthCubitState();
 
   @override
   List<Object?> get props => [];
 }
 
-class AuthInitial extends AuthPresentationState {}
+class AuthInitial extends AuthCubitState {}
 
-class AuthLoading extends AuthPresentationState {}
+class AuthLoading extends AuthCubitState {}
 
-class AuthSuccess extends AuthPresentationState {
+class AuthSuccess extends AuthCubitState {
   final UserModel user;
 
   const AuthSuccess(this.user);
@@ -21,11 +21,11 @@ class AuthSuccess extends AuthPresentationState {
   List<Object?> get props => [user];
 }
 
-class AuthFailureState extends AuthPresentationState {
+class AuthFailure extends AuthCubitState {
   final String message;
   final String? code;
 
-  const AuthFailureState({required this.message, this.code});
+  const AuthFailure({required this.message, this.code});
 
   @override
   List<Object?> get props => [message, code];

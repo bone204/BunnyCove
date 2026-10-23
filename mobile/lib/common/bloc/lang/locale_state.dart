@@ -1,19 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
-abstract class LocaleState extends Equatable {
-  const LocaleState();
-
-  @override
-  List<Object?> get props => [];
-}
-
-class LocaleLoading extends LocaleState {}
-
-class LocaleLoaded extends LocaleState {
+class LocaleState extends Equatable {
   final Locale locale;
 
-  const LocaleLoaded(this.locale);
+  const LocaleState(this.locale);
 
   @override
   List<Object?> get props => [locale];

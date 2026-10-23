@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../common/bloc/auth/auth_state_cubit.dart';
-import '../../../../common/constants/app_colors.dart';
 import '../../../../common/widgets/button/custom_button.dart';
 import '../../../../common/widgets/snackbar/custom_snackbar.dart';
-import '../../../../core/config/lang/arb/app_localizations.dart';
-import '../../../../core/utils/navigation_utils.dart';
+import '../../../../core/config/theme/color.dart';
 import '../../../../service_locator.dart';
 import '../bloc/auth_cubit.dart';
 import '../bloc/auth_state.dart';
 
-/// Sign In screen adhering to Clean Architecture and Cozy Pastel UI standards.
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
 
@@ -32,7 +28,6 @@ class _SignInPageState extends State<SignInPage> {
   }
 
   void _onSignInPressed(BuildContext context) {
-    FocusScope.of(context).unfocus();
     if (_formKey.currentState?.validate() ?? false) {
       context.read<AuthCubit>().signIn(
             email: _emailController.text.trim(),
@@ -41,193 +36,115 @@ class _SignInPageState extends State<SignInPage> {
     }
   }
 
-  void _onForgotPasswordPressed() {
-    // Navigate to forgot password flow when implemented
-  }
-
-  void _onSignUpNavigatePressed() {
-    // Navigate to sign up flow when implemented
-  }
-
-  void _dismissKeyboard() {
-    FocusScope.of(context).unfocus();
-  }
-
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final textTheme = Theme.of(context).textTheme;
-
     return BlocProvider(
       create: (context) => sl<AuthCubit>(),
-      child: BlocConsumer<AuthCubit, AuthPresentationState>(
-        listener: (context, state) {
-          if (state is AuthSuccess) {
-            context.read<AuthStateCubit>().setAuthenticated();
-            CustomSnackBar.show(
-              context,
-              message: l10n.code_login_successful,
-              type: SnackBarType.success,
-            );
-          } else if (state is AuthFailureState) {
-            final translated = l10n.translateResponseCode(state.code);
-            CustomSnackBar.show(
-              context,
-              message: translated.isNotEmpty ? translated : state.message,
-              type: SnackBarType.error,
-            );
-          }
-        },
-        builder: (context, state) {
-          final isLoading = state is AuthLoading;
-
-          return GestureDetector(
-            onTap: _dismissKeyboard,
-            child: Scaffold(
-              body: SafeArea(
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
-                  child: Form(
+      child: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: Scaffold(
+          backgroundColor: AppColors.creamBackground,
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 32.h),
+              child: BlocConsumer<AuthCubit, AuthCubitState>(
+                listener: (context, state) {
+                  if (state is AuthFailure) {
+                    CustomSnackBar.show(
+                      context,
+                      message: state.message,
+                      type: SnackBarType.error,
+                    );
+                  } else if (state is AuthSuccess) {
+                    CustomSnackBar.show(
+                      context,
+                      message: 'Welcome back, ${state.user.displayName}! 🌸',
+                      type: SnackBarType.success,
+                    );
+                  }
+                },
+                builder: (context, state) {
+                  final isLoading = state is AuthLoading;
+                  return Form(
                     key: _formKey,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        SizedBox(height: 40.h),
-                        // Mascot & Header
+                        SizedBox(height: 30.h),
                         Center(
-                          child: Container(
-                            width: 88.w,
-                            height: 88.w,
-                            decoration: BoxDecoration(
-                              color: AppColors.primaryLight.withOpacity(0.4),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Center(
-                              child: Text(
-                                '🐰',
-                                style: TextStyle(fontSize: 44.sp),
-                              ),
+                          child: Text('🐰', style: TextStyle(fontSize: 64.sp)),
+                        ),
+                        SizedBox(height: 12.h),
+                        Center(
+                          child: Text(
+                            'Bunny Cove',
+                            style: TextStyle(
+                              fontSize: 26.sp,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.deepPlumText,
                             ),
                           ),
                         ),
-                        SizedBox(height: 20.h),
-                        Text(
-                          l10n.signInTitle,
-                          style: textTheme.displaySmall?.copyWith(
-                            fontWeight: FontWeight.bold,
+                        Center(
+                          child: Text(
+                            'Sign in to enter your cozy universe',
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              color: AppColors.mutedText,
+                            ),
                           ),
-                          textAlign: TextAlign.center,
-                        ),
-                        SizedBox(height: 6.h),
-                        Text(
-                          l10n.welcomeSubtitle,
-                          style: textTheme.bodyMedium?.copyWith(
-                            color: AppColors.textSecondary,
-                          ),
-                          textAlign: TextAlign.center,
                         ),
                         SizedBox(height: 36.h),
-
-                        // Email Field
-                        Text(
-                          l10n.emailLabel,
-                          style: textTheme.titleSmall?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        SizedBox(height: 8.h),
                         TextFormField(
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
-                            hintText: l10n.emailLabel,
-                            prefixIcon: const Icon(
-                              Icons.mail_outline_rounded,
-                              color: AppColors.textSecondary,
+                            labelText: 'Email',
+                            hintText: 'bunny@cove.test',
+                            filled: true,
+                            fillColor: AppColors.cardSurface,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(14.r),
+                              borderSide: BorderSide.none,
                             ),
+                            prefixIcon: const Icon(Icons.email_outlined),
                           ),
-                          validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
-                              return l10n.code_validation_error;
-                            }
-                            return null;
-                          },
+                          validator: (value) => (value == null || value.isEmpty)
+                              ? 'Please enter email'
+                              : null,
                         ),
-                        SizedBox(height: 18.h),
-
-                        // Password Field
-                        Text(
-                          l10n.passwordLabel,
-                          style: textTheme.titleSmall?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        SizedBox(height: 8.h),
+                        SizedBox(height: 16.h),
                         TextFormField(
                           controller: _passwordController,
                           obscureText: true,
                           decoration: InputDecoration(
-                            hintText: l10n.passwordLabel,
-                            prefixIcon: const Icon(
-                              Icons.lock_outline_rounded,
-                              color: AppColors.textSecondary,
+                            labelText: 'Password',
+                            filled: true,
+                            fillColor: AppColors.cardSurface,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(14.r),
+                              borderSide: BorderSide.none,
                             ),
+                            prefixIcon: const Icon(Icons.lock_outline),
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return l10n.code_validation_error;
-                            }
-                            return null;
-                          },
+                          validator: (value) => (value == null || value.isEmpty)
+                              ? 'Please enter password'
+                              : null,
                         ),
-                        SizedBox(height: 12.h),
-
-                        // Forgot Password
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: TextButton(
-                            onPressed: _onForgotPasswordPressed,
-                            child: Text(
-                              l10n.forgotPassword,
-                              style: textTheme.bodySmall?.copyWith(
-                                color: AppColors.primaryDark,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 20.h),
-
-                        // Sign In CTA
+                        SizedBox(height: 28.h),
                         CustomButton(
-                          text: l10n.signInTitle,
+                          text: 'Sign In',
                           isLoading: isLoading,
                           onPressed: () => _onSignInPressed(context),
                         ),
-                        SizedBox(height: 24.h),
-
-                        // Switch to Sign Up
-                        Center(
-                          child: GestureDetector(
-                            onTap: _onSignUpNavigatePressed,
-                            child: Text(
-                              l10n.dontHaveAccount,
-                              style: textTheme.bodySmall?.copyWith(
-                                color: AppColors.textSecondary,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 40.h),
                       ],
                     ),
-                  ),
-                ),
+                  );
+                },
               ),
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }

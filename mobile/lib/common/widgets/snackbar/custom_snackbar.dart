@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../constants/app_colors.dart';
 
 enum SnackBarType { success, error, warning, info }
 
-/// Standardized SnackBar adhering to the Bunny Cove Cozy theme.
 class CustomSnackBar {
   static void show(
     BuildContext context, {
@@ -17,63 +14,43 @@ class CustomSnackBar {
 
     switch (type) {
       case SnackBarType.success:
-        backgroundColor = AppColors.success;
-        icon = Icons.check_circle_rounded;
+        backgroundColor = const Color(0xFF7CB518);
+        icon = Icons.check_circle_outline;
         break;
       case SnackBarType.error:
-        backgroundColor = AppColors.error;
-        icon = Icons.error_rounded;
+        backgroundColor = const Color(0xFFD90429);
+        icon = Icons.error_outline;
         break;
       case SnackBarType.warning:
-        backgroundColor = AppColors.warning;
-        icon = Icons.warning_rounded;
+        backgroundColor = const Color(0xFFFFB703);
+        icon = Icons.warning_amber_outlined;
         break;
       case SnackBarType.info:
-        backgroundColor = AppColors.info;
-        icon = Icons.info_rounded;
+        backgroundColor = const Color(0xFF4A3E3D);
+        icon = Icons.info_outline;
         break;
     }
 
-    final snackBar = SnackBar(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      behavior: SnackBarBehavior.floating,
-      duration: duration,
-      margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
-      content: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-        decoration: BoxDecoration(
-          color: backgroundColor,
-          borderRadius: BorderRadius.circular(20.r),
-          boxShadow: const [
-            BoxShadow(
-              color: AppColors.shadow,
-              blurRadius: 16,
-              offset: Offset(0, 6),
-            ),
-          ],
-        ),
-        child: Row(
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: backgroundColor,
+        behavior: SnackBarBehavior.floating,
+        duration: duration,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        content: Row(
           children: [
-            Icon(icon, color: Colors.white, size: 24.sp),
-            SizedBox(width: 12.w),
+            Icon(icon, color: Colors.white, size: 20),
+            const SizedBox(width: 10),
             Expanded(
               child: Text(
                 message,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w500,
-                ),
+                style: const TextStyle(color: Colors.white, fontSize: 14),
               ),
             ),
           ],
         ),
       ),
     );
-
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(snackBar);
   }
 }

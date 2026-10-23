@@ -1,9 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
 
-/// Interceptor for logging HTTP requests and responses.
 class LoggerInterceptor extends Interceptor {
-  final Logger _logger = Logger(
+  final Logger logger = Logger(
     printer: PrettyPrinter(
       methodCount: 0,
       errorMethodCount: 5,
@@ -15,21 +14,19 @@ class LoggerInterceptor extends Interceptor {
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    _logger.d('--> ${options.method.toUpperCase()} ${options.uri}');
+    logger.d('🌐 [REQ] ${options.method.toUpperCase()} ${options.uri}');
     super.onRequest(options, handler);
   }
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    _logger.i('<-- ${response.statusCode} ${response.requestOptions.uri}');
+    logger.i('✅ [RES] ${response.statusCode} ${response.requestOptions.uri}');
     super.onResponse(response, handler);
   }
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
-    _logger.e(
-      '<-- ERROR ${err.response?.statusCode} ${err.requestOptions.uri}: ${err.message}',
-    );
+    logger.e('❌ [ERR] ${err.message} [${err.response?.statusCode}]');
     super.onError(err, handler);
   }
 }

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../constants/app_colors.dart';
+import '../../../core/config/theme/color.dart';
 
-/// Reusable tactile pill button.
 class CustomButton extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;
   final bool isLoading;
   final Color? backgroundColor;
   final Color? textColor;
-  final IconData? icon;
+  final double? width;
+  final double? height;
 
   const CustomButton({
     super.key,
@@ -18,49 +18,38 @@ class CustomButton extends StatelessWidget {
     this.isLoading = false,
     this.backgroundColor,
     this.textColor,
-    this.icon,
+    this.width,
+    this.height,
   });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: double.infinity,
-      height: 52.h,
+      width: width ?? double.infinity,
+      height: height ?? 50.h,
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: backgroundColor ?? AppColors.primary,
-          foregroundColor: textColor ?? AppColors.textPrimary,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.r),
-          ),
-          elevation: 0,
+          backgroundColor: backgroundColor ?? AppColors.peachPrimary,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.r)),
+          elevation: 2,
         ),
         child: isLoading
             ? SizedBox(
-                width: 24.w,
-                height: 24.w,
+                width: 22.w,
+                height: 22.h,
                 child: const CircularProgressIndicator(
                   strokeWidth: 2.5,
-                  valueColor:
-                      AlwaysStoppedAnimation<Color>(AppColors.textPrimary),
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 ),
               )
-            : Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (icon != null) ...[
-                    Icon(icon, size: 20.sp),
-                    SizedBox(width: 8.w),
-                  ],
-                  Text(
-                    text,
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
+            : Text(
+                text,
+                style: TextStyle(
+                  color: textColor ?? Colors.white,
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
       ),
     );

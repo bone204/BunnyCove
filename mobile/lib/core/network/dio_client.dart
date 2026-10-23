@@ -1,53 +1,42 @@
-import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../common/constants/app_urls.constant.dart';
 import '../../common/constants/storage_keys.constant.dart';
 import 'logger_interceptor.dart';
 
-/// Centralized HTTP client wrapper around Dio.
 class DioClient {
   late final Dio dio;
-  final SharedPreferences prefs;
+  final SharedPreferences sharedPreferences;
 
-  DioClient(this.prefs) {
+  DioClient(this.sharedPreferences) {
+    final baseUrl = dotenv.env['BASE_URL'] ?? 'http://localhost:3000/api';
     dio = Dio(
       BaseOptions(
-        baseUrl: ApiUrls.baseURL,
+        baseUrl: baseUrl,
         connectTimeout: const Duration(seconds: 15),
         receiveTimeout: const Duration(seconds: 15),
-        sendTimeout: const Duration(seconds: 15),
-        validateStatus: (status) =>
-            status != null && status >= 200 && status < 300,
-        contentType: Headers.jsonContentType,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
       ),
     );
 
-    // 1. Logger Interceptor
-    dio.interceptors.add(LoggerInterceptor());
-
-    // 2. Auth Header Interceptor
-    dio.interceptors.add(
+    dio.interceptors.addAll([
       InterceptorsWrapper(
         onRequest: (options, handler) {
-          final token = prefs.getString(StorageKeys.accessToken);
+          final token =
+              sharedPreferences.getString(StorageKeysConstant.accessToken);
           if (token != null && token.isNotEmpty) {
             options.headers['Authorization'] = 'Bearer $token';
           }
           return handler.next(options);
         },
-        onError: (DioException error, ErrorInterceptorHandler handler) {
+        onError: (DioException error, handler) async {
           return handler.next(error);
         },
       ),
-    );
-  }
-
-  bool isConnectionError(DioException error) {
-    return error.type == DioExceptionType.connectionTimeout ||
-        error.type == DioExceptionType.sendTimeout ||
-        error.type == DioExceptionType.receiveTimeout ||
-        error.type == DioExceptionType.connectionError ||
-        error.error is SocketException;
+      LoggerInterceptor(),
+    ]);
   }
 }
