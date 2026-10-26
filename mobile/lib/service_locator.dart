@@ -9,10 +9,11 @@ import 'features/auth/domain/usecases/is_logged_in.dart';
 import 'features/auth/domain/usecases/sign_in.dart';
 import 'features/auth/domain/usecases/sign_up.dart';
 import 'features/auth/presentation/bloc/auth_cubit.dart';
+import 'common/bloc/auth/auth_state_cubit.dart';
+import 'common/bloc/lang/locale_cubit.dart';
 
 final sl = GetIt.instance;
 
-/// Initialize Service Locator dependencies matching Clean Architecture.
 void setUpServiceLocator(SharedPreferences prefs) {
   // 1. External & Core
   sl.registerLazySingleton<SharedPreferences>(() => prefs);
@@ -41,6 +42,12 @@ void setUpServiceLocator(SharedPreferences prefs) {
   );
 
   // 5. Cubits / Presentation
+  sl.registerLazySingleton<AuthStateCubit>(
+    () => AuthStateCubit(sl<SharedPreferences>()),
+  );
+  sl.registerLazySingleton<LocaleCubit>(
+    () => LocaleCubit(sl<SharedPreferences>()),
+  );
   sl.registerFactory<AuthCubit>(
     () => AuthCubit(
       signInUseCase: sl<SignInUseCase>(),

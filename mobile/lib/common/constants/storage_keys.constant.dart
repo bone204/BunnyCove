@@ -1,8 +1,8 @@
-/// Centralized keys for local storage and preferences.
-abstract class StorageKeys {
-  static const String accessToken = 'bunny_cove_access_token';
-  static const String refreshToken = 'bunny_cove_refresh_token';
-  static const String activeLocale = 'app_locale';
-  static const String userProfile = 'bunny_cove_user_profile';
-  static const String isFirstInstall = 'bunny_cove_first_install';
+class StorageKeysConstant {
+  static const String accessToken = 'accessToken';
+  static const String refreshToken = 'refreshToken';
+  static const String userProfile = 'userProfile';
+  static const String language = 'appLanguage';
+  static const String themeMode = 'appThemeMode';
+  static const String fcmToken = 'fcmToken';
 }

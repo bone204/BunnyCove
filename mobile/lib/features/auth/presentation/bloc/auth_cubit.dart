@@ -3,8 +3,7 @@ import '../../domain/usecases/sign_in.dart';
 import '../../domain/usecases/sign_up.dart';
 import 'auth_state.dart';
 
-/// Presentation Cubit handling sign-in and sign-up form submissions.
-class AuthCubit extends Cubit<AuthPresentationState> {
+class AuthCubit extends Cubit<AuthCubitState> {
   final SignInUseCase signInUseCase;
   final SignUpUseCase signUpUseCase;
 
@@ -20,44 +19,39 @@ class AuthCubit extends Cubit<AuthPresentationState> {
     if (isClosed) return;
     emit(AuthLoading());
 
-    final result = await signInUseCase.call(
-      SignInParams(email: email, password: password),
-    );
+    final result = await signInUseCase(SignInParams(
+      email: email,
+      password: password,
+    ));
 
     if (isClosed) return;
-
     result.fold(
-      (failure) => emit(
-        AuthFailureState(message: failure.message, code: failure.code),
-      ),
+      (failure) =>
+          emit(AuthFailure(message: failure.message, code: failure.code)),
       (user) => emit(AuthSuccess(user)),
     );
   }
 
   Future<void> signUp({
-    required String username,
-    required String displayName,
     required String email,
     required String password,
+    required String username,
+    required String displayName,
   }) async {
     if (isClosed) return;
     emit(AuthLoading());
 
-    final result = await signUpUseCase.call(
-      SignUpParams(
-        username: username,
-        displayName: displayName,
-        email: email,
-        password: password,
-      ),
-    );
+    final result = await signUpUseCase(SignUpParams(
+      email: email,
+      password: password,
+      username: username,
+      displayName: displayName,
+    ));
 
     if (isClosed) return;
-
     result.fold(
-      (failure) => emit(
-        AuthFailureState(message: failure.message, code: failure.code),
-      ),
+      (failure) =>
+          emit(AuthFailure(message: failure.message, code: failure.code)),
       (user) => emit(AuthSuccess(user)),
     );
   }

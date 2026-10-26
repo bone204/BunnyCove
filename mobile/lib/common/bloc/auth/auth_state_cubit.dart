@@ -1,36 +1,32 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../core/usecases/no_params.dart';
-import '../../../features/auth/domain/usecases/is_logged_in.dart';
-import '../../../service_locator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../constants/storage_keys.constant.dart';
 import 'auth_state.dart';
 
-/// Cubit managing the global authentication state of the application.
-class AuthStateCubit extends Cubit<AuthState> {
-  AuthStateCubit() : super(AppInitialState());
+class AuthStateCubit extends Cubit<AppAuthState> {
+  final SharedPreferences sharedPreferences;
 
-  Future<void> appStarted() async {
-    try {
-      final isLoggedIn = await sl<IsLoggedInUseCase>().call(NoParams());
-      if (isClosed) return;
+  AuthStateCubit(this.sharedPreferences) : super(const AppAuthState());
 
-      if (isLoggedIn) {
-        emit(Authenticated());
-      } else {
-        emit(UnAuthenticated());
-      }
-    } catch (_) {
-      if (isClosed) return;
-      emit(UnAuthenticated());
+  void checkAuth() {
+    if (isClosed) return;
+    final token = sharedPreferences.getString(StorageKeysConstant.accessToken);
+    if (token != null && token.isNotEmpty) {
+      emit(const AppAuthState(status: AuthStatus.authenticated));
+    } else {
+      emit(const AppAuthState(status: AuthStatus.unauthenticated));
     }
   }
 
-  void setAuthenticated() {
+  void setAuthenticated(String userId) {
     if (isClosed) return;
-    emit(Authenticated());
+    emit(AppAuthState(status: AuthStatus.authenticated, userId: userId));
   }
 
-  void setUnAuthenticated() {
+  void setUnauthenticated() {
     if (isClosed) return;
-    emit(UnAuthenticated());
+    sharedPreferences.remove(StorageKeysConstant.accessToken);
+    sharedPreferences.remove(StorageKeysConstant.refreshToken);
+    emit(const AppAuthState(status: AuthStatus.unauthenticated));
   }
 }

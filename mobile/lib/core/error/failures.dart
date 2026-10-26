@@ -1,49 +1,27 @@
 import 'package:equatable/equatable.dart';
 
-/// Base Failure class for Clean Architecture.
 abstract class Failure extends Equatable {
   final String message;
   final String? code;
-  final int? statusCode;
 
-  const Failure({
-    required this.message,
-    this.code,
-    this.statusCode,
-  });
+  const Failure({required this.message, this.code});
 
   @override
-  List<Object?> get props => [message, code, statusCode];
+  List<Object?> get props => [message, code];
 }
 
 class ServerFailure extends Failure {
-  const ServerFailure({
-    required super.message,
-    super.code,
-    super.statusCode,
-  });
+  const ServerFailure({required super.message, super.code});
 }
 
 class CacheFailure extends Failure {
-  const CacheFailure({
-    required super.message,
-    super.code,
-    super.statusCode,
-  });
+  const CacheFailure({required super.message, super.code});
 }
 
 class NetworkFailure extends Failure {
-  const NetworkFailure({
-    required super.message,
-    super.code,
-    super.statusCode,
-  });
+  const NetworkFailure({required super.message, super.code});
 }
 
-class ValidationFailure extends Failure {
-  const ValidationFailure({
-    required super.message,
-    super.code,
-    super.statusCode,
-  });
+class UnauthorizedFailure extends Failure {
+  const UnauthorizedFailure({required super.message, super.code});
 }

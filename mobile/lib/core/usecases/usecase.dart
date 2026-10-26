@@ -1,4 +1,6 @@
-/// Base interface for all use cases in clean architecture.
-abstract class UseCase<Type, Param> {
-  Future<Type> call(Param param);
+import 'package:dartz/dartz.dart';
+import '../error/failures.dart';
+
+abstract class UseCase<T, Params> {
+  Future<Either<Failure, T>> call(Params params);
 }

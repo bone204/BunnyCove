@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 
-/// Centralized navigation utility handling smooth transitions and keyboard dismissal.
 class NavigationUtils {
   static Future<T?> pushNamed<T extends Object?>(
     BuildContext context,
     String routeName, {
     Object? arguments,
   }) {
-    FocusScope.of(context).unfocus();
-    return Navigator.pushNamed<T>(context, routeName, arguments: arguments);
+    FocusManager.instance.primaryFocus?.unfocus();
+    return Navigator.of(context).pushNamed<T>(routeName, arguments: arguments);
   }
 
   static Future<T?> pushReplacementNamed<T extends Object?, TO extends Object?>(
@@ -17,9 +16,8 @@ class NavigationUtils {
     TO? result,
     Object? arguments,
   }) {
-    FocusScope.of(context).unfocus();
-    return Navigator.pushReplacementNamed<T, TO>(
-      context,
+    FocusManager.instance.primaryFocus?.unfocus();
+    return Navigator.of(context).pushReplacementNamed<T, TO>(
       routeName,
       result: result,
       arguments: arguments,
@@ -28,27 +26,24 @@ class NavigationUtils {
 
   static Future<T?> pushNamedAndRemoveUntil<T extends Object?>(
     BuildContext context,
-    String newRouteName,
+    String routeName,
     bool Function(Route<dynamic>) predicate, {
     Object? arguments,
   }) {
-    FocusScope.of(context).unfocus();
-    return Navigator.pushNamedAndRemoveUntil<T>(
-      context,
-      newRouteName,
+    FocusManager.instance.primaryFocus?.unfocus();
+    return Navigator.of(context).pushNamedAndRemoveUntil<T>(
+      routeName,
       predicate,
       arguments: arguments,
     );
   }
 
-  static Future<void> pop<T extends Object?>(
-    BuildContext context, [
-    T? result,
-  ]) async {
+  static void pop<T extends Object?>(BuildContext context, [T? result]) {
     FocusManager.instance.primaryFocus?.unfocus();
-    await Future.delayed(const Duration(milliseconds: 100));
-    if (context.mounted && Navigator.canPop(context)) {
-      Navigator.pop<T>(context, result);
-    }
+    Future.delayed(const Duration(milliseconds: 100), () {
+      if (context.mounted) {
+        Navigator.of(context).pop<T>(result);
+      }
+    });
   }
 }

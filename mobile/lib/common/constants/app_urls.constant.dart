@@ -1,27 +1,26 @@
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+class AppUrlsConstant {
+  static const String baseApiUrl = 'http://localhost:3000/api';
+  static const String socketUrl = 'http://localhost:3000';
 
-/// Centralized API and WebSocket endpoints for Bunny Cove.
-abstract class ApiUrls {
-  static String get baseURL =>
-      dotenv.env['BASE_URL'] ?? 'http://localhost:3000/api';
-  static String get socketURL =>
-      dotenv.env['SOCKET_URL'] ?? 'http://localhost:3000';
-
-  // Auth
+  // Auth Endpoints
   static const String register = '/auth/register';
   static const String login = '/auth/login';
-  static const String refresh = '/auth/refresh';
   static const String logout = '/auth/logout';
+  static const String refresh = '/auth/refresh';
   static const String verifyEmail = '/auth/verify-email';
-  static const String resendVerification = '/auth/resend-verification';
+  static const String resendOtp = '/auth/resend-verification';
   static const String forgotPassword = '/auth/forgot-password';
   static const String resetPassword = '/auth/reset-password';
 
-  // Users
-  static const String profileMe = '/users/me';
-  static const String statsMe = '/users/me/stats';
-  static const String matchesMe = '/users/me/matches';
-  static const String userById = '/users';
+  // User Profile
+  static const String userMe = '/users/me';
+  static const String userStats = '/users/me/stats';
+  static const String userMatches = '/users/me/matches';
+
+  // Friends & Notifications
+  static const String friends = '/friends';
+  static const String notifications = '/notifications';
+  static const String fcmToken = '/notifications/fcm-token';
 
   // Upload
   static const String uploadAvatar = '/upload/avatar';
