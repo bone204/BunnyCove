@@ -109,8 +109,17 @@
     - `presentation/`: `bloc/auth_cubit.dart`, `bloc/auth_state.dart`, `pages/sign_in.page.dart`
 - [x] 6.6 Setup App Entrypoint (`lib/main.dart`):
   - `runZonedGuarded`, `dotenv`, `setUpServiceLocator`, `ScreenUtilInit`, `MultiBlocProvider`, `MaterialApp` with `AppLocalizations.delegate`
+- [x] 6.7 Standardize Response Code Synchronization & Error Localization:
+  - [x] Update Project Rules in `rule.md` and `tasks/lessons.md`
+  - [x] Sync `ResponseCodesConstant` in `mobile/lib/common/constants/response_codes.constant.dart` 1:1 with BE `ResponseCodes`
+  - [x] Add localized error messages into `mobile/lib/core/config/lang/arb/app_en.arb` and `app_vi.arb`
+  - [x] Create `ErrorLocalizationExtension` helper in `mobile/lib/core/utils/error_localizer.dart` and export in `common_libs.dart`
+  - [x] Update `DioException` handling in `AuthApiService` to map network timeouts to `ResponseCodesConstant.networkError`
+  - [x] Update `SignInPage` to display localized errors via `context.getLocalizedError(...)`
+  - [x] Run `flutter gen-l10n` and analyze project for verification
 
 ---
+
 
 ### Upcoming Phases
 - [ ] Phase 3: Implement Realtime In-Room Chat & Bunny Stickers on Server

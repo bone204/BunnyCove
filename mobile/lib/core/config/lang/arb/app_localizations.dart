@@ -152,17 +152,215 @@ abstract class AppLocalizations {
   /// **'Continue as Guest'**
   String get guestMode;
 
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
   /// No description provided for @errorOccurred.
   ///
   /// In en, this message translates to:
   /// **'An unexpected error occurred'**
   String get errorOccurred;
 
-  /// No description provided for @retry.
+  /// No description provided for @errorNetwork.
   ///
   /// In en, this message translates to:
-  /// **'Retry'**
-  String get retry;
+  /// **'Unable to connect to server. Please check your internet connection.'**
+  String get errorNetwork;
+
+  /// No description provided for @errorConnectionTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection timed out. Please try again.'**
+  String get errorConnectionTimeout;
+
+  /// No description provided for @errorServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Server error. Please try again later.'**
+  String get errorServer;
+
+  /// No description provided for @errorUnauthorized.
+  ///
+  /// In en, this message translates to:
+  /// **'Unauthorized access. Please sign in again.'**
+  String get errorUnauthorized;
+
+  /// No description provided for @errorForbidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Access denied. You do not have permission for this action.'**
+  String get errorForbidden;
+
+  /// No description provided for @errorNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'The requested resource was not found.'**
+  String get errorNotFound;
+
+  /// No description provided for @errorValidationError.
+  ///
+  /// In en, this message translates to:
+  /// **'Validation failed. Please verify your input.'**
+  String get errorValidationError;
+
+  /// No description provided for @errorInvalidCredentials.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid email/username or password.'**
+  String get errorInvalidCredentials;
+
+  /// No description provided for @errorEmailAlreadyExists.
+  ///
+  /// In en, this message translates to:
+  /// **'An account with this email address already exists.'**
+  String get errorEmailAlreadyExists;
+
+  /// No description provided for @errorUsernameAlreadyExists.
+  ///
+  /// In en, this message translates to:
+  /// **'This username is already taken. Please choose another.'**
+  String get errorUsernameAlreadyExists;
+
+  /// No description provided for @errorUserNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'User account not found.'**
+  String get errorUserNotFound;
+
+  /// No description provided for @errorInvalidRefreshToken.
+  ///
+  /// In en, this message translates to:
+  /// **'Session expired. Please sign in again.'**
+  String get errorInvalidRefreshToken;
+
+  /// No description provided for @errorAccessDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Access denied.'**
+  String get errorAccessDenied;
+
+  /// No description provided for @errorFriendRequestAlreadySent.
+  ///
+  /// In en, this message translates to:
+  /// **'Friend request already sent.'**
+  String get errorFriendRequestAlreadySent;
+
+  /// No description provided for @errorAlreadyFriends.
+  ///
+  /// In en, this message translates to:
+  /// **'You are already friends with this user.'**
+  String get errorAlreadyFriends;
+
+  /// No description provided for @errorCannotFriendSelf.
+  ///
+  /// In en, this message translates to:
+  /// **'You cannot send a friend request to yourself.'**
+  String get errorCannotFriendSelf;
+
+  /// No description provided for @errorUserBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Action not permitted because user is blocked.'**
+  String get errorUserBlocked;
+
+  /// No description provided for @errorInvalidOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid OTP code. Please try again.'**
+  String get errorInvalidOtp;
+
+  /// No description provided for @errorOtpExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'OTP code has expired. Please request a new one.'**
+  String get errorOtpExpired;
+
+  /// No description provided for @errorOtpTooManyAttempts.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many incorrect attempts. Please try again later.'**
+  String get errorOtpTooManyAttempts;
+
+  /// No description provided for @errorEmailAlreadyVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Email address is already verified.'**
+  String get errorEmailAlreadyVerified;
+
+  /// No description provided for @errorEmailNotVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Please verify your email address first.'**
+  String get errorEmailNotVerified;
+
+  /// No description provided for @errorCooldownActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Please wait before requesting another code.'**
+  String get errorCooldownActive;
+
+  /// No description provided for @errorRoomNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Room not found or no longer available.'**
+  String get errorRoomNotFound;
+
+  /// No description provided for @errorRoomFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Room is full.'**
+  String get errorRoomFull;
+
+  /// No description provided for @errorRoomAlreadyIn.
+  ///
+  /// In en, this message translates to:
+  /// **'You are already inside this room.'**
+  String get errorRoomAlreadyIn;
+
+  /// No description provided for @errorGameNotStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Game has not started yet.'**
+  String get errorGameNotStarted;
+
+  /// No description provided for @errorNotYourTurn.
+  ///
+  /// In en, this message translates to:
+  /// **'It is not your turn yet.'**
+  String get errorNotYourTurn;
+
+  /// No description provided for @errorInvalidMove.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid move. Please try again.'**
+  String get errorInvalidMove;
+
+  /// No description provided for @errorBingoNumberAlreadyCalled.
+  ///
+  /// In en, this message translates to:
+  /// **'This number has already been called.'**
+  String get errorBingoNumberAlreadyCalled;
+
+  /// No description provided for @errorInvalidFileType.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid file format. Please upload JPG, PNG, or WebP.'**
+  String get errorInvalidFileType;
+
+  /// No description provided for @errorFileTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'File size exceeds the permitted limit.'**
+  String get errorFileTooLarge;
+
+  /// No description provided for @errorNoFileProvided.
+  ///
+  /// In en, this message translates to:
+  /// **'No file was selected for upload.'**
+  String get errorNoFileProvided;
 }
 
 class _AppLocalizationsDelegate

@@ -22,8 +22,14 @@ Applies to all 3 platforms: Mobile (Flutter), Web (Next.js), and Backend
 - **Autonomous Bug Fixing**: When given a bug report, proactively analyze logs, trace errors, find root causes, and resolve them. Do not ask the user for step-by-step guidance.
 - **Self-Improvement Loop**: After any correction or feedback from the user, immediately update lessons learned in `tasks/lessons.md` to prevent repeating the same mistake.
 - **Response Code Synchronization & Translation (Mandatory)**: Every time a new API response code or error code is created on the backend:
-  - You must register it in both `server/src/common/constants/response-codes.ts` and `web/src/shared/constants/response-codes.ts` to keep them in sync.
-  - You must translate it in both `web/src/presentation/i18n/locales/vi.json` and `web/src/presentation/i18n/locales/en.json` under the `api.codes` path immediately.
+  - You must register it synchronously across all active platforms:
+    - Backend: `server/src/common/constants/response-codes.ts`
+    - Flutter Mobile: `mobile/lib/common/constants/response_codes.constant.dart`
+    - Web: `web/src/shared/constants/response-codes.ts`
+  - You must immediately translate it in all active localization files:
+    - Flutter Mobile: `mobile/lib/core/config/lang/arb/app_en.arb` and `app_vi.arb`
+    - Web: `web/src/presentation/i18n/locales/en.json` and `vi.json`
+  - **Error Display Principle**: Backend `error.message` is strictly for technical debugging and logs. The client applications (Flutter & Web) must NEVER display raw unlocalized server message strings directly to end users. The UI must always map `error.code` to localized text based on the user's active application locale.
 - **Zero Hard-Coding & Centralized Constants (Mandatory)**: All default URLs, CDN asset paths, fallback image generators, mock/fake links, response codes, and system defaults must NEVER be hard-coded into controllers, services, DTOs, or models. They must strictly reside in centralized constants files under the designated constants folder (e.g., `server/src/common/constants/defaults.ts` on backend, `lib/common/constants/` on mobile).
 - **No Auto-Push (Strict User-Triggered Only)**: The agent must NEVER automatically execute `git push` after code modifications. Code must only be prepared and committed locally. Remote push is executed ONLY when the user explicitly triggers `/push`, `/push-dev`, or gives an explicit push command.
 - **Mandatory Persistent Test Flows**: Every time a new API, WebSocket event, or backend feature is added or modified, a persistent, reproducible test script MUST be created or updated under `server/test/` (e.g. `verify-[feature]-flow.mjs`) and registered in `server/test/verify-all.mjs`. Tests must never be ad-hoc or session-only; they must remain committed in git and runnable at any time via `npm run test:verify`.
@@ -136,7 +142,16 @@ Every new API implementation must follow the established "Auth Flow" pattern:
   - Manage state using `Cubit`. Separate Cubit and State into two distinct files (e.g., `auth_cubit.dart` and `auth_state.dart`).
   - **Asynchronous Safety**: Always check `if (isClosed) return;` before calling `emit()` in async methods to avoid "Cannot emit new states after calling close" errors.
 
+### 6. Error Handling & Localization Standard (Mandatory)
+- **Error Code Extraction**: Remote data sources (`[feature]_api_service.dart`) must extract `response.data['error']?['code']` and pass it into `ServerFailure(message: ..., code: code)`.
+- **Network & Offline Fallbacks**: In `on DioException catch (e)`, if the exception is due to connection timeout, send/receive timeout, or no internet, always assign `code: ResponseCodesConstant.networkError`.
+- **UI Localization Decoupling**:
+  - UI components (`CustomSnackBar`, `CustomDialog`, or inline error text) must NEVER display `state.message` directly to the end user.
+  - UI must always call `context.getLocalizedError(state.code, fallback: state.message)` (via `ErrorLocalizationExtension`) to look up the translated string from `AppLocalizations.of(context)` based on the active application locale.
+  - All new error codes must be added to `ResponseCodesConstant` and translated in both `lib/core/config/lang/arb/app_en.arb` and `app_vi.arb` immediately.
+
 ---
+
 
 ## 🌐 PART III: NEXT.JS/REACT WEB RULES
 

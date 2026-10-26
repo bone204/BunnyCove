@@ -1,4 +1,5 @@
 import 'package:bunny_cove_app/common/constants/app_urls.constant.dart';
+import 'package:bunny_cove_app/common/constants/response_codes.constant.dart';
 import 'package:bunny_cove_app/core/error/failures.dart';
 import 'package:bunny_cove_app/core/network/dio_client.dart';
 import 'package:bunny_cove_app/features/auth/data/models/user_model.dart';
@@ -40,17 +41,15 @@ class AuthApiServiceImpl implements AuthApiService {
       }
       return Left(ServerFailure(
         message: response.data['error']?['message'] ?? 'Login failed',
-        code: response.data['error']?['code'],
+        code: response.data['error']?['code'] ?? ResponseCodesConstant.serverError,
       ));
     } on DioException catch (e) {
-      return Left(ServerFailure(
-        message: e.response?.data?['error']?['message'] ??
-            e.message ??
-            'Network error',
-        code: e.response?.data?['error']?['code'],
-      ));
+      return Left(_handleDioError(e));
     } catch (e) {
-      return Left(ServerFailure(message: e.toString()));
+      return Left(ServerFailure(
+        message: e.toString(),
+        code: ResponseCodesConstant.unexpectedError,
+      ));
     }
   }
 
@@ -77,17 +76,46 @@ class AuthApiServiceImpl implements AuthApiService {
       }
       return Left(ServerFailure(
         message: response.data['error']?['message'] ?? 'Registration failed',
-        code: response.data['error']?['code'],
+        code: response.data['error']?['code'] ?? ResponseCodesConstant.serverError,
       ));
     } on DioException catch (e) {
-      return Left(ServerFailure(
-        message: e.response?.data?['error']?['message'] ??
-            e.message ??
-            'Network error',
-        code: e.response?.data?['error']?['code'],
-      ));
+      return Left(_handleDioError(e));
     } catch (e) {
-      return Left(ServerFailure(message: e.toString()));
+      return Left(ServerFailure(
+        message: e.toString(),
+        code: ResponseCodesConstant.unexpectedError,
+      ));
     }
+  }
+
+  Failure _handleDioError(DioException e) {
+    if (e.response != null) {
+      final errorData = e.response?.data;
+      if (errorData is Map<String, dynamic> && errorData['error'] != null) {
+        final err = errorData['error'];
+        return ServerFailure(
+          message: err['message']?.toString() ?? 'Server error',
+          code: err['code']?.toString() ?? ResponseCodesConstant.serverError,
+        );
+      }
+      return ServerFailure(
+        message: e.message ?? 'Server error',
+        code: ResponseCodesConstant.serverError,
+      );
+    }
+
+    if (e.type == DioExceptionType.connectionTimeout ||
+        e.type == DioExceptionType.sendTimeout ||
+        e.type == DioExceptionType.receiveTimeout) {
+      return const NetworkFailure(
+        message: 'Connection timed out',
+        code: ResponseCodesConstant.connectionTimeout,
+      );
+    }
+
+    return const NetworkFailure(
+      message: 'Network connection error',
+      code: ResponseCodesConstant.networkError,
+    );
   }
 }

@@ -23,6 +23,7 @@ export 'package:bunny_cove_app/common/constants/response_codes.constant.dart';
 
 // Utilities & Widgets
 export 'package:bunny_cove_app/core/utils/navigation_utils.dart';
+export 'package:bunny_cove_app/core/utils/error_localizer.dart';
 export 'package:bunny_cove_app/common/widgets/snackbar/custom_snackbar.dart';
 export 'package:bunny_cove_app/common/widgets/dialog/custom_dialog.dart';
 export 'package:bunny_cove_app/common/widgets/button/custom_button.dart';

@@ -1,9 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:bunny_cove_app/common_libs.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../common/widgets/button/custom_button.dart';
-import '../../../../common/widgets/snackbar/custom_snackbar.dart';
-import '../../../../core/config/theme/color.dart';
 import '../../../../service_locator.dart';
 import '../bloc/auth_cubit.dart';
 import '../bloc/auth_state.dart';
@@ -52,7 +48,10 @@ class _SignInPageState extends State<SignInPage> {
                   if (state is AuthFailure) {
                     CustomSnackBar.show(
                       context,
-                      message: state.message,
+                      message: context.getLocalizedError(
+                        state.code,
+                        fallback: state.message,
+                      ),
                       type: SnackBarType.error,
                     );
                   } else if (state is AuthSuccess) {
