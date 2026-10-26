@@ -3,6 +3,7 @@
 ## Project Status: In Progress (Phase 2: Authentication, Swagger & PostgreSQL)
 
 ### Phase 0: Project Setup & Specification
+
 - [x] Create workspace directories (`mobile` and `server`)
 - [x] Establish Master Project Rules ([rule.md](../rule.md))
 - [x] Establish Master Project Specification & Database Architecture ([general.md](../general.md))
@@ -12,6 +13,7 @@
 ---
 
 ### Phase 1: Server Foundation & Real-Time Room Gateway (NestJS)
+
 - [x] 1.1 Scaffold NestJS project in `server/` with clean TypeScript setup
 - [x] 1.2 Install and configure WebSockets & validation packages
 - [x] 1.3 Implement Common Architecture Layer (`response-codes.ts`, `transform.interceptor.ts`, `all-exceptions.filter.ts`)
@@ -22,6 +24,7 @@
 ---
 
 ### Phase 2: Authentication (JWT Access/Refresh, Login/Logout), Swagger UI & PostgreSQL Setup
+
 - [x] 2.1 Install Dependencies:
   - `@nestjs/swagger`
   - `@nestjs/jwt`, `@nestjs/passport`, `passport`, `passport-jwt`, `bcrypt`, `@types/bcrypt`, `cookie-parser`, `@types/cookie-parser`, `@prisma/adapter-pg`, `pg`, `@types/pg`
@@ -69,9 +72,49 @@
 ---
 
 ### Upcoming Phases
+
 - [ ] Phase 3: Implement Realtime In-Room Chat & Bunny Stickers on Server
 - [ ] Phase 4: Implement Caro (Gomoku) 15x15 Game Engine on Server
 - [ ] Phase 5: Implement Bingo 5x5 Game Engine on Server
-- [ ] Phase 6: Initialize Flutter Client in `mobile/` with Cozy Pastel Theme & ScreenUtil
+### Phase 6: Initialize Flutter Client in `mobile/` with Clean Architecture (matching `tour_guide_client`)
+- [x] 6.1 Configure Project Manifest & Localization:
+  - Create `mobile/l10n.yaml` (arb-dir: `lib/core/config/lang/arb`)
+  - Create `mobile/pubspec.yaml` aligned with `tour_guide_client` dependencies
+  - Create `mobile/.env` & `mobile/.env.example`
+- [x] 6.2 Setup Core Layer (`mobile/lib/core/`):
+  - `config/lang/`: `l10n.dart` + `arb/app_en.arb`, `app_vi.arb`, `app_localizations.dart`, `app_localizations_en.dart`, `app_localizations_vi.dart`
+  - `config/routes/`: `routes.dart` (`AppRouter.generateRoute`) with `_buildSlideRoute`
+  - `config/theme/`: `color.dart` (Pastel palette), `theme.dart`, `typography.dart`
+  - `error/`: `failures.dart` (`Failure`, `ServerFailure`, `CacheFailure`, `NetworkFailure`)
+  - `network/`: `dio_client.dart` with token interceptor and connection error handling
+  - `usecases/`: `usecase.dart` and `no_params.dart`
+  - `utils/`: `navigation_utils.dart`
+- [x] 6.3 Setup Common Layer (`mobile/lib/common/`):
+  - `constants/`: `app_route.constant.dart`, `app_urls.constant.dart`, `app_colors.dart`, `app_default_image.constant.dart`, `response_codes.constant.dart`, `storage_keys.constant.dart`
+  - `bloc/`:
+    - `lang/`: `locale_cubit.dart` and `locale_state.dart`
+    - `auth/`: `auth_state_cubit.dart` and `auth_state.dart`
+  - `widgets/`:
+    - `dialog/custom_dialog.dart`
+    - `snackbar/custom_snackbar.dart`
+    - `button/custom_button.dart`
+- [x] 6.4 Setup Dependency Injection & Shared Exports:
+  - `lib/service_locator.dart`: GetIt setup with SharedPreferences, DioClient, Cubits, Repositories, and UseCases
+  - `lib/common_libs.dart`: Consolidated exports
+- [x] 6.5 Setup Feature-based Clean Architecture Base (`lib/features/`):
+  - `splash/`: `presentation/pages/splash_screen.page.dart` with animated logo and auth-check navigation
+  - `auth/`:
+    - `data/`: `data_sources/remote/auth_api_service.dart`, `data_sources/local/auth_local_service.dart`, `models/user_model.dart`, `repository/auth_repository_impl.dart`
+    - `domain/`: `repository/auth_repository.dart`, `usecases/is_logged_in.dart`, `usecases/sign_in.dart`, `usecases/sign_up.dart`
+    - `presentation/`: `bloc/auth_cubit.dart`, `bloc/auth_state.dart`, `pages/sign_in.page.dart`
+- [x] 6.6 Setup App Entrypoint (`lib/main.dart`):
+  - `runZonedGuarded`, `dotenv`, `setUpServiceLocator`, `ScreenUtilInit`, `MultiBlocProvider`, `MaterialApp` with `AppLocalizations.delegate`
+
+---
+
+### Upcoming Phases
+- [ ] Phase 3: Implement Realtime In-Room Chat & Bunny Stickers on Server
+- [ ] Phase 4: Implement Caro (Gomoku) 15x15 Game Engine on Server
+- [ ] Phase 5: Implement Bingo 5x5 Game Engine on Server
 - [ ] Phase 7: Connect Flutter Mobile with Server (Room, Games, Chat, Auth)
 - [ ] Phase 8: iOS Specific Polish (Haptics, Audio, Slide Transitions)

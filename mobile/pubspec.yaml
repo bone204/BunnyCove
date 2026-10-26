@@ -1,0 +1,51 @@
+name: bunny_cove_app
+description: "Bunny Cove - Cozy Social Gaming Universe Mobile Client"
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # UI & Responsiveness
+  flutter_screenutil: ^5.9.3
+  google_fonts: ^6.2.1
+
+  # Networking & HTTP
+  dio: ^5.8.0+1
+  dartz: ^0.10.1
+  socket_io_client: ^3.0.1
+  flutter_dotenv: ^5.2.1
+
+  # State Management
+  flutter_bloc: ^9.1.1
+  equatable: ^2.0.7
+
+  # Service Locator
+  get_it: ^8.0.3
+
+  # Preferences & Cache
+  shared_preferences: ^2.5.3
+
+  # Formatting & Logging
+  intl: ^0.20.2
+  logger: ^2.6.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  generate: true
+  uses-material-design: true
+
+  assets:
+    - .env
+    - assets/images/
+    - assets/icons/
