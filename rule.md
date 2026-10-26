@@ -51,10 +51,70 @@ Applies to all 3 platforms: Mobile (Flutter), Web (Next.js), and Backend
 - **Layout & Padding**: All pages must use `SingleChildScrollView` to prevent layout overflow issues (e.g., when the keyboard appears). Maintain consistent horizontal padding (e.g., `20.w`) across all pages.
 - **Loading States**: Always use Shimmer (Skeleton) effects instead of default `CircularProgressIndicator` when displaying data loading states.
 
-### 3. Architecture & Code Organization
-- **Feature-Based Structure**: Place pages and business logic in `lib/features/[feature_name]/presentation/pages/`.
-- **Common Libraries**: Consolidate frequently used package imports inside `lib/common_libs.dart`.
-- **Constants**: Store all reusable strings (routes, assets path, API URLs) in `lib/common/constants/`.
+### 3. Architecture & Code Organization (Feature-Driven Clean Architecture)
+
+Mobile application MUST strictly follow Feature-Driven Clean Architecture matching the reference standard:
+
+```
+mobile/
+├── assets/
+│   ├── icons/
+│   └── images/
+├── l10n.yaml                              # Localization configuration (arb-dir: lib/core/config/lang/arb)
+├── pubspec.yaml                           # Project dependencies (flutter_screenutil, dio, flutter_bloc, get_it, etc.)
+└── lib/
+    ├── main.dart                          # Minimal entrypoint (dotenv, service locator, ScreenUtilInit, MultiBlocProvider)
+    ├── common_libs.dart                   # Single centralized barrel export for UI, routing, theme, constants, widgets
+    ├── service_locator.dart               # GetIt dependency injection registry (External -> DataSources -> Repositories -> UseCases -> Cubits)
+    ├── common/                            # Shared components across features
+    │   ├── bloc/                          # Global app-level state (auth_state_cubit, locale_cubit)
+    │   │   ├── auth/                      # Session authentication state
+    │   │   └── lang/                      # Dynamic language/locale state
+    │   ├── constants/                     # Centralized string constants
+    │   │   ├── app_default_image.constant.dart
+    │   │   ├── app_route.constant.dart
+    │   │   ├── app_urls.constant.dart
+    │   │   ├── response_codes.constant.dart
+    │   │   └── storage_keys.constant.dart
+    │   └── widgets/                       # Reusable UI widgets
+    │       ├── button/custom_button.dart
+    │       ├── dialog/custom_dialog.dart
+    │       └── snackbar/custom_snackbar.dart
+    ├── core/                              # Fundamental application infrastructure
+    │   ├── config/
+    │   │   ├── lang/                      # i18n ARB files (app_en.arb, app_vi.arb) & AppLocalizations
+    │   │   ├── routes/                    # AppRouter.generateRoute with _buildSlideRoute
+    │   │   └── theme/                     # AppColors (Pastel), AppTheme, AppTypography
+    │   ├── error/                         # Failure classes (ServerFailure, CacheFailure, NetworkFailure)
+    │   ├── network/                       # DioClient with interceptors, LoggerInterceptor
+    │   ├── usecases/                      # Base generic UseCase<Type, Params> and NoParams
+    │   └── utils/                         # NavigationUtils (with keyboard dismissal & smooth slide)
+    └── features/                          # Feature-driven Clean Architecture modules
+        └── [feature_name]/                # e.g., auth, splash, profile, room, games, chat, notifications
+            ├── data/
+            │   ├── data_sources/
+            │   │   ├── local/             # Local caching via SharedPreferences ([feature]_local_service.dart)
+            │   │   └── remote/            # Remote API services via DioClient ([feature]_api_service.dart)
+            │   ├── models/                # DTO models with JSON serialization & Equatable
+            │   └── repository/            # Repository implementations resolving data sources via sl
+            ├── domain/
+            │   ├── entities/              # Pure domain business entities
+            │   ├── repository/            # Abstract repository interface contracts
+            │   └── usecases/              # Single-purpose use case classes
+            └── presentation/
+                ├── bloc/                  # [feature]_cubit.dart & [feature]_state.dart (with isClosed guard)
+                ├── pages/                 # [feature].page.dart (with SingleChildScrollView, GestureDetector, ScreenUtil)
+                └── widgets/               # Feature-specific private UI components
+```
+
+- **Barrel Export (`lib/common_libs.dart`)**: Consolidate frequently used package imports (`flutter/material.dart`, `flutter_screenutil`, `routes.dart`, `color.dart`, `theme.dart`, `typography.dart`, constants, `NavigationUtils`, `CustomSnackBar`, `CustomDialog`, `CustomButton`). Feature pages should import `common_libs.dart` instead of individual files.
+- **Dependency Injection (`lib/service_locator.dart`)**: Always register dependencies layer-by-layer:
+  1. External & Core (`SharedPreferences`, `DioClient`)
+  2. Data Sources (`[Feature]ApiService`, `[Feature]LocalService`)
+  3. Repositories (`[Feature]Repository`)
+  4. Use Cases (`[Action][Feature]UseCase`)
+  5. Presentation (`[Feature]Cubit` via `registerFactory`)
+- **Constants Isolation**: Store all reusable strings (routes, assets path, API URLs, storage keys, response codes) in `lib/common/constants/`. Never hardcode raw strings in UI or services.
 
 ### 4. Coding Standards
 - Keep `main.dart` as minimal as possible.
