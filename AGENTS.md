@@ -43,6 +43,16 @@ To eliminate file bloat and prevent rule conflicts, project documentation is str
   - Mobile: `mobile/lib/common/constants/`
   - Web: `web/src/infrastructure/constants/`
 
+### 5. Cross-Platform Shared UI Component Standards (Web & Mobile 1:1 Parity)
+- **Zero-Tolerance Component Discrepancy**: All common UI components (Buttons, Cards, Inputs, Dialogs, Snackbars/Toasts, Badges/Pills, Avatars) MUST strictly share identical geometry, border-radius tokens, border widths, elevation shadows, typography roles, and interactive states between Flutter Mobile and Next.js Web as specified in `design-style.md`:
+  - **Buttons**: Border-radius `16px` (`16.r` / `rounded-2xl`), height `50px - 52px` (`52.h` / `h-13`), bold/semi-bold typography, consistent variant styling (Primary, Secondary Outline, Ghost, Danger), active scale transition & haptics.
+  - **Cards & Containers**: Border-radius `20px` (`20.r` / `rounded-3xl`), `1px solid var(--border)`, soft warm drop-shadow, dynamic surface background.
+  - **Input Fields**: Border-radius `14px` (`14.r` / `rounded-xl`), height `50px` (`50.h` / `h-12`), `1px` idle border ➔ `2px` focus border in Primary with subtle glow ring.
+  - **Dialogs & Modals**: Border-radius `24px` (`24.r` / `rounded-3xl`), backdrop-blur glassmorphism overlay, mascot header icon.
+  - **Snackbars & Toasts**: Floating pill shape (`16.r` / `rounded-2xl`), floating elevation, leading status icons (`success`, `error`, `warning`, `info`).
+  - **Badges & Pills**: Capsule shape (`999px` / `rounded-full`), padding `12px` horizontal, `4px` vertical (`px-3 py-1`).
+  - **Interaction**: Web must enforce `cursor-pointer` and `select-none` on all clickable components; Mobile must trigger `HapticFeedback.lightImpact()` on button taps.
+
 ---
 
 ## 📱 PART II: FLUTTER MOBILE DIRECTIVES (`mobile/`)

@@ -97,38 +97,25 @@ class _SignInPageState extends State<SignInPage> {
                           ),
                         ),
                         SizedBox(height: 36.h),
-                        TextFormField(
+                        CustomTextField(
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
-                          decoration: InputDecoration(
-                            labelText: l10n.email,
-                            hintText: l10n.emailHint,
-                            filled: true,
-                            fillColor: Theme.of(context).cardTheme.color ?? Theme.of(context).colorScheme.surface,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(14.r),
-                              borderSide: BorderSide.none,
-                            ),
-                            prefixIcon: const Icon(Icons.email_outlined),
-                          ),
+                          labelText: l10n.email,
+                          hintText: l10n.emailHint,
+                          prefixIcon: const Icon(Icons.email_outlined),
                           validator: (value) => (value == null || value.isEmpty)
                               ? l10n.pleaseEnterEmail
                               : null,
                         ),
                         SizedBox(height: 16.h),
-                        TextFormField(
+                        CustomTextField(
                           controller: _passwordController,
                           obscureText: true,
-                          decoration: InputDecoration(
-                            labelText: l10n.password,
-                            filled: true,
-                            fillColor: Theme.of(context).cardTheme.color ?? Theme.of(context).colorScheme.surface,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(14.r),
-                              borderSide: BorderSide.none,
-                            ),
-                            prefixIcon: const Icon(Icons.lock_outline),
-                          ),
+                          labelText: l10n.password,
+                          hintText: '••••••••',
+                          prefixIcon: const Icon(Icons.lock_outline),
+                          textInputAction: TextInputAction.done,
+                          onFieldSubmitted: (_) => _onSignInPressed(context),
                           validator: (value) => (value == null || value.isEmpty)
                               ? l10n.pleaseEnterPassword
                               : null,

@@ -9,25 +9,30 @@ class CustomSnackBar {
     SnackBarType type = SnackBarType.info,
     Duration duration = const Duration(seconds: 3),
   }) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     Color backgroundColor;
+    Color textColor = Colors.white;
     IconData icon;
 
     switch (type) {
       case SnackBarType.success:
-        backgroundColor = const Color(0xFF7CB518);
-        icon = Icons.check_circle_outline;
+        backgroundColor = isDark ? AppColors.darkSuccess : AppColors.success;
+        icon = Icons.check_circle_rounded;
         break;
       case SnackBarType.error:
-        backgroundColor = const Color(0xFFD90429);
-        icon = Icons.error_outline;
+        backgroundColor = isDark ? AppColors.darkError : AppColors.error;
+        icon = Icons.error_rounded;
         break;
       case SnackBarType.warning:
-        backgroundColor = const Color(0xFFFFB703);
-        icon = Icons.warning_amber_outlined;
+        backgroundColor = AppColors.warning;
+        icon = Icons.warning_rounded;
         break;
       case SnackBarType.info:
-        backgroundColor = const Color(0xFF4A3E3D);
-        icon = Icons.info_outline;
+        backgroundColor = isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
+        textColor = isDark ? theme.scaffoldBackgroundColor : Colors.white;
+        icon = Icons.info_rounded;
         break;
     }
 
@@ -36,18 +41,24 @@ class CustomSnackBar {
       SnackBar(
         backgroundColor: backgroundColor,
         behavior: SnackBarBehavior.floating,
+        elevation: 4,
+        margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
         duration: duration,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.r),
+        ),
         content: Row(
           children: [
-            Icon(icon, color: Colors.white, size: 20.r),
-            SizedBox(width: 10.w),
+            Icon(icon, color: textColor, size: 22.r),
+            SizedBox(width: 12.w),
             Expanded(
               child: Text(
                 message,
-                style: (Theme.of(context).textTheme.bodyMedium ??
-                        AppTypography.bodyMedium)
-                    .copyWith(color: Colors.white),
+                style: (theme.textTheme.bodyMedium ?? AppTypography.bodyMedium)
+                    .copyWith(
+                  color: textColor,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
           ],

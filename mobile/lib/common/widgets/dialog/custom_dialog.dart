@@ -11,51 +11,85 @@ class CustomDialog {
     String? confirmText,
     String? cancelText,
   }) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final l10n = context.l10n;
+    final resolvedConfirmText = confirmText ?? l10n.dialogOk;
+
+    IconData headerIcon;
+    Color iconColor;
+
+    switch (type) {
+      case DialogType.info:
+        headerIcon = Icons.info_outline_rounded;
+        iconColor = theme.colorScheme.primary;
+        break;
+      case DialogType.warning:
+        headerIcon = Icons.warning_amber_rounded;
+        iconColor = AppColors.warning;
+        break;
+      case DialogType.error:
+        headerIcon = Icons.error_outline_rounded;
+        iconColor = isDark ? AppColors.darkError : AppColors.error;
+        break;
+      case DialogType.confirm:
+        headerIcon = Icons.help_outline_rounded;
+        iconColor = theme.colorScheme.primary;
+        break;
+    }
+
     return showDialog<bool>(
       context: context,
+      barrierColor: Colors.black.withAlpha(120),
       builder: (context) {
-        final l10n = context.l10n;
-        final resolvedConfirmText = confirmText ?? l10n.dialogOk;
-
         return AlertDialog(
-          backgroundColor: Theme.of(context).dialogTheme.backgroundColor ?? Theme.of(context).colorScheme.surface,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
-          title: Text(
-            title,
-            style: (Theme.of(context).textTheme.titleMedium ??
-                    AppTypography.titleMedium)
-                .copyWith(fontWeight: FontWeight.bold),
+          backgroundColor: theme.dialogTheme.backgroundColor ?? theme.colorScheme.surface,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24.r),
+            side: BorderSide(
+              color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+              width: 1,
+            ),
+          ),
+          title: Row(
+            children: [
+              Icon(headerIcon, color: iconColor, size: 28.r),
+              SizedBox(width: 10.w),
+              Expanded(
+                child: Text(
+                  title,
+                  style: (theme.textTheme.titleMedium ?? AppTypography.titleMedium)
+                      .copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                  ),
+                ),
+              ),
+            ],
           ),
           content: Text(
             message,
-            style: Theme.of(context).textTheme.bodyMedium ??
-                AppTypography.bodyMedium,
+            style: (theme.textTheme.bodyMedium ?? AppTypography.bodyMedium).copyWith(
+              color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+              height: 1.4,
+            ),
           ),
+          actionsPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
           actions: [
             if (cancelText != null)
-              TextButton(
+              CustomButton(
+                text: cancelText,
+                variant: ButtonVariant.ghost,
+                width: 100.w,
+                height: 44.h,
                 onPressed: () => Navigator.of(context).pop(false),
-                child: Text(
-                  cancelText,
-                  style: (Theme.of(context).textTheme.labelLarge ??
-                          AppTypography.labelLarge)
-                      .copyWith(color: Theme.of(context).textTheme.bodySmall?.color),
-                ),
               ),
-            ElevatedButton(
+            CustomButton(
+              text: resolvedConfirmText,
+              variant: type == DialogType.error ? ButtonVariant.danger : ButtonVariant.primary,
+              width: cancelText != null ? 120.w : double.infinity,
+              height: 44.h,
               onPressed: () => Navigator.of(context).pop(true),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-              ),
-              child: Text(
-                resolvedConfirmText,
-                style: (Theme.of(context).textTheme.labelLarge ??
-                        AppTypography.labelLarge)
-                    .copyWith(color: Colors.white),
-              ),
             ),
           ],
         );

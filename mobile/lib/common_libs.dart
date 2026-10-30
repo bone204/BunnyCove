@@ -28,6 +28,8 @@ export 'package:bunny_cove_app/core/utils/error_localizer.dart';
 export 'package:bunny_cove_app/common/widgets/snackbar/custom_snackbar.dart';
 export 'package:bunny_cove_app/common/widgets/dialog/custom_dialog.dart';
 export 'package:bunny_cove_app/common/widgets/button/custom_button.dart';
+export 'package:bunny_cove_app/common/widgets/input/custom_text_field.dart';
+export 'package:bunny_cove_app/common/widgets/badge/custom_badge.dart';
 
 // Common BLoC / Cubit
 export 'package:bunny_cove_app/common/bloc/theme/theme_cubit.dart';
