@@ -18,7 +18,7 @@ class CustomDialog {
         final resolvedConfirmText = confirmText ?? l10n.dialogOk;
 
         return AlertDialog(
-          backgroundColor: AppColors.creamBackground,
+          backgroundColor: Theme.of(context).dialogTheme.backgroundColor ?? Theme.of(context).colorScheme.surface,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
           title: Text(
             title,
@@ -39,13 +39,13 @@ class CustomDialog {
                   cancelText,
                   style: (Theme.of(context).textTheme.labelLarge ??
                           AppTypography.labelLarge)
-                      .copyWith(color: AppColors.mutedText),
+                      .copyWith(color: Theme.of(context).textTheme.bodySmall?.color),
                 ),
               ),
             ElevatedButton(
               onPressed: () => Navigator.of(context).pop(true),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.peachPrimary,
+                backgroundColor: Theme.of(context).colorScheme.primary,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12.r),
                 ),

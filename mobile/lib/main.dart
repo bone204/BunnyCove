@@ -47,23 +47,30 @@ class BunnyCoveApp extends StatelessWidget {
           providers: [
             BlocProvider<AuthStateCubit>.value(value: sl<AuthStateCubit>()),
             BlocProvider<LocaleCubit>.value(value: sl<LocaleCubit>()),
+            BlocProvider<ThemeCubit>.value(value: sl<ThemeCubit>()),
           ],
-          child: BlocBuilder<LocaleCubit, LocaleState>(
-            builder: (context, localeState) {
-              return MaterialApp(
-                title: 'Bunny Cove',
-                debugShowCheckedModeBanner: false,
-                theme: AppTheme.lightTheme,
-                locale: localeState.locale,
-                supportedLocales: AppLocalizations.supportedLocales,
-                localizationsDelegates: const [
-                  AppLocalizations.delegate,
-                  GlobalMaterialLocalizations.delegate,
-                  GlobalWidgetsLocalizations.delegate,
-                  GlobalCupertinoLocalizations.delegate,
-                ],
-                initialRoute: AppRouteConstant.splash,
-                onGenerateRoute: AppRouter.generateRoute,
+          child: BlocBuilder<ThemeCubit, ThemeState>(
+            builder: (context, themeState) {
+              return BlocBuilder<LocaleCubit, LocaleState>(
+                builder: (context, localeState) {
+                  return MaterialApp(
+                    title: 'Bunny Cove',
+                    debugShowCheckedModeBanner: false,
+                    theme: AppTheme.lightTheme,
+                    darkTheme: AppTheme.darkTheme,
+                    themeMode: themeState.themeMode,
+                    locale: localeState.locale,
+                    supportedLocales: AppLocalizations.supportedLocales,
+                    localizationsDelegates: const [
+                      AppLocalizations.delegate,
+                      GlobalMaterialLocalizations.delegate,
+                      GlobalWidgetsLocalizations.delegate,
+                      GlobalCupertinoLocalizations.delegate,
+                    ],
+                    initialRoute: AppRouteConstant.splash,
+                    onGenerateRoute: AppRouter.generateRoute,
+                  );
+                },
               );
             },
           ),

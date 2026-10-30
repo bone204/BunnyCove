@@ -11,6 +11,7 @@ import 'features/auth/domain/usecases/sign_up.dart';
 import 'features/auth/presentation/bloc/auth_cubit.dart';
 import 'common/bloc/auth/auth_state_cubit.dart';
 import 'common/bloc/lang/locale_cubit.dart';
+import 'common/bloc/theme/theme_cubit.dart';
 
 final sl = GetIt.instance;
 
@@ -47,6 +48,9 @@ void setUpServiceLocator(SharedPreferences prefs) {
   );
   sl.registerLazySingleton<LocaleCubit>(
     () => LocaleCubit(sl<SharedPreferences>()),
+  );
+  sl.registerLazySingleton<ThemeCubit>(
+    () => ThemeCubit(sl<SharedPreferences>()),
   );
   sl.registerFactory<AuthCubit>(
     () => AuthCubit(

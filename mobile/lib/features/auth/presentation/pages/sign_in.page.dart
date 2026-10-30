@@ -41,7 +41,7 @@ class _SignInPageState extends State<SignInPage> {
       child: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: Scaffold(
-          backgroundColor: AppColors.creamBackground,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           body: SafeArea(
             child: SingleChildScrollView(
               padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 32.h),
@@ -92,7 +92,7 @@ class _SignInPageState extends State<SignInPage> {
                             style: (Theme.of(context).textTheme.bodyMedium ??
                                     AppTypography.bodyMedium)
                                 .copyWith(
-                              color: AppColors.mutedText,
+                              color: Theme.of(context).textTheme.bodySmall?.color,
                             ),
                           ),
                         ),
@@ -104,7 +104,7 @@ class _SignInPageState extends State<SignInPage> {
                             labelText: l10n.email,
                             hintText: l10n.emailHint,
                             filled: true,
-                            fillColor: AppColors.cardSurface,
+                            fillColor: Theme.of(context).cardTheme.color ?? Theme.of(context).colorScheme.surface,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14.r),
                               borderSide: BorderSide.none,
@@ -122,7 +122,7 @@ class _SignInPageState extends State<SignInPage> {
                           decoration: InputDecoration(
                             labelText: l10n.password,
                             filled: true,
-                            fillColor: AppColors.cardSurface,
+                            fillColor: Theme.of(context).cardTheme.color ?? Theme.of(context).colorScheme.surface,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14.r),
                               borderSide: BorderSide.none,

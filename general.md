@@ -12,7 +12,7 @@
 ### 1.1. Tầm nhìn & Phong cách Trải nghiệm (Concept & Aesthetics)
 - **Concept "Cozy Social Gaming Universe"**: Ứng dụng tạo ra một không gian ấm cúng, vui tươi, thư giãn và gắn kết cộng đồng người chơi thông qua các mini-game đa dạng và phòng chơi linh hoạt.
 - **Phong cách thẩm mỹ (Aesthetics)**:
-  - Tông màu chủ đạo: Pastel ấm áp (Kem `#FFFDF9`, Cam đào pastel `#FFB7A1`, Xanh xô thơm `#A7C4B5`, Hồng đất `#D4A5A5`, Chữ màu mận đậm `#4A3E3D`).
+  - Tông màu chủ đạo: Hệ thống "Honey Oak & Sweet Cream" đồng bộ 1:1 giữa Mobile và Web, hỗ trợ trọn vẹn cả 2 Theme (Light Mode: Kem Sữa #FAF7F2 & Gỗ Sồi #C68B59; Dark Mode: Gỗ Mun #1F1A17 & Hổ Phách #D99B66), kết hợp các điểm nhấn Mascot (Cà rốt cam #FFA502, Nơ hồng #FF7597, Cỏ ba lá xanh #4E8752).
   - Hình tượng linh vật: Chú thỏ trắng dễ thương (Bunny mascot) xuyên suốt từ logo, sticker chat, tem cờ caro đến dấu dập bingo.
   - Vi tương tác (Micro-interactions) & Phản hồi xúc giác (Haptic Feedback): Rung phản hồi nhẹ chuẩn iOS (`HapticFeedback.selectionClick()` khi bấm nút, đi quân cờ; `HapticFeedback.heavyImpact()` khi chiến thắng).
   - Trải nghiệm thị giác: Hiệu ứng chuyển cảnh trượt (`_buildSlideRoute`), hiệu ứng khung xương tải dữ liệu (Shimmer Skeleton), bo góc mềm mại trên toàn bộ UI.

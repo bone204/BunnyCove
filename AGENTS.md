@@ -81,6 +81,14 @@ To eliminate file bloat and prevent rule conflicts, project documentation is str
 - Navigation: Use `NavigationUtils` with `_buildSlideRoute` in `AppRouter`. Delay before `Navigator.pop()` with `FocusManager.instance.primaryFocus?.unfocus()`.
 - Dialogs & Alerts: Always use `CustomSnackBar.show` and `CustomDialog.show`. Never instantiate default `ScaffoldMessenger` or raw `AlertDialog`.
 
+### 6. Light/Dark Theme Setup (Mandatory 2 Themes)
+- **Unified Visual Identity**: Mobile must synchronize 1:1 with Web using the shared "Honey Oak & Sweet Cream" design tokens defined in `design-style.md` and `AppColors`.
+- **Implementation**:
+  - Implement full support for both `AppTheme.lightTheme` and `AppTheme.darkTheme`.
+  - State managed via `ThemeCubit` (`mobile/lib/common/bloc/theme/theme_cubit.dart`) with `ThemeMode.system`, `ThemeMode.light`, and `ThemeMode.dark` persisted in `SharedPreferences`.
+  - All UI widgets, pages, buttons, dialogs, and text fields must strictly consume dynamic colors via `Theme.of(context).colorScheme`, `Theme.of(context).scaffoldBackgroundColor`, or theme-adaptive getters rather than hardcoding static light colors, ensuring seamless real-time theme toggling without visual glitches.
+
+
 ---
 
 ## 🖥️ PART III: SERVER BACKEND DIRECTIVES (`server/`)

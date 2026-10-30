@@ -43,7 +43,7 @@ class _SplashScreenPageState extends State<SplashScreenPage>
     final l10n = context.l10n;
 
     return Scaffold(
-      backgroundColor: AppColors.creamBackground,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Center(
         child: ScaleTransition(
           scale: _scaleAnimation,
@@ -66,7 +66,7 @@ class _SplashScreenPageState extends State<SplashScreenPage>
                 style: (Theme.of(context).textTheme.bodyMedium ??
                         AppTypography.bodyMedium)
                     .copyWith(
-                  color: AppColors.mutedText,
+                  color: Theme.of(context).textTheme.bodySmall?.color,
                 ),
               ),
             ],
