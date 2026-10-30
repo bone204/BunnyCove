@@ -9,7 +9,7 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
-  BadRequestException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -96,7 +96,10 @@ export class UsersController {
   async getMyProfile(@Req() request: Request) {
     const userId = (request.user as any)?.id;
     if (!userId) {
-      throw new BadRequestException('User identifier not found in session');
+      throw new UnauthorizedException({
+        code: ResponseCodes.UNAUTHORIZED,
+        message: 'User identifier not found in session',
+      });
     }
 
     const profile = await this.usersService.getMyProfile(userId);
@@ -124,7 +127,10 @@ export class UsersController {
   ) {
     const userId = (request.user as any)?.id;
     if (!userId) {
-      throw new BadRequestException('User identifier not found in session');
+      throw new UnauthorizedException({
+        code: ResponseCodes.UNAUTHORIZED,
+        message: 'User identifier not found in session',
+      });
     }
 
     const updatedUser = await this.usersService.updateProfile(userId, dto);
@@ -146,7 +152,10 @@ export class UsersController {
   async getMyStats(@Req() request: Request) {
     const userId = (request.user as any)?.id;
     if (!userId) {
-      throw new BadRequestException('User identifier not found in session');
+      throw new UnauthorizedException({
+        code: ResponseCodes.UNAUTHORIZED,
+        message: 'User identifier not found in session',
+      });
     }
 
     const stats = await this.usersService.getUserStats(userId);
@@ -171,7 +180,10 @@ export class UsersController {
   ) {
     const userId = (request.user as any)?.id;
     if (!userId) {
-      throw new BadRequestException('User identifier not found in session');
+      throw new UnauthorizedException({
+        code: ResponseCodes.UNAUTHORIZED,
+        message: 'User identifier not found in session',
+      });
     }
 
     const matchHistory = await this.usersService.getUserMatchHistory(userId, query);

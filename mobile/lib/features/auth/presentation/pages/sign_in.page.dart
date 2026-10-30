@@ -1,8 +1,8 @@
 import 'package:bunny_cove_app/common_libs.dart';
+import 'package:bunny_cove_app/service_locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../service_locator.dart';
-import '../bloc/auth_cubit.dart';
-import '../bloc/auth_state.dart';
+import 'package:bunny_cove_app/features/auth/presentation/bloc/auth_cubit.dart';
+import 'package:bunny_cove_app/features/auth/presentation/bloc/auth_state.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});

@@ -11,7 +11,7 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
-  BadRequestException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -47,7 +47,10 @@ export class NotificationsController {
   ) {
     const userId = (request.user as any)?.id;
     if (!userId) {
-      throw new BadRequestException('User identifier not found in session');
+      throw new UnauthorizedException({
+        code: ResponseCodes.UNAUTHORIZED,
+        message: 'User identifier not found in session',
+      });
     }
 
     const result = await this.notificationsService.getUserNotifications(userId, query);
@@ -67,7 +70,10 @@ export class NotificationsController {
   async getUnreadCount(@Req() request: Request) {
     const userId = (request.user as any)?.id;
     if (!userId) {
-      throw new BadRequestException('User identifier not found in session');
+      throw new UnauthorizedException({
+        code: ResponseCodes.UNAUTHORIZED,
+        message: 'User identifier not found in session',
+      });
     }
 
     const unreadCount = await this.notificationsService.getUnreadCount(userId);
@@ -87,7 +93,10 @@ export class NotificationsController {
   async markAllAsRead(@Req() request: Request) {
     const userId = (request.user as any)?.id;
     if (!userId) {
-      throw new BadRequestException('User identifier not found in session');
+      throw new UnauthorizedException({
+        code: ResponseCodes.UNAUTHORIZED,
+        message: 'User identifier not found in session',
+      });
     }
 
     const result = await this.notificationsService.markAllAsRead(userId);
@@ -112,7 +121,10 @@ export class NotificationsController {
   ) {
     const userId = (request.user as any)?.id;
     if (!userId) {
-      throw new BadRequestException('User identifier not found in session');
+      throw new UnauthorizedException({
+        code: ResponseCodes.UNAUTHORIZED,
+        message: 'User identifier not found in session',
+      });
     }
 
     const updated = await this.notificationsService.markAsRead(userId, notificationId);
@@ -136,7 +148,10 @@ export class NotificationsController {
   ) {
     const userId = (request.user as any)?.id;
     if (!userId) {
-      throw new BadRequestException('User identifier not found in session');
+      throw new UnauthorizedException({
+        code: ResponseCodes.UNAUTHORIZED,
+        message: 'User identifier not found in session',
+      });
     }
 
     await this.notificationsService.updateFcmToken(userId, dto.fcmToken);
@@ -156,7 +171,10 @@ export class NotificationsController {
   async clearFcmToken(@Req() request: Request) {
     const userId = (request.user as any)?.id;
     if (!userId) {
-      throw new BadRequestException('User identifier not found in session');
+      throw new UnauthorizedException({
+        code: ResponseCodes.UNAUTHORIZED,
+        message: 'User identifier not found in session',
+      });
     }
 
     await this.notificationsService.clearFcmToken(userId);
@@ -181,7 +199,10 @@ export class NotificationsController {
   ) {
     const userId = (request.user as any)?.id;
     if (!userId) {
-      throw new BadRequestException('User identifier not found in session');
+      throw new UnauthorizedException({
+        code: ResponseCodes.UNAUTHORIZED,
+        message: 'User identifier not found in session',
+      });
     }
 
     await this.notificationsService.deleteNotification(userId, notificationId);

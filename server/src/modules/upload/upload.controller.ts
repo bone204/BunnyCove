@@ -8,6 +8,7 @@ import {
   Body,
   UseGuards,
   BadRequestException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -59,7 +60,10 @@ export class UploadController {
   ) {
     const userId = (request.user as any)?.id;
     if (!userId) {
-      throw new BadRequestException('User not authenticated');
+      throw new UnauthorizedException({
+        code: ResponseCodes.UNAUTHORIZED,
+        message: 'User not authenticated',
+      });
     }
 
     const avatarUrl = await this.uploadService.uploadAvatar(file, userId);
@@ -117,7 +121,10 @@ export class UploadController {
   ) {
     const userId = (request.user as any)?.id;
     if (!roomId) {
-      throw new BadRequestException('roomId is required for chat images');
+      throw new BadRequestException({
+        code: ResponseCodes.VALIDATION_ERROR,
+        message: 'roomId is required for chat images',
+      });
     }
 
     const result = await this.uploadService.uploadChatImage(

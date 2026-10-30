@@ -40,6 +40,19 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
       if (typeof res === 'string') {
         message = res;
+        if (status === 404) {
+          code = ResponseCodes.NOT_FOUND;
+        } else if (status === 401) {
+          code = ResponseCodes.UNAUTHORIZED;
+        } else if (status === 403) {
+          code = ResponseCodes.FORBIDDEN;
+        } else if (status === 409) {
+          code = ResponseCodes.EMAIL_ALREADY_EXISTS;
+        } else if (status === 400) {
+          code = ResponseCodes.VALIDATION_ERROR;
+        } else {
+          code = ResponseCodes.SERVER_ERROR;
+        }
       } else if (typeof res === 'object' && res !== null) {
         const errorObj = res as Record<string, any>;
         message = errorObj.message || exception.message;

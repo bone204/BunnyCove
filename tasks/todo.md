@@ -131,6 +131,12 @@
   - [x] Replace all hardcoded strings in `SignInPage`, `SplashScreenPage`, `CustomDialog`, `AppRouter` with `context.l10n`
   - [x] Update `AGENTS.md`, and `tasks/lessons.md` with strict Zero Hardcoded Text rules
   - [x] Verify clean compilation with `flutter analyze`
+- [x] 6.10 Codebase Compliance Audit & Quality Enforcement (`/recheck` Skill):
+  - [x] Perform exhaustive backend audit in `server/src/`: eliminate plain-string exceptions, enforce `{ code, message }` structured envelope in all controllers/services, fix fallback code in `AllExceptionsFilter`
+  - [x] Clean 100% deep relative imports (`../../../../core/`) in `mobile/lib/` to clean package imports (`package:bunny_cove_app/...`), export `Failure`, `UseCase`, `NoParams` via `common_libs.dart`
+  - [x] Fix runtime bug in `mobile/lib/main.dart` (registered `AppLocalizations.delegate` and `supportedLocales`)
+  - [x] Create comprehensive `/recheck` skill in `.agents/skills/recheck/SKILL.md` with step-by-step verification runbook
+  - [x] Verify 100% passing across all gates: `flutter analyze` (0 issues), `npm run lint` (0 warnings/errors), `npm run build`, and `npm run test:verify` (6/6 test suites passed)
 
 ---
 

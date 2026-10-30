@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
-import '../../../../core/error/failures.dart';
-import '../../data/models/user_model.dart';
+import 'package:bunny_cove_app/common_libs.dart';
+import 'package:bunny_cove_app/features/auth/data/models/user_model.dart';
 
 abstract class AuthRepository {
   Future<Either<Failure, UserModel>> signIn({

@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import '../../data/models/user_model.dart';
+import 'package:bunny_cove_app/features/auth/data/models/user_model.dart';
 
 abstract class AuthCubitState extends Equatable {
   const AuthCubitState();

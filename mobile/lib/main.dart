@@ -1,17 +1,12 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
+import 'package:bunny_cove_app/common_libs.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'common/bloc/auth/auth_state_cubit.dart';
 import 'common/bloc/lang/locale_cubit.dart';
 import 'common/bloc/lang/locale_state.dart';
-import 'common/constants/app_route.constant.dart';
-import 'core/config/lang/l10n.dart';
-import 'core/config/routes/routes.dart';
-import 'core/config/theme/theme.dart';
 import 'service_locator.dart';
 
 void main() async {
@@ -60,8 +55,9 @@ class BunnyCoveApp extends StatelessWidget {
                 debugShowCheckedModeBanner: false,
                 theme: AppTheme.lightTheme,
                 locale: localeState.locale,
-                supportedLocales: L10n.all,
+                supportedLocales: AppLocalizations.supportedLocales,
                 localizationsDelegates: const [
+                  AppLocalizations.delegate,
                   GlobalMaterialLocalizations.delegate,
                   GlobalWidgetsLocalizations.delegate,
                   GlobalCupertinoLocalizations.delegate,

@@ -1,10 +1,10 @@
 import 'package:dartz/dartz.dart';
-import '../../../../core/error/failures.dart';
-import '../../../../service_locator.dart';
-import '../../domain/repository/auth_repository.dart';
-import '../data_sources/local/auth_local_service.dart';
-import '../data_sources/remote/auth_api_service.dart';
-import '../models/user_model.dart';
+import 'package:bunny_cove_app/common_libs.dart';
+import 'package:bunny_cove_app/service_locator.dart';
+import 'package:bunny_cove_app/features/auth/domain/repository/auth_repository.dart';
+import 'package:bunny_cove_app/features/auth/data/data_sources/local/auth_local_service.dart';
+import 'package:bunny_cove_app/features/auth/data/data_sources/remote/auth_api_service.dart';
+import 'package:bunny_cove_app/features/auth/data/models/user_model.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   late final AuthApiService _apiService;

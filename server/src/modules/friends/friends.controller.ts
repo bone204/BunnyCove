@@ -9,7 +9,7 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
-  BadRequestException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -48,7 +48,10 @@ export class FriendsController {
   ) {
     const userId = (request.user as any)?.id;
     if (!userId) {
-      throw new BadRequestException('User identifier not found in session');
+      throw new UnauthorizedException({
+        code: ResponseCodes.UNAUTHORIZED,
+        message: 'User identifier not found in session',
+      });
     }
 
     return this.friendsService.sendFriendRequest(userId, dto);
@@ -69,7 +72,10 @@ export class FriendsController {
   ) {
     const userId = (request.user as any)?.id;
     if (!userId) {
-      throw new BadRequestException('User identifier not found in session');
+      throw new UnauthorizedException({
+        code: ResponseCodes.UNAUTHORIZED,
+        message: 'User identifier not found in session',
+      });
     }
 
     return this.friendsService.acceptFriendRequest(userId, friendshipId);
@@ -90,7 +96,10 @@ export class FriendsController {
   ) {
     const userId = (request.user as any)?.id;
     if (!userId) {
-      throw new BadRequestException('User identifier not found in session');
+      throw new UnauthorizedException({
+        code: ResponseCodes.UNAUTHORIZED,
+        message: 'User identifier not found in session',
+      });
     }
 
     return this.friendsService.rejectFriendRequest(userId, friendshipId);
@@ -111,7 +120,10 @@ export class FriendsController {
   ) {
     const userId = (request.user as any)?.id;
     if (!userId) {
-      throw new BadRequestException('User identifier not found in session');
+      throw new UnauthorizedException({
+        code: ResponseCodes.UNAUTHORIZED,
+        message: 'User identifier not found in session',
+      });
     }
 
     return this.friendsService.cancelFriendRequest(userId, friendshipId);
@@ -131,7 +143,10 @@ export class FriendsController {
   ) {
     const userId = (request.user as any)?.id;
     if (!userId) {
-      throw new BadRequestException('User identifier not found in session');
+      throw new UnauthorizedException({
+        code: ResponseCodes.UNAUTHORIZED,
+        message: 'User identifier not found in session',
+      });
     }
 
     return this.friendsService.unfriend(userId, targetUserId);
@@ -146,7 +161,10 @@ export class FriendsController {
   async getFriendsList(@Req() request: Request) {
     const userId = (request.user as any)?.id;
     if (!userId) {
-      throw new BadRequestException('User identifier not found in session');
+      throw new UnauthorizedException({
+        code: ResponseCodes.UNAUTHORIZED,
+        message: 'User identifier not found in session',
+      });
     }
 
     const friends = await this.friendsService.getFriendsList(userId);
@@ -166,7 +184,10 @@ export class FriendsController {
   async getPendingRequests(@Req() request: Request) {
     const userId = (request.user as any)?.id;
     if (!userId) {
-      throw new BadRequestException('User identifier not found in session');
+      throw new UnauthorizedException({
+        code: ResponseCodes.UNAUTHORIZED,
+        message: 'User identifier not found in session',
+      });
     }
 
     const requests = await this.friendsService.getPendingRequests(userId);
@@ -191,7 +212,10 @@ export class FriendsController {
   ) {
     const userId = (request.user as any)?.id;
     if (!userId) {
-      throw new BadRequestException('User identifier not found in session');
+      throw new UnauthorizedException({
+        code: ResponseCodes.UNAUTHORIZED,
+        message: 'User identifier not found in session',
+      });
     }
 
     const status = await this.friendsService.getFriendshipStatus(userId, targetUserId);

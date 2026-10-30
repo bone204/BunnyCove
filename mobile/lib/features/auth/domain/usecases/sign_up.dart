@@ -1,9 +1,9 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
-import '../../../../core/error/failures.dart';
-import '../../../../core/usecases/usecase.dart';
-import '../../data/models/user_model.dart';
-import '../repository/auth_repository.dart';
+import 'package:bunny_cove_app/common_libs.dart';
+
+import 'package:bunny_cove_app/features/auth/data/models/user_model.dart';
+import 'package:bunny_cove_app/features/auth/domain/repository/auth_repository.dart';
 
 class SignUpParams extends Equatable {
   final String email;

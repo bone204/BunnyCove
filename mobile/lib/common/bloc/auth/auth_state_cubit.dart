@@ -1,6 +1,6 @@
+import 'package:bunny_cove_app/common_libs.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../constants/storage_keys.constant.dart';
 import 'auth_state.dart';
 
 class AuthStateCubit extends Cubit<AppAuthState> {

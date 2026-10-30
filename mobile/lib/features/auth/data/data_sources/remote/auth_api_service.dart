@@ -1,6 +1,4 @@
-import 'package:bunny_cove_app/common/constants/app_urls.constant.dart';
-import 'package:bunny_cove_app/common/constants/response_codes.constant.dart';
-import 'package:bunny_cove_app/core/error/failures.dart';
+import 'package:bunny_cove_app/common_libs.dart';
 import 'package:bunny_cove_app/core/network/dio_client.dart';
 import 'package:bunny_cove_app/features/auth/data/models/user_model.dart';
 import 'package:dartz/dartz.dart';
@@ -75,7 +73,7 @@ class AuthApiServiceImpl implements AuthApiService {
         return Right(UserModel.fromJson(userJson));
       }
       return Left(ServerFailure(
-        message: response.data['error']?['message'] ?? 'Registration failed',
+        message: response.data['error']?['message'] ?? 'Sign up failed',
         code: response.data['error']?['code'] ?? ResponseCodesConstant.serverError,
       ));
     } on DioException catch (e) {
@@ -89,32 +87,30 @@ class AuthApiServiceImpl implements AuthApiService {
   }
 
   Failure _handleDioError(DioException e) {
-    if (e.response != null) {
-      final errorData = e.response?.data;
-      if (errorData is Map<String, dynamic> && errorData['error'] != null) {
-        final err = errorData['error'];
-        return ServerFailure(
-          message: err['message']?.toString() ?? 'Server error',
-          code: err['code']?.toString() ?? ResponseCodesConstant.serverError,
-        );
-      }
-      return ServerFailure(
-        message: e.message ?? 'Server error',
-        code: ResponseCodesConstant.serverError,
-      );
-    }
-
     if (e.type == DioExceptionType.connectionTimeout ||
         e.type == DioExceptionType.sendTimeout ||
         e.type == DioExceptionType.receiveTimeout) {
-      return const NetworkFailure(
+      return const ServerFailure(
         message: 'Connection timed out',
         code: ResponseCodesConstant.connectionTimeout,
       );
     }
-
-    return const NetworkFailure(
-      message: 'Network connection error',
+    if (e.type == DioExceptionType.connectionError) {
+      return const ServerFailure(
+        message: 'Network connection failed',
+        code: ResponseCodesConstant.networkError,
+      );
+    }
+    final errorData = e.response?.data;
+    if (errorData is Map<String, dynamic> && errorData.containsKey('error')) {
+      final errorMap = errorData['error'] as Map<String, dynamic>;
+      return ServerFailure(
+        message: errorMap['message'] ?? 'Server error',
+        code: errorMap['code'] ?? ResponseCodesConstant.serverError,
+      );
+    }
+    return ServerFailure(
+      message: e.message ?? 'Network error',
       code: ResponseCodesConstant.networkError,
     );
   }

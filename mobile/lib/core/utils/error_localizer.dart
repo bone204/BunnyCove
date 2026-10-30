@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
-import '../../common/constants/response_codes.constant.dart';
-import '../config/lang/arb/app_localizations.dart';
+import 'package:bunny_cove_app/common/constants/response_codes.constant.dart';
+import 'package:bunny_cove_app/core/config/lang/arb/app_localizations.dart';
 
 extension ErrorLocalizationExtension on BuildContext {
   /// Resolves a standardized error code to its localized string based on the active locale.

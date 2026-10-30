@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/usecases/sign_in.dart';
-import '../../domain/usecases/sign_up.dart';
+import 'package:bunny_cove_app/features/auth/domain/usecases/sign_in.dart';
+import 'package:bunny_cove_app/features/auth/domain/usecases/sign_up.dart';
 import 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthCubitState> {

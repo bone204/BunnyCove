@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:bunny_cove_app/common_libs.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../constants/storage_keys.constant.dart';
 import 'locale_state.dart';
 
 class LocaleCubit extends Cubit<LocaleState> {

@@ -1,6 +1,6 @@
 import 'package:bunny_cove_app/common_libs.dart';
-import '../../../../features/splash/presentation/pages/splash_screen.page.dart';
-import '../../../../features/auth/presentation/pages/sign_in.page.dart';
+import 'package:bunny_cove_app/features/auth/presentation/pages/sign_in.page.dart';
+import 'package:bunny_cove_app/features/splash/presentation/pages/splash_screen.page.dart';
 
 class AppRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
