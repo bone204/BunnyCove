@@ -70,5 +70,7 @@
   "errorBingoNumberAlreadyCalled": "This number has already been called.",
   "errorInvalidFileType": "Invalid file format. Please upload JPG, PNG, or WebP.",
   "errorFileTooLarge": "File size exceeds the permitted limit.",
-  "errorNoFileProvided": "No file was selected for upload."
+  "errorNoFileProvided": "No file was selected for upload.",
+  "errorInvalidSticker": "The selected sticker is invalid or unavailable.",
+  "errorChatMessageEmpty": "Chat message cannot be empty."
 }

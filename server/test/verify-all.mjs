@@ -11,6 +11,7 @@ const testSuites = [
   { name: 'Cloudinary Upload Flow', file: 'verify-upload-flow.mjs' },
   { name: 'User Profile & Statistics Flow', file: 'verify-profile-flow.mjs' },
   { name: 'Friends & Notifications System Flow', file: 'verify-friends-notifications-flow.mjs' },
+  { name: 'Realtime In-Room Chat & Bunny Stickers Flow', file: 'verify-chat-flow.mjs' },
 ];
 
 async function runScript(suite) {

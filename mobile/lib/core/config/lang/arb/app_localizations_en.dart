@@ -184,4 +184,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorNoFileProvided => 'No file was selected for upload.';
+
+  @override
+  String get errorInvalidSticker =>
+      'The selected sticker is invalid or unavailable.';
+
+  @override
+  String get errorChatMessageEmpty => 'Chat message cannot be empty.';
 }

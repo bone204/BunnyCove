@@ -9,6 +9,7 @@ import { EmailModule } from './modules/email/email.module.js';
 import { UsersModule } from './modules/users/users.module.js';
 import { NotificationsModule } from './modules/notifications/notifications.module.js';
 import { FriendsModule } from './modules/friends/friends.module.js';
+import { ChatModule } from './modules/chat/chat.module.js';
 import { FirebaseModule } from './common/firebase/firebase.module.js';
 
 @Module({
@@ -24,6 +25,7 @@ import { FirebaseModule } from './common/firebase/firebase.module.js';
     UploadModule,
     GamesModule,
     RoomModule,
+    ChatModule,
   ],
   controllers: [],
   providers: [],

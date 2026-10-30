@@ -33,6 +33,9 @@ export const AppDefaults = {
   CLOUDINARY: {
     AVATARS_FOLDER: 'bunny-cove/avatars',
     CHAT_FOLDER: 'bunny-cove/chat',
+    STICKERS_FOLDER: 'bunny-cove/stickers',
+    STICKERS_BASE_URL:
+      'https://res.cloudinary.com/dcf2l7bst/image/upload/v1792641665/bunny-cove/stickers',
   },
 
   // Default avatar for new player registrations

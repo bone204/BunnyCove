@@ -88,6 +88,12 @@ extension ErrorLocalizationExtension on BuildContext {
       case ResponseCodesConstant.noFileProvided:
         return l10n.errorNoFileProvided;
 
+      // Chat
+      case ResponseCodesConstant.invalidSticker:
+        return l10n.errorInvalidSticker;
+      case ResponseCodesConstant.chatMessageEmpty:
+        return l10n.errorChatMessageEmpty;
+
       default:
         return fallback ?? l10n.errorOccurred;
     }

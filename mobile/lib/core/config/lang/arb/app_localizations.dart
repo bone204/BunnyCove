@@ -415,6 +415,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No file was selected for upload.'**
   String get errorNoFileProvided;
+
+  /// No description provided for @errorInvalidSticker.
+  ///
+  /// In en, this message translates to:
+  /// **'The selected sticker is invalid or unavailable.'**
+  String get errorInvalidSticker;
+
+  /// No description provided for @errorChatMessageEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat message cannot be empty.'**
+  String get errorChatMessageEmpty;
 }
 
 class _AppLocalizationsDelegate

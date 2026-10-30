@@ -71,9 +71,31 @@
 
 ---
 
+### Phase 3: Realtime In-Room Chat & Bunny Stickers (NestJS Server & Database)
+
+- [x] 3.1 Sticker Catalog & Constant Definitions:
+  - Create `server/src/common/constants/stickers.constant.ts` defining Bunny sticker pack & quick reactions
+  - Register new response codes in `response-codes.ts`
+  - Synchronize response codes with mobile constants and arb localization
+- [x] 3.2 Database Schema & Chat Persistence:
+  - Update `ChatMessage` model in `server/prisma/schema.prisma` with `roomCode`, `senderName`, and optional `senderId`
+  - Re-generate Prisma Client (`npx prisma generate`)
+- [x] 3.3 Chat Module Implementation (3-Layer Clean Architecture):
+  - DTOs: `send-chat-message.dto.ts`, `send-sticker.dto.ts`, `chat-history-query.dto.ts`
+  - `ChatService`: Save message, fetch room/match history with pagination, validate stickers, in-memory fallback
+  - `ChatController`: `GET /chat/stickers`, `GET /chat/rooms/:roomCode/messages`, `GET /chat/matches/:matchId/messages`
+  - `ChatGateway`: Socket.IO handler for `chat:send_message` with broadcast to room `chat:new_message`
+  - `ChatModule`: Register controller, service, gateway, Prisma & Room dependencies
+- [x] 3.4 Verification & Automated Testing:
+  - Create `server/test/verify-chat-flow.mjs` (Stickers catalog -> Realtime room chat -> Bunny stickers -> History persistence)
+  - Register test suite in `server/test/verify-all.mjs`
+  - Run `npm run test:verify` and verify 100% pass across all 7 test suites
+  - Run `npm run lint` and `npm run build` for zero-error clean validation
+
+---
+
 ### Upcoming Phases
 
-- [ ] Phase 3: Implement Realtime In-Room Chat & Bunny Stickers on Server
 - [ ] Phase 4: Implement Caro (Gomoku) 15x15 Game Engine on Server
 - [ ] Phase 5: Implement Bingo 5x5 Game Engine on Server
 ### Phase 6: Initialize Flutter Client in `mobile/` with Clean Architecture (matching `tour_guide_client`)

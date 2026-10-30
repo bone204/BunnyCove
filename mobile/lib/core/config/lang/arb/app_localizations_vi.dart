@@ -187,4 +187,11 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get errorNoFileProvided => 'Chưa có tệp nào được chọn để tải lên.';
+
+  @override
+  String get errorInvalidSticker =>
+      'Nhãn dán đã chọn không hợp lệ hoặc không khả dụng.';
+
+  @override
+  String get errorChatMessageEmpty => 'Nội dung tin nhắn không được để trống.';
 }

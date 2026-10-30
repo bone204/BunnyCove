@@ -92,6 +92,10 @@ class ResponseCodesConstant {
   // Chat Codes
   static const String chatMessageSent = 'chat_message_sent';
   static const String chatStickerSent = 'chat_sticker_sent';
+  static const String chatHistoryFetched = 'chat_history_fetched';
+  static const String stickersFetched = 'stickers_fetched';
+  static const String invalidSticker = 'invalid_sticker';
+  static const String chatMessageEmpty = 'chat_message_empty';
 
   // Media & Upload Codes
   static const String avatarUploadSuccessful = 'avatar_upload_successful';

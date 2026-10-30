@@ -52,5 +52,7 @@
   "errorBingoNumberAlreadyCalled": "Số này đã được gọi trước đó.",
   "errorInvalidFileType": "Định dạng tệp không được hỗ trợ. Vui lòng chọn JPG, PNG hoặc WebP.",
   "errorFileTooLarge": "Kích thước tệp vượt quá dung lượng cho phép.",
-  "errorNoFileProvided": "Chưa có tệp nào được chọn để tải lên."
+  "errorNoFileProvided": "Chưa có tệp nào được chọn để tải lên.",
+  "errorInvalidSticker": "Nhãn dán đã chọn không hợp lệ hoặc không khả dụng.",
+  "errorChatMessageEmpty": "Nội dung tin nhắn không được để trống."
 }

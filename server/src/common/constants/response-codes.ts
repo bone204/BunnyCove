@@ -91,6 +91,10 @@ export const ResponseCodes = {
   // Chat Codes
   CHAT_MESSAGE_SENT: 'chat_message_sent',
   CHAT_STICKER_SENT: 'chat_sticker_sent',
+  CHAT_HISTORY_FETCHED: 'chat_history_fetched',
+  STICKERS_FETCHED: 'stickers_fetched',
+  INVALID_STICKER: 'invalid_sticker',
+  CHAT_MESSAGE_EMPTY: 'chat_message_empty',
 
   // Media & Upload Codes
   AVATAR_UPLOAD_SUCCESSFUL: 'avatar_upload_successful',
