@@ -169,8 +169,8 @@
 
 
 ### Upcoming Phases
-- [ ] Phase 3: Implement Realtime In-Room Chat & Bunny Stickers on Server
 - [ ] Phase 4: Implement Caro (Gomoku) 15x15 Game Engine on Server
 - [ ] Phase 5: Implement Bingo 5x5 Game Engine on Server
 - [ ] Phase 7: Connect Flutter Mobile with Server (Room, Games, Chat, Auth)
 - [ ] Phase 8: iOS Specific Polish (Haptics, Audio, Slide Transitions)
+- [ ] Phase 9: Initialize Next.js/React Web Client in web/ with 3-Layer Clean Architecture

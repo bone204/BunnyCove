@@ -33,13 +33,15 @@ To eliminate file bloat and prevent rule conflicts, project documentation is str
 - Every backend response/error code created in `server/src/common/constants/response-codes.ts` MUST be synchronously added to:
   - Mobile: `mobile/lib/common/constants/response_codes.constant.dart`
   - Localization files: `mobile/lib/core/config/lang/arb/app_en.arb` and `app_vi.arb`
-- **Error Display Principle**: Backend `error.message` is strictly for debugging/logging. The client UI must NEVER render raw server error strings to end users. Frontend must resolve `error.code` to localized text via `context.getLocalizedError(code)`.
+  - Web: `web/src/infrastructure/constants/response-codes.ts` and locales dictionaries
+- **Error Display Principle**: Backend `error.message` is strictly for debugging/logging. The client UI must NEVER render raw server error strings to end users. Frontend must resolve `error.code` to localized text via localized helpers / context.
 
 ### 4. Zero Hard-coding Standards (Strict)
 - Absolutely NO hard-coded default URLs, mock/fake assets, CDN paths, fallback image generators, or magic strings in services, controllers, DTOs, or models.
 - All default values and paths MUST reside in dedicated constants files:
   - Server: `server/src/common/constants/defaults.ts`
   - Mobile: `mobile/lib/common/constants/`
+  - Web: `web/src/infrastructure/constants/`
 
 ---
 
@@ -102,7 +104,58 @@ To eliminate file bloat and prevent rule conflicts, project documentation is str
 
 ---
 
-## 🛠️ PART IV: ANTIGRAVITY CUSTOMIZATIONS ARCHITECTURE (RULES VS SKILLS)
+## 🌐 PART IV: NEXT.JS / REACT WEB DIRECTIVES (`web/`)
+
+### 1. Light/Dark Theme Setup
+- **Mandatory Configuration**: Every web project must centralize Light/Dark theme toggling from the beginning.
+- **Implementation**:
+  - Use a global `ThemeProvider` to manage theme states and synchronize them with the HTML class (or `data-theme` attribute).
+  - Provide an easily accessible `ThemeToggle` button on the header or sidebar.
+  - Sync colors dynamically via Tailwind CSS variables (or standard CSS variables) for smooth transition effects.
+
+### 2. 3-Layer Clean Architecture & App Router Composition
+Source code must be strictly organized into layers under `src/`:
+- **Domain Layer (`src/domain`)**:
+  - `src/domain/entities`: Contains pure data definitions (Entities/Types).
+  - `src/domain/repositories`: Contains Interfaces for Repositories (e.g., `AuthRepository`).
+  - `src/domain/usecases`: Contains single-purpose Use Case classes.
+  - *Rule*: Independent of network libraries, frameworks, or external APIs.
+- **Application Layer (`src/application`)**:
+  - `src/application/dto`: Contains Data Transfer Objects for data serialization/transmission.
+  - `src/application/mappers`: Contains mappers to map data between layers.
+  - `src/application/services`: Contains intermediate services coordinating data flow.
+- **Infrastructure Layer (`src/infrastructure`)**:
+  - `src/infrastructure/repositories`: Implements Repository Interfaces from the Domain layer (e.g., `RtkAuthRepository`).
+  - `src/infrastructure/rtk` or similar: Sets up global state (Redux Toolkit/Zustand) and API configuration.
+  - `src/infrastructure/http`: Base HTTP client wrappers (Axios/Fetch).
+  - `src/infrastructure/api`: Declares endpoints and handles system API integrations.
+- **Presentation Layer (`src/presentation`)**: UI components and view-only logic:
+  - `pages/`: Contains major page-level components (typically using `"use client"`).
+  - `components/`: Contains smaller reusable UI components.
+  - `hooks/`: Custom hooks for UI logic or global state interactions (e.g., `useAuthState`).
+  - `providers/`: Contains wrapper configurations (`ThemeProvider`, `ReduxProvider`, `QueryClientProvider`, etc.).
+- **Thin Entrypoint App Router (`src/app`)**:
+  - *Rule*: Files named `page.tsx` under `src/app` must be extremely thin. Their sole purpose is to parse server-side parameters (`searchParams`, `params`) and pass them directly to the corresponding Page Component of the Presentation layer. No UI logic or direct API queries are allowed here.
+
+### 3. State Management & Data Fetching
+- **Global State**: Use Redux Toolkit or Zustand as the single source of truth for application state.
+- **API Queries**: Fetch data using libraries with built-in caching (RTK Query / React Query).
+- **Repository Pattern**: All API calls must be wrapped inside Repository implementations to decouple the UI from the network client.
+- **Error Handling**: Use centralized helpers to parse API errors into unified domain-specific errors.
+
+### 4. UI & Styling Standards
+- **Tailwind CSS**: Use Tailwind for styling. Declare variables for colors and effects in the global stylesheet and apply them uniformly via utility classes.
+- **Design Tokens & Font Consistency**: Any new UI components or pages created must strictly adhere to the established "Honey Oak & Sweet Cream" wood theme CSS variables defined in `globals.css` (e.g. `var(--primary)`, `var(--background)`, `var(--foreground)`, `var(--border)`, `var(--success)`) and must use the configured Merriweather serif font (`var(--font-merriweather)`). Do not hardcode arbitrary color hexes, default Tailwind colors (e.g. indigo, blue, emerald), or default Geist/sans-serif fonts, to prevent style and font mismatches.
+- **i18n (Multi-Language)**: Never hardcode strings directly in the UI. Use locales files and import translations dynamically via the localization hook.
+- **Form Validation**: Use React Hook Form with Zod (or equivalent schemas) for robust input validation and clean error styling.
+- **Section Layout Standard**: Any section created in the layout must use the standard Tailwind container utility class with appropriate padding (e.g., `container mx-auto px-4` or `px-6`) to keep the content aligned, unified, and fully responsive.
+- **Card & Shadow Standards**: All cards must strictly adhere to the predefined shadow styles defined in the global design token/theme settings. Do not apply arbitrary, inline shadow values.
+- **Comprehensive Responsive Optimization**: When adding any new UI component, it must be thoroughly optimized, clean, and responsive across all three layout form factors: Mobile, Tablet, and Web. Use Tailwind breakpoints carefully to ensure layout perfection without overflow on any screen resolution.
+- **Interactive Pointer & Text Selection**: Any clickable or interactive element (buttons, links, toggles, tabs, icons, and custom interactive nodes) must have the `cursor-pointer` utility class applied to ensure a clear visual affordance. Additionally, all created UI elements (headers, layout containers, cards, icons, list items, and interactive nodes) must utilize the `select-none` class to ensure a high-end, native-like user experience by preventing accidental text highlight selections during interactions.
+
+---
+
+## 🛠️ PART V: ANTIGRAVITY CUSTOMIZATIONS ARCHITECTURE (RULES VS SKILLS)
 
 - **Rules (`AGENTS.md`)**: Always-active behavioral guidelines, coding conventions, architectural patterns, and negative constraints. They apply unconditionally to all coding tasks.
 - **Skills (`.agents/skills/`)**: On-demand procedural workflows / runbooks triggered by explicit commands or user intents (e.g., `/compact`, `/push`, `/push-dev`). Skills must NEVER contain coding rules or global constraints.
