@@ -17,7 +17,7 @@ When activated, the agent must perform the following structured steps:
 - Verify the current active branch and working tree using `git status`.
 - Check [tasks/todo.md](file:///c:/Bone/Private/Bunny%20Cove/tasks/todo.md) for current phase status.
 - Review recent implementations in `server/` or `mobile/`.
-- Ensure adherence to [rule.md](file:///c:/Bone/Private/Bunny%20Cove/rule.md) (Vietnamese for communication, English for code/commits).
+- Ensure adherence to [AGENTS.md](file:///c:/Bone/Private/Bunny%20Cove/AGENTS.md) (Vietnamese for communication, English for code/commits).
 
 ### 2. Output High-Density Compaction Report
 Format the response in Vietnamese with clear, high-density sections:

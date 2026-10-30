@@ -104,6 +104,12 @@ abstract class AppLocalizations {
   /// **'Bunny Cove'**
   String get appName;
 
+  /// No description provided for @appTagline.
+  ///
+  /// In en, this message translates to:
+  /// **'Cozy Social Gaming Universe'**
+  String get appTagline;
+
   /// No description provided for @welcomeTitle.
   ///
   /// In en, this message translates to:
@@ -128,11 +134,23 @@ abstract class AppLocalizations {
   /// **'Sign Up'**
   String get signUp;
 
+  /// No description provided for @signInDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to enter your cozy universe'**
+  String get signInDescription;
+
   /// No description provided for @email.
   ///
   /// In en, this message translates to:
   /// **'Email'**
   String get email;
+
+  /// No description provided for @emailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'bunny@cove.test'**
+  String get emailHint;
 
   /// No description provided for @password.
   ///
@@ -157,6 +175,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Retry'**
   String get retry;
+
+  /// No description provided for @pleaseEnterEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your email'**
+  String get pleaseEnterEmail;
+
+  /// No description provided for @pleaseEnterPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your password'**
+  String get pleaseEnterPassword;
+
+  /// Greeting displayed when user signs in successfully
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome back, {displayName}! 🌸'**
+  String welcomeBack(String displayName);
+
+  /// No description provided for @dialogOk.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get dialogOk;
+
+  /// No description provided for @dialogCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get dialogCancel;
+
+  /// Error text when an unknown route is accessed
+  ///
+  /// In en, this message translates to:
+  /// **'No route defined for {routeName}'**
+  String noRouteDefined(String routeName);
 
   /// No description provided for @errorOccurred.
   ///

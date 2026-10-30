@@ -1,6 +1,8 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 class AppUrlsConstant {
-  static const String baseApiUrl = 'http://localhost:3000/api';
-  static const String socketUrl = 'http://localhost:3000';
+  static String get baseApiUrl => dotenv.env['BASE_URL'] ?? 'http://localhost:3000';
+  static String get socketUrl => dotenv.env['SOCKET_URL'] ?? 'http://localhost:3000';
 
   // Auth Endpoints
   static const String register = '/auth/register';

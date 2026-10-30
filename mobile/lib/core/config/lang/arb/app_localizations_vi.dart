@@ -12,6 +12,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get appName => 'Bunny Cove';
 
   @override
+  String get appTagline => 'Vũ trụ Game Ấm Cúng & Gắn Kết';
+
+  @override
   String get welcomeTitle => 'Chào mừng đến Bunny Cove';
 
   @override
@@ -24,7 +27,13 @@ class AppLocalizationsVi extends AppLocalizations {
   String get signUp => 'Đăng ký';
 
   @override
+  String get signInDescription => 'Đăng nhập để bước vào vũ trụ ấm cúng';
+
+  @override
   String get email => 'Email';
+
+  @override
+  String get emailHint => 'bunny@cove.test';
 
   @override
   String get password => 'Mật khẩu';
@@ -37,6 +46,28 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get retry => 'Thử lại';
+
+  @override
+  String get pleaseEnterEmail => 'Vui lòng nhập địa chỉ email';
+
+  @override
+  String get pleaseEnterPassword => 'Vui lòng nhập mật khẩu';
+
+  @override
+  String welcomeBack(String displayName) {
+    return 'Chào mừng bạn trở lại, $displayName! 🌸';
+  }
+
+  @override
+  String get dialogOk => 'Đồng ý';
+
+  @override
+  String get dialogCancel => 'Hủy';
+
+  @override
+  String noRouteDefined(String routeName) {
+    return 'Không tìm thấy tuyến đường $routeName';
+  }
 
   @override
   String get errorOccurred => 'Đã xảy ra sự cố không mong muốn';

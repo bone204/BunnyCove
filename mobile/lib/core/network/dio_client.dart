@@ -1,7 +1,6 @@
+import 'package:bunny_cove_app/common_libs.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../common/constants/storage_keys.constant.dart';
 import 'logger_interceptor.dart';
 
 class DioClient {
@@ -9,7 +8,7 @@ class DioClient {
   final SharedPreferences sharedPreferences;
 
   DioClient(this.sharedPreferences) {
-    final baseUrl = dotenv.env['BASE_URL'] ?? 'http://localhost:3000/api';
+    final baseUrl = AppUrlsConstant.baseApiUrl;
     dio = Dio(
       BaseOptions(
         baseUrl: baseUrl,

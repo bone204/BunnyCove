@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../core/config/theme/color.dart';
+import 'package:bunny_cove_app/common_libs.dart';
 
 class CustomButton extends StatelessWidget {
   final String text;
@@ -45,10 +43,10 @@ class CustomButton extends StatelessWidget {
               )
             : Text(
                 text,
-                style: TextStyle(
+                style: (Theme.of(context).textTheme.labelLarge ??
+                        AppTypography.labelLarge)
+                    .copyWith(
                   color: textColor ?? Colors.white,
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
                 ),
               ),
       ),

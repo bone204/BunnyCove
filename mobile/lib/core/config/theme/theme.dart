@@ -6,6 +6,7 @@ class AppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
+      fontFamily: AppTypography.fontFamily,
       scaffoldBackgroundColor: AppColors.creamBackground,
       colorScheme: ColorScheme.fromSeed(
         seedColor: AppColors.peachPrimary,
@@ -15,15 +16,13 @@ class AppTheme {
         error: AppColors.error,
       ),
       textTheme: AppTypography.textTheme,
-      appBarTheme: const AppBarTheme(
+      appBarTheme: AppBarTheme(
         backgroundColor: AppColors.creamBackground,
         elevation: 0,
         centerTitle: true,
-        iconTheme: IconThemeData(color: AppColors.deepPlumText),
-        titleTextStyle: TextStyle(
-          fontSize: 20,
+        iconTheme: const IconThemeData(color: AppColors.deepPlumText),
+        titleTextStyle: AppTypography.titleLarge.copyWith(
           fontWeight: FontWeight.bold,
-          color: AppColors.deepPlumText,
         ),
       ),
       cardTheme: CardThemeData(
@@ -37,6 +36,7 @@ class AppTheme {
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.peachPrimary,
           foregroundColor: Colors.white,
+          textStyle: AppTypography.labelLarge.copyWith(color: Colors.white),
           elevation: 2,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),

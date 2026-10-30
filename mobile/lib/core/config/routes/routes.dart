@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import '../../../../common/constants/app_route.constant.dart';
+import 'package:bunny_cove_app/common_libs.dart';
 import '../../../../features/splash/presentation/pages/splash_screen.page.dart';
 import '../../../../features/auth/presentation/pages/sign_in.page.dart';
 
@@ -12,9 +11,15 @@ class AppRouter {
         return _buildSlideRoute(const SignInPage(), settings);
       default:
         return _buildSlideRoute(
-          Scaffold(
-            body: Center(
-              child: Text('No route defined for ${settings.name}'),
+          Builder(
+            builder: (context) => Scaffold(
+              body: Center(
+                child: Text(
+                  context.l10n.noRouteDefined(settings.name ?? ''),
+                  style: Theme.of(context).textTheme.bodyMedium ??
+                      AppTypography.bodyMedium,
+                ),
+              ),
             ),
           ),
           settings,

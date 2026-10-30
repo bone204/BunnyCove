@@ -34,6 +34,8 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
     return BlocProvider(
       create: (context) => sl<AuthCubit>(),
       child: GestureDetector(
@@ -57,7 +59,7 @@ class _SignInPageState extends State<SignInPage> {
                   } else if (state is AuthSuccess) {
                     CustomSnackBar.show(
                       context,
-                      message: 'Welcome back, ${state.user.displayName}! 🌸',
+                      message: context.l10n.welcomeBack(state.user.displayName),
                       type: SnackBarType.success,
                     );
                   }
@@ -71,24 +73,25 @@ class _SignInPageState extends State<SignInPage> {
                       children: [
                         SizedBox(height: 30.h),
                         Center(
-                          child: Text('🐰', style: TextStyle(fontSize: 64.sp)),
+                          child: Text(
+                            '🐰',
+                            style: AppTypography.displayLarge.copyWith(fontSize: 64.sp),
+                          ),
                         ),
                         SizedBox(height: 12.h),
                         Center(
                           child: Text(
-                            'Bunny Cove',
-                            style: TextStyle(
-                              fontSize: 26.sp,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.deepPlumText,
-                            ),
+                            l10n.appName,
+                            style: Theme.of(context).textTheme.displaySmall ??
+                                AppTypography.displaySmall,
                           ),
                         ),
                         Center(
                           child: Text(
-                            'Sign in to enter your cozy universe',
-                            style: TextStyle(
-                              fontSize: 14.sp,
+                            l10n.signInDescription,
+                            style: (Theme.of(context).textTheme.bodyMedium ??
+                                    AppTypography.bodyMedium)
+                                .copyWith(
                               color: AppColors.mutedText,
                             ),
                           ),
@@ -98,8 +101,8 @@ class _SignInPageState extends State<SignInPage> {
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
-                            labelText: 'Email',
-                            hintText: 'bunny@cove.test',
+                            labelText: l10n.email,
+                            hintText: l10n.emailHint,
                             filled: true,
                             fillColor: AppColors.cardSurface,
                             border: OutlineInputBorder(
@@ -109,7 +112,7 @@ class _SignInPageState extends State<SignInPage> {
                             prefixIcon: const Icon(Icons.email_outlined),
                           ),
                           validator: (value) => (value == null || value.isEmpty)
-                              ? 'Please enter email'
+                              ? l10n.pleaseEnterEmail
                               : null,
                         ),
                         SizedBox(height: 16.h),
@@ -117,7 +120,7 @@ class _SignInPageState extends State<SignInPage> {
                           controller: _passwordController,
                           obscureText: true,
                           decoration: InputDecoration(
-                            labelText: 'Password',
+                            labelText: l10n.password,
                             filled: true,
                             fillColor: AppColors.cardSurface,
                             border: OutlineInputBorder(
@@ -127,12 +130,12 @@ class _SignInPageState extends State<SignInPage> {
                             prefixIcon: const Icon(Icons.lock_outline),
                           ),
                           validator: (value) => (value == null || value.isEmpty)
-                              ? 'Please enter password'
+                              ? l10n.pleaseEnterPassword
                               : null,
                         ),
                         SizedBox(height: 28.h),
                         CustomButton(
-                          text: 'Sign In',
+                          text: l10n.signIn,
                           isLoading: isLoading,
                           onPressed: () => _onSignInPressed(context),
                         ),

@@ -30,7 +30,7 @@
 Bunny Cove/
 ├── mobile/       # Ứng dụng di động Flutter (iOS & Android)
 ├── server/       # Backend API & Real-time WebSocket Server (NestJS)
-├── rule.md       # Bộ quy tắc phát triển dự án (PAWDAR PROJECT RULES)
+├── AGENTS.md     # Bộ quy tắc kỹ thuật và điều lệ phát triển (Single Source of Truth)
 └── general.md    # Tài liệu đặc tả tổng quan dự án
 ```
 
@@ -242,9 +242,9 @@ graph LR
 
 ---
 
-## 6. TIÊU CHUẨN KỸ THUẬT VÀ QUY TẮC PHÁT TRIỂN (TUÂN THỦ `rule.md`)
+## 6. TIÊU CHUẨN KỸ THUẬT VÀ QUY TẮC PHÁT TRIỂN (TUÂN THỦ `AGENTS.md`)
 
-Mọi giai đoạn lập trình và mở rộng dự án Bunny Cove bắt buộc phải tuân thủ nghiêm ngặt các nguyên tắc được định nghĩa trong [rule.md](file:///c:/Bone/Private/Bunny%20Cove/rule.md):
+Mọi giai đoạn lập trình và mở rộng dự án Bunny Cove bắt buộc phải tuân thủ nghiêm ngặt các nguyên tắc được định nghĩa trong [AGENTS.md](file:///c:/Bone/Private/Bunny%20Cove/AGENTS.md):
 
 1. **Giao tiếp và Trao đổi**:
    - Tất cả giải thích, lập kế hoạch, thảo luận và hướng dẫn cho người dùng viết bằng **Tiếng Việt** chuẩn xác.

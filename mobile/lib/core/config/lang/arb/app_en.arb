@@ -1,15 +1,42 @@
 {
   "@@locale": "en",
   "appName": "Bunny Cove",
+  "appTagline": "Cozy Social Gaming Universe",
   "welcomeTitle": "Welcome to Bunny Cove",
   "welcomeSubtitle": "Your cozy social gaming universe",
   "signIn": "Sign In",
   "signUp": "Sign Up",
+  "signInDescription": "Sign in to enter your cozy universe",
   "email": "Email",
+  "emailHint": "bunny@cove.test",
   "password": "Password",
   "forgotPassword": "Forgot Password?",
   "guestMode": "Continue as Guest",
   "retry": "Retry",
+  "pleaseEnterEmail": "Please enter your email",
+  "pleaseEnterPassword": "Please enter your password",
+  "welcomeBack": "Welcome back, {displayName}! 🌸",
+  "@welcomeBack": {
+    "description": "Greeting displayed when user signs in successfully",
+    "placeholders": {
+      "displayName": {
+        "type": "String",
+        "example": "Bunny"
+      }
+    }
+  },
+  "dialogOk": "OK",
+  "dialogCancel": "Cancel",
+  "noRouteDefined": "No route defined for {routeName}",
+  "@noRouteDefined": {
+    "description": "Error text when an unknown route is accessed",
+    "placeholders": {
+      "routeName": {
+        "type": "String",
+        "example": "/unknown"
+      }
+    }
+  },
   "errorOccurred": "An unexpected error occurred",
   "errorNetwork": "Unable to connect to server. Please check your internet connection.",
   "errorConnectionTimeout": "Connection timed out. Please try again.",

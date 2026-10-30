@@ -1,8 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../common/constants/app_route.constant.dart';
-import '../../../../core/config/theme/color.dart';
-import '../../../../core/utils/navigation_utils.dart';
+import 'package:bunny_cove_app/common_libs.dart';
 
 class SplashScreenPage extends StatefulWidget {
   const SplashScreenPage({super.key});
@@ -44,6 +40,8 @@ class _SplashScreenPageState extends State<SplashScreenPage>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
     return Scaffold(
       backgroundColor: AppColors.creamBackground,
       body: Center(
@@ -54,22 +52,20 @@ class _SplashScreenPageState extends State<SplashScreenPage>
             children: [
               Text(
                 '🐰',
-                style: TextStyle(fontSize: 80.sp),
+                style: AppTypography.displayLarge.copyWith(fontSize: 80.sp),
               ),
               SizedBox(height: 16.h),
               Text(
-                'Bunny Cove',
-                style: TextStyle(
-                  fontSize: 28.sp,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.deepPlumText,
-                ),
+                l10n.appName,
+                style: Theme.of(context).textTheme.displayMedium ??
+                    AppTypography.displayMedium,
               ),
               SizedBox(height: 8.h),
               Text(
-                'Cozy Social Gaming Universe',
-                style: TextStyle(
-                  fontSize: 14.sp,
+                l10n.appTagline,
+                style: (Theme.of(context).textTheme.bodyMedium ??
+                        AppTypography.bodyMedium)
+                    .copyWith(
                   color: AppColors.mutedText,
                 ),
               ),

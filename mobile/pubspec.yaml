@@ -50,3 +50,11 @@ flutter:
     - .env
     - assets/images/
     - assets/icons/
+
+  fonts:
+    - family: Sniglet
+      fonts:
+        - asset: assets/fonts/Sniglet/Sniglet-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Sniglet/Sniglet-ExtraBold.ttf
+          weight: 800

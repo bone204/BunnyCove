@@ -130,7 +130,7 @@ This project follows an organized Git Flow model:
 
 ## 📖 Architectural & Specification Docs
 
-- 📜 **[rule.md](rule.md)**: Master coding standards (Cubit, ScreenUtil, 3-layer backend, response codes sync).
+- 📜 **[AGENTS.md](AGENTS.md)**: Master engineering directives, coding standards, and architectural rules (Single Source of Truth).
 - 📐 **[general.md](general.md)**: Detailed feature specifications, data models, and WebSocket event catalog.
 - ✅ **[tasks/todo.md](tasks/todo.md)**: Current roadmap, phases, and task checklist.
 - 💡 **[tasks/lessons.md](tasks/lessons.md)**: Recorded feedback and architectural decisions.

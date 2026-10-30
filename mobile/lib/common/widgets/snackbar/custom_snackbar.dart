@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:bunny_cove_app/common_libs.dart';
 
 enum SnackBarType { success, error, warning, info }
 
@@ -37,15 +37,17 @@ class CustomSnackBar {
         backgroundColor: backgroundColor,
         behavior: SnackBarBehavior.floating,
         duration: duration,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
         content: Row(
           children: [
-            Icon(icon, color: Colors.white, size: 20),
-            const SizedBox(width: 10),
+            Icon(icon, color: Colors.white, size: 20.r),
+            SizedBox(width: 10.w),
             Expanded(
               child: Text(
                 message,
-                style: const TextStyle(color: Colors.white, fontSize: 14),
+                style: (Theme.of(context).textTheme.bodyMedium ??
+                        AppTypography.bodyMedium)
+                    .copyWith(color: Colors.white),
               ),
             ),
           ],

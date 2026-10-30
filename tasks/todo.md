@@ -5,9 +5,9 @@
 ### Phase 0: Project Setup & Specification
 
 - [x] Create workspace directories (`mobile` and `server`)
-- [x] Establish Master Project Rules ([rule.md](../rule.md))
+- [x] Establish Master Project Rules ([AGENTS.md](../AGENTS.md))
 - [x] Establish Master Project Specification & Database Architecture ([general.md](../general.md))
-- [x] Integrate Master Rules ([rule.md](../rule.md)) and Specifications ([general.md](../general.md)) into agent context
+- [x] Integrate Master Rules ([AGENTS.md](../AGENTS.md)) and Specifications ([general.md](../general.md)) into agent context
 - [x] Initialize tracking system (`tasks/lessons.md`, `tasks/todo.md`)
 
 ---
@@ -110,13 +110,27 @@
 - [x] 6.6 Setup App Entrypoint (`lib/main.dart`):
   - `runZonedGuarded`, `dotenv`, `setUpServiceLocator`, `ScreenUtilInit`, `MultiBlocProvider`, `MaterialApp` with `AppLocalizations.delegate`
 - [x] 6.7 Standardize Response Code Synchronization & Error Localization:
-  - [x] Update Project Rules in `rule.md` and `tasks/lessons.md`
+  - [x] Update Project Rules in `AGENTS.md` and `tasks/lessons.md`
   - [x] Sync `ResponseCodesConstant` in `mobile/lib/common/constants/response_codes.constant.dart` 1:1 with BE `ResponseCodes`
   - [x] Add localized error messages into `mobile/lib/core/config/lang/arb/app_en.arb` and `app_vi.arb`
   - [x] Create `ErrorLocalizationExtension` helper in `mobile/lib/core/utils/error_localizer.dart` and export in `common_libs.dart`
   - [x] Update `DioException` handling in `AuthApiService` to map network timeouts to `ResponseCodesConstant.networkError`
   - [x] Update `SignInPage` to display localized errors via `context.getLocalizedError(...)`
   - [x] Run `flutter gen-l10n` and analyze project for verification
+- [x] 6.8 Enforce Centralized Typography & Zero Inline TextStyle:
+  - [x] Enhance `AppTypography` in `mobile/lib/core/config/theme/typography.dart` with complete Material 3 TextTheme & static accessors
+  - [x] Refactor `AppTheme` in `mobile/lib/core/config/theme/theme.dart` to use `AppTypography`
+  - [x] Refactor `CustomButton`, `CustomDialog`, and `CustomSnackBar` to use `common_libs.dart` and `Theme.of(context).textTheme`
+  - [x] Refactor `SignInPage` and `SplashScreenPage` to use centralized typography instead of inline `TextStyle(...)`
+  - [x] Update Typography enforcement in `AGENTS.md`, and `tasks/lessons.md`
+  - [x] Verify clean compilation with `flutter analyze`
+- [x] 6.9 Enforce Zero Hardcoded Text & Mandatory Localization (l10n):
+  - [x] Add all missing UI keys into `app_en.arb` and `app_vi.arb` (sign-in description, validators, welcome message, hints, button labels)
+  - [x] Run `flutter gen-l10n` to regenerate localized accessors
+  - [x] Add `context.l10n` extension in `mobile/lib/core/config/lang/l10n.dart` and export in `common_libs.dart`
+  - [x] Replace all hardcoded strings in `SignInPage`, `SplashScreenPage`, `CustomDialog`, `AppRouter` with `context.l10n`
+  - [x] Update `AGENTS.md`, and `tasks/lessons.md` with strict Zero Hardcoded Text rules
+  - [x] Verify clean compilation with `flutter analyze`
 
 ---
 

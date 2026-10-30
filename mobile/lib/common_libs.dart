@@ -7,6 +7,7 @@ export 'package:flutter_screenutil/flutter_screenutil.dart';
 
 // Localization
 export 'package:bunny_cove_app/core/config/lang/l10n.dart';
+export 'package:bunny_cove_app/core/config/lang/arb/app_localizations.dart';
 
 // Configurations
 export 'package:bunny_cove_app/core/config/routes/routes.dart';

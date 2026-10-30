@@ -12,6 +12,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appName => 'Bunny Cove';
 
   @override
+  String get appTagline => 'Cozy Social Gaming Universe';
+
+  @override
   String get welcomeTitle => 'Welcome to Bunny Cove';
 
   @override
@@ -24,7 +27,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signUp => 'Sign Up';
 
   @override
+  String get signInDescription => 'Sign in to enter your cozy universe';
+
+  @override
   String get email => 'Email';
+
+  @override
+  String get emailHint => 'bunny@cove.test';
 
   @override
   String get password => 'Password';
@@ -37,6 +46,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get retry => 'Retry';
+
+  @override
+  String get pleaseEnterEmail => 'Please enter your email';
+
+  @override
+  String get pleaseEnterPassword => 'Please enter your password';
+
+  @override
+  String welcomeBack(String displayName) {
+    return 'Welcome back, $displayName! 🌸';
+  }
+
+  @override
+  String get dialogOk => 'OK';
+
+  @override
+  String get dialogCancel => 'Cancel';
+
+  @override
+  String noRouteDefined(String routeName) {
+    return 'No route defined for $routeName';
+  }
 
   @override
   String get errorOccurred => 'An unexpected error occurred';
