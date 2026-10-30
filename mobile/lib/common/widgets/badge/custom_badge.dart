@@ -86,3 +86,4 @@ class CustomBadge extends StatelessWidget {
     return content;
   }
 }
+
