@@ -107,3 +107,41 @@ Mobile app game screen for Bunny Cove playing 15x15 Caro (Gomoku) on iOS. Top ba
 ```text
 Mobile app game screen for Bunny Cove playing 5x5 Bingo on iOS. Header features 5 large circular badges spelling 'B-I-N-G-O' glowing in vibrant hot pink and gold as lines are completed. Center shows a 5x5 grid of rounded white number tiles (1 to 25) with deep berry numbers. Selected tiles are stamped with energetic hot pink bunny paw prints (#FF3366). A pulsating gradient 'BINGO!' button at the bottom with sakura petal sparkles. High-energy, colorful, cute, crisp contrast, premium mobile UI.
 ```
+
+
+---
+
+## 5. QUY CHUẨN THIẾT KẾ GIAO DIỆN WEB (WEB DESIGN STYLE GUIDE - "HONEY OAK & SWEET CREAM")
+
+> **Phong cách cốt lõi Web**: **Honey Oak & Sweet Cream** 🪵🍯  
+> **Định hướng thẩm mỹ**: Ấm áp, mộc mạc cao cấp (Nordic Cozy Wood & Artisan Cream). Kết hợp chất liệu gỗ sồi mật ong, nền kem sữa dịu mắt và kiểu chữ có chân cổ điển **Merriweather Serif** sang trọng, mang lại cảm giác thư thái, thân thuộc như một quán cà phê board game ấm cúng.
+
+### 5.1. Hệ thống Design Tokens & CSS Variables
+
+Mọi thành phần giao diện trên Web bắt buộc phải sử dụng biến CSS toàn cục đã định nghĩa trong `globals.css`, tuyệt đối không dùng mã màu ngẫu nhiên:
+
+| Biến CSS | Light Mode (Kem & Gỗ Sồi) | Dark Mode (Gỗ Mun Ấm) | Vai trò hiển thị |
+| :--- | :--- | :--- | :--- |
+| `var(--primary)` | Gỗ sồi mật ong ấm áp (`#B87333` / `#C68B59`) | Hổ phách mật ong sáng (`#D99B66`) | Nút chính, viền nổi bật, điểm nhấn thương hiệu |
+| `var(--background)` | Kem sữa ngọt ngào (`#FAF7F2`) | Gỗ sẫm ấm áp (`#1F1A17`) | Nền tổng thể toàn bộ trang web |
+| `var(--foreground)` | Nâu mộc sẫm (`#2C221E`) | Trắng kem dịu mắt (`#F5EFE6`) | Tiêu đề, chữ chính (độ tương phản cao) |
+| `var(--border)` | Viền gỗ nhạt mềm (`#E6DCcf`) | Viền gỗ trầm (`#382E27`) | Đường viền thẻ, khung phân cách |
+| `var(--success)` | Xanh cỏ ba lá (`#4E8752`) | Xanh ngọc mộc (`#62A867`) | Trạng thái Online, sẵn sàng, chiến thắng |
+| `var(--font-merriweather)` | Font Merriweather Serif | Font Merriweather Serif | Phông chữ chủ đạo toàn diện trên Web |
+
+### 5.2. Nguyên Tắc Trải Nghiệm & Bố Cục Web (Responsive & Interaction)
+1. **Light / Dark Theme Đồng Bộ**:
+   - Sử dụng `ThemeProvider` đồng bộ thuộc tính `class="dark"` hoặc `data-theme`.
+   - Nút `ThemeToggle` hiển thị trang nhã trên thanh Header/Navbar.
+2. **Quy Chuẩn Container & Khoảng Cách**:
+   - Mọi phân đoạn nội dung (Section) bắt buộc dùng lớp chuẩn Tailwind `container mx-auto px-4` (hoặc `px-6`) để đảm bảo lề đồng bộ và không bị sát cạnh màn hình.
+3. **Thẻ (Cards) & Bóng Đổ (Shadow Standards)**:
+   - Các khối Card sử dụng bo góc mượt mà (`rounded-2xl` hoặc `rounded-3xl`) với viền gỗ nhẹ (`border border-[var(--border)]`).
+   - Sử dụng chuẩn bóng đổ mềm mại, không sử dụng inline shadow tự do.
+4. **Tối Ưu 3 Kích Thước (Responsive Perfection)**:
+   - **Mobile** (`< 640px`): Thanh điều hướng thu gọn dạng Drawer/Bottom Bar, lưới 1 cột, bàn cờ co giãn tự động không tràn ngang.
+   - **Tablet** (`640px - 1024px`): Bố cục 2 cột linh hoạt, bảng điều khiển và khung chat chia tỉ lệ cân đối.
+   - **Desktop** (`> 1024px`): Trải nghiệm toàn diện với Sidebar, khu vực bàn cờ trung tâm và khung trò chuyện cố định bên phải.
+5. **Tương Tác Chuẩn Ứng Dụng Cao Cấp**:
+   - Mọi phần tử có thể bấm (nút bấm, tab, avatar, ô cờ, icon) phải có lớp `cursor-pointer`.
+   - Thêm lớp `select-none` trên toàn bộ layout và linh kiện giao diện để ngăn người dùng vô tình bôi đen văn bản khi click chuột nhanh hoặc thao tác chơi game.

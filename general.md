@@ -62,7 +62,26 @@ Bunny Cove/
   - Mã phản hồi dạng chuỗi (String response codes) đồng bộ tập trung để hỗ trợ đa ngôn ngữ i18n trên ứng dụng.
   - Ghi log có cấu trúc dạng JSON (Structured Logging với Winston/Pino).
 
-### 2.4. Kiến trúc Mini-Game Cắm Rút (Pluggable Game Engine - Strategy Pattern)
+### 2.4. Công nghệ Phía Web (`web/`)
+- **Framework**: Next.js 14+ / React với App Router.
+- **Kiến trúc**: 3-Layer Clean Architecture:
+  - *Domain Layer (`src/domain/`)*: `entities/` (Types/Entities thuần), `repositories/` (Interfaces), `usecases/` (Quy tắc nghiệp vụ độc lập UI & Mạng).
+  - *Application Layer (`src/application/`)*: `dto/`, `mappers/`, `services/`.
+  - *Infrastructure Layer (`src/infrastructure/`)*: `repositories/` (Hiện thực hóa domain repository), `rtk/` (hoặc zustand cấu hình global state & base API), `http/` (Axios/Fetch client), `api/` (Endpoints).
+  - *Presentation Layer (`src/presentation/`)*: `pages/` (Client components), `components/` (UI tái sử dụng), `hooks/` (Custom hooks UI), `providers/` (`ThemeProvider`, `ReduxProvider`...).
+  - *Thin Entrypoint App Router (`src/app/`)*: Các file `page.tsx` cực mỏng, chỉ nhận params/searchParams phía server rồi truyền trực tiếp xuống component tương ứng của tầng Presentation.
+- **Quản lý Trạng thái & API**:
+  - Global State: Redux Toolkit hoặc Zustand làm Single Source of Truth.
+  - Data Fetching & Caching: RTK Query hoặc React Query.
+  - Decoupling qua Repository Pattern.
+- **Giao diện & Chủ đề (Theme)**:
+  - Tích hợp sẵn Light/Dark Theme tập trung qua `ThemeProvider` và nút `ThemeToggle`.
+  - Tailwind CSS với bộ Design Tokens "Honey Oak & Sweet Cream" CSS variables (`var(--primary)`, `var(--background)`, `var(--foreground)`, `var(--border)`, `var(--success)`) và font chữ Merriweather (`var(--font-merriweather)`).
+  - Chuẩn hóa container (`container mx-auto px-4` hoặc `px-6`), shadow tokens, tương tác `cursor-pointer` và `select-none`.
+  - Tối ưu Responsive 100% trên cả 3 giao diện Mobile, Tablet và Desktop.
+- **Bản địa hóa & Form**: Đa ngôn ngữ (i18n) với locales dictionaries, Form validation qua React Hook Form + Zod.
+
+### 2.5. Kiến trúc Mini-Game Cắm Rút (Pluggable Game Engine - Strategy Pattern)
 Để đảm bảo khả năng mở rộng thêm nhiều trò chơi mới trong tương lai (không bị giới hạn hay hardcode chỉ có Caro và Bingo), hệ thống áp dụng mẫu thiết kế **Plugin / Strategy Pattern**:
 - **Interface trừu tượng `IGameEngine`**: Định nghĩa hợp đồng chung cho mọi trò chơi:
   - `initGame(players, config)`: Khởi tạo bàn cờ / trạng thái ván đấu ban đầu.
