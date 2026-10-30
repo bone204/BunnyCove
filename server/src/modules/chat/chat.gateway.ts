@@ -145,4 +145,83 @@ export class ChatGateway {
       type: 'STICKER',
     });
   }
+
+  @SubscribeMessage('chat:edit_message')
+  async handleEditMessage(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: { messageId: string; text: string },
+  ) {
+    const room = this.roomService.getRoomBySocket(client.id);
+    const player = room?.players.get(client.id);
+    const senderId = player?.id || client.id;
+
+    try {
+      const updated = await this.chatService.editMessage(
+        payload.messageId,
+        senderId,
+        payload.text,
+      );
+
+      const targetRoomCode = updated.roomCode || room?.code;
+      if (targetRoomCode) {
+        this.server.to(targetRoomCode).emit('chat:message_edited', {
+          success: true,
+          code: ResponseCodes.CHAT_MESSAGE_EDITED,
+          data: updated,
+        });
+      }
+
+      return {
+        success: true,
+        code: ResponseCodes.CHAT_MESSAGE_EDITED,
+        data: updated,
+      };
+    } catch (err: any) {
+      const code = err.response?.code || ResponseCodes.SERVER_ERROR;
+      const message = err.response?.message || err.message;
+      return {
+        success: false,
+        error: { code, message },
+      };
+    }
+  }
+
+  @SubscribeMessage('chat:delete_message')
+  async handleDeleteMessage(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: { messageId: string },
+  ) {
+    const room = this.roomService.getRoomBySocket(client.id);
+    const player = room?.players.get(client.id);
+    const senderId = player?.id || client.id;
+
+    try {
+      const result = await this.chatService.deleteMessage(
+        payload.messageId,
+        senderId,
+      );
+
+      const targetRoomCode = result.roomCode || room?.code;
+      if (targetRoomCode) {
+        this.server.to(targetRoomCode).emit('chat:message_deleted', {
+          success: true,
+          code: ResponseCodes.CHAT_MESSAGE_DELETED,
+          data: result,
+        });
+      }
+
+      return {
+        success: true,
+        code: ResponseCodes.CHAT_MESSAGE_DELETED,
+        data: result,
+      };
+    } catch (err: any) {
+      const code = err.response?.code || ResponseCodes.SERVER_ERROR;
+      const message = err.response?.message || err.message;
+      return {
+        success: false,
+        error: { code, message },
+      };
+    }
+  }
 }

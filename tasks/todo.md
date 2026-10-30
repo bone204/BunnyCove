@@ -86,6 +86,11 @@
   - `ChatController`: `GET /chat/stickers`, `GET /chat/rooms/:roomCode/messages`, `GET /chat/matches/:matchId/messages`
   - `ChatGateway`: Socket.IO handler for `chat:send_message` with broadcast to room `chat:new_message`
   - `ChatModule`: Register controller, service, gateway, Prisma & Room dependencies
+- [x] 3.5 Message Edit & Recall/Delete Architecture:
+  - Add isEdited, editedAt, isDeleted, deletedAt to ChatMessage in schema.prisma
+  - Implement edit and recall (delete) in ChatService, ChatController, and ChatGateway
+  - Synchronize response codes for edit/delete
+  - Extend verify-chat-flow.mjs with real-time edit and recall scenarios
 - [x] 3.4 Verification & Automated Testing:
   - Create `server/test/verify-chat-flow.mjs` (Stickers catalog -> Realtime room chat -> Bunny stickers -> History persistence)
   - Register test suite in `server/test/verify-all.mjs`

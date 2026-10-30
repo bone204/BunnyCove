@@ -54,5 +54,8 @@
   "errorFileTooLarge": "Kích thước tệp vượt quá dung lượng cho phép.",
   "errorNoFileProvided": "Chưa có tệp nào được chọn để tải lên.",
   "errorInvalidSticker": "Nhãn dán đã chọn không hợp lệ hoặc không khả dụng.",
-  "errorChatMessageEmpty": "Nội dung tin nhắn không được để trống."
+  "errorChatMessageEmpty": "Nội dung tin nhắn không được để trống.",
+  "errorChatMessageNotFound": "Tin nhắn không tồn tại hoặc đã bị thu hồi.",
+  "errorChatCannotEditSticker": "Chỉ có thể chỉnh sửa tin nhắn văn bản.",
+  "errorChatNotMessageOwner": "Bạn chỉ có thể sửa hoặc thu hồi tin nhắn của chính mình."
 }

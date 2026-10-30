@@ -72,5 +72,8 @@
   "errorFileTooLarge": "File size exceeds the permitted limit.",
   "errorNoFileProvided": "No file was selected for upload.",
   "errorInvalidSticker": "The selected sticker is invalid or unavailable.",
-  "errorChatMessageEmpty": "Chat message cannot be empty."
+  "errorChatMessageEmpty": "Chat message cannot be empty.",
+  "errorChatMessageNotFound": "Message not found or already deleted.",
+  "errorChatCannotEditSticker": "Only text messages can be edited.",
+  "errorChatNotMessageOwner": "You can only edit or delete your own messages."
 }

@@ -191,4 +191,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorChatMessageEmpty => 'Chat message cannot be empty.';
+
+  @override
+  String get errorChatMessageNotFound =>
+      'Message not found or already deleted.';
+
+  @override
+  String get errorChatCannotEditSticker => 'Only text messages can be edited.';
+
+  @override
+  String get errorChatNotMessageOwner =>
+      'You can only edit or delete your own messages.';
 }

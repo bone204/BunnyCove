@@ -12,3 +12,4 @@ export class SendStickerDto {
   @IsNotEmpty()
   stickerId: string;
 }
+

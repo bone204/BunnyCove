@@ -96,6 +96,11 @@ class ResponseCodesConstant {
   static const String stickersFetched = 'stickers_fetched';
   static const String invalidSticker = 'invalid_sticker';
   static const String chatMessageEmpty = 'chat_message_empty';
+  static const String chatMessageEdited = 'chat_message_edited';
+  static const String chatMessageDeleted = 'chat_message_deleted';
+  static const String chatMessageNotFound = 'chat_message_not_found';
+  static const String chatCannotEditSticker = 'chat_cannot_edit_sticker';
+  static const String chatNotMessageOwner = 'chat_not_message_owner';
 
   // Media & Upload Codes
   static const String avatarUploadSuccessful = 'avatar_upload_successful';

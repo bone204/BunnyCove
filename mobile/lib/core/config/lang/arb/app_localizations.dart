@@ -427,6 +427,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Chat message cannot be empty.'**
   String get errorChatMessageEmpty;
+
+  /// No description provided for @errorChatMessageNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Message not found or already deleted.'**
+  String get errorChatMessageNotFound;
+
+  /// No description provided for @errorChatCannotEditSticker.
+  ///
+  /// In en, this message translates to:
+  /// **'Only text messages can be edited.'**
+  String get errorChatCannotEditSticker;
+
+  /// No description provided for @errorChatNotMessageOwner.
+  ///
+  /// In en, this message translates to:
+  /// **'You can only edit or delete your own messages.'**
+  String get errorChatNotMessageOwner;
 }
 
 class _AppLocalizationsDelegate

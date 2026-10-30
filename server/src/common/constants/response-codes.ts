@@ -95,6 +95,11 @@ export const ResponseCodes = {
   STICKERS_FETCHED: 'stickers_fetched',
   INVALID_STICKER: 'invalid_sticker',
   CHAT_MESSAGE_EMPTY: 'chat_message_empty',
+  CHAT_MESSAGE_EDITED: 'chat_message_edited',
+  CHAT_MESSAGE_DELETED: 'chat_message_deleted',
+  CHAT_MESSAGE_NOT_FOUND: 'chat_message_not_found',
+  CHAT_CANNOT_EDIT_STICKER: 'chat_cannot_edit_sticker',
+  CHAT_NOT_MESSAGE_OWNER: 'chat_not_message_owner',
 
   // Media & Upload Codes
   AVATAR_UPLOAD_SUCCESSFUL: 'avatar_upload_successful',

@@ -1,4 +1,10 @@
-import { Injectable, BadRequestException, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+  ForbiddenException,
+  Logger,
+} from '@nestjs/common';
 import crypto from 'node:crypto';
 import { PrismaService } from '../../common/prisma/prisma.service.js';
 import { ResponseCodes } from '../../common/constants/response-codes.js';
@@ -19,6 +25,10 @@ export interface ChatMessageRecord {
   senderName: string;
   content: string;
   type: 'TEXT' | 'STICKER' | 'IMAGE' | 'SYSTEM';
+  isEdited: boolean;
+  editedAt?: Date | null;
+  isDeleted: boolean;
+  deletedAt?: Date | null;
   createdAt: Date;
 }
 
@@ -89,6 +99,10 @@ export class ChatService {
       senderName: params.senderName || 'Bunny Guest',
       content: cleanContent,
       type: messageType,
+      isEdited: false,
+      editedAt: null,
+      isDeleted: false,
+      deletedAt: null,
       createdAt: new Date(),
     };
 
@@ -103,6 +117,10 @@ export class ChatService {
           senderName: messageRecord.senderName,
           content: messageRecord.content,
           type: messageRecord.type as any,
+          isEdited: false,
+          editedAt: null,
+          isDeleted: false,
+          deletedAt: null,
           createdAt: messageRecord.createdAt,
         },
       });
@@ -115,6 +133,10 @@ export class ChatService {
         senderName: dbSaved.senderName ?? messageRecord.senderName,
         content: dbSaved.content,
         type: dbSaved.type as any,
+        isEdited: dbSaved.isEdited,
+        editedAt: dbSaved.editedAt,
+        isDeleted: dbSaved.isDeleted,
+        deletedAt: dbSaved.deletedAt,
         createdAt: dbSaved.createdAt,
       };
     } catch (err: any) {
@@ -123,6 +145,170 @@ export class ChatService {
       );
       this.inMemoryMessages.push(messageRecord);
       return messageRecord;
+    }
+  }
+
+  /**
+   * Edits an existing text message.
+   */
+  async editMessage(
+    messageId: string,
+    senderId?: string,
+    newText?: string,
+  ): Promise<ChatMessageRecord> {
+    const cleanText = newText?.trim();
+    if (!cleanText) {
+      throw new BadRequestException({
+        code: ResponseCodes.CHAT_MESSAGE_EMPTY,
+        message: 'Updated message content cannot be empty',
+      });
+    }
+
+    const message = await this.findMessageById(messageId);
+    if (!message) {
+      throw new NotFoundException({
+        code: ResponseCodes.CHAT_MESSAGE_NOT_FOUND,
+        message: 'Chat message not found',
+      });
+    }
+
+    if (message.isDeleted) {
+      throw new BadRequestException({
+        code: ResponseCodes.CHAT_MESSAGE_NOT_FOUND,
+        message: 'Cannot edit a deleted message',
+      });
+    }
+
+    if (message.type !== 'TEXT') {
+      throw new BadRequestException({
+        code: ResponseCodes.CHAT_CANNOT_EDIT_STICKER,
+        message: 'Only text messages can be edited',
+      });
+    }
+
+    // Ownership check: only message sender can edit
+    if (message.senderId && senderId && message.senderId !== senderId) {
+      throw new ForbiddenException({
+        code: ResponseCodes.CHAT_NOT_MESSAGE_OWNER,
+        message: 'You can only edit your own messages',
+      });
+    }
+
+    const now = new Date();
+
+    try {
+      const updated = await this.prisma.chatMessage.update({
+        where: { id: messageId },
+        data: {
+          content: cleanText,
+          isEdited: true,
+          editedAt: now,
+        },
+      });
+
+      return {
+        id: updated.id,
+        roomCode: updated.roomCode,
+        matchId: updated.matchId,
+        senderId: updated.senderId,
+        senderName: updated.senderName ?? message.senderName,
+        content: updated.content,
+        type: updated.type as any,
+        isEdited: updated.isEdited,
+        editedAt: updated.editedAt,
+        isDeleted: updated.isDeleted,
+        deletedAt: updated.deletedAt,
+        createdAt: updated.createdAt,
+      };
+    } catch {
+      // In-memory fallback
+      message.content = cleanText;
+      message.isEdited = true;
+      message.editedAt = now;
+      return message;
+    }
+  }
+
+  /**
+   * Recalls / deletes an existing chat message.
+   */
+  async deleteMessage(
+    messageId: string,
+    senderId?: string,
+  ): Promise<{ messageId: string; roomCode: string | null; isDeleted: boolean }> {
+    const message = await this.findMessageById(messageId);
+    if (!message) {
+      throw new NotFoundException({
+        code: ResponseCodes.CHAT_MESSAGE_NOT_FOUND,
+        message: 'Chat message not found',
+      });
+    }
+
+    // Ownership check
+    if (message.senderId && senderId && message.senderId !== senderId) {
+      throw new ForbiddenException({
+        code: ResponseCodes.CHAT_NOT_MESSAGE_OWNER,
+        message: 'You can only delete your own messages',
+      });
+    }
+
+    const now = new Date();
+    const deletedPlaceholder = 'This message was deleted';
+
+    try {
+      await this.prisma.chatMessage.update({
+        where: { id: messageId },
+        data: {
+          content: deletedPlaceholder,
+          isDeleted: true,
+          deletedAt: now,
+        },
+      });
+    } catch {
+      // In-memory fallback
+      message.content = deletedPlaceholder;
+      message.isDeleted = true;
+      message.deletedAt = now;
+    }
+
+    return {
+      messageId: message.id,
+      roomCode: message.roomCode ?? null,
+      isDeleted: true,
+    };
+  }
+
+  /**
+   * Finds a message by its ID from DB or in-memory fallback.
+   */
+  async findMessageById(messageId: string): Promise<ChatMessageRecord | null> {
+    try {
+      const found = await this.prisma.chatMessage.findUnique({
+        where: { id: messageId },
+      });
+      if (!found) {
+        return (
+          this.inMemoryMessages.find((m) => m.id === messageId) ?? null
+        );
+      }
+      return {
+        id: found.id,
+        roomCode: found.roomCode,
+        matchId: found.matchId,
+        senderId: found.senderId,
+        senderName: found.senderName ?? 'Bunny Player',
+        content: found.content,
+        type: found.type as any,
+        isEdited: found.isEdited,
+        editedAt: found.editedAt,
+        isDeleted: found.isDeleted,
+        deletedAt: found.deletedAt,
+        createdAt: found.createdAt,
+      };
+    } catch {
+      return (
+        this.inMemoryMessages.find((m) => m.id === messageId) ?? null
+      );
     }
   }
 
@@ -158,6 +344,10 @@ export class ChatService {
         senderName: m.senderName ?? 'Bunny Player',
         content: m.content,
         type: m.type as any,
+        isEdited: m.isEdited,
+        editedAt: m.editedAt,
+        isDeleted: m.isDeleted,
+        deletedAt: m.deletedAt,
         createdAt: m.createdAt,
       }));
 
@@ -203,6 +393,10 @@ export class ChatService {
         senderName: m.senderName ?? 'Bunny Player',
         content: m.content,
         type: m.type as any,
+        isEdited: m.isEdited,
+        editedAt: m.editedAt,
+        isDeleted: m.isDeleted,
+        deletedAt: m.deletedAt,
         createdAt: m.createdAt,
       }));
 

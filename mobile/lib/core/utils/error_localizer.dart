@@ -93,6 +93,12 @@ extension ErrorLocalizationExtension on BuildContext {
         return l10n.errorInvalidSticker;
       case ResponseCodesConstant.chatMessageEmpty:
         return l10n.errorChatMessageEmpty;
+      case ResponseCodesConstant.chatMessageNotFound:
+        return l10n.errorChatMessageNotFound;
+      case ResponseCodesConstant.chatCannotEditSticker:
+        return l10n.errorChatCannotEditSticker;
+      case ResponseCodesConstant.chatNotMessageOwner:
+        return l10n.errorChatNotMessageOwner;
 
       default:
         return fallback ?? l10n.errorOccurred;

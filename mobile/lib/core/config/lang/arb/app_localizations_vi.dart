@@ -194,4 +194,16 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get errorChatMessageEmpty => 'Nội dung tin nhắn không được để trống.';
+
+  @override
+  String get errorChatMessageNotFound =>
+      'Tin nhắn không tồn tại hoặc đã bị thu hồi.';
+
+  @override
+  String get errorChatCannotEditSticker =>
+      'Chỉ có thể chỉnh sửa tin nhắn văn bản.';
+
+  @override
+  String get errorChatNotMessageOwner =>
+      'Bạn chỉ có thể sửa hoặc thu hồi tin nhắn của chính mình.';
 }

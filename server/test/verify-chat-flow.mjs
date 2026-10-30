@@ -87,6 +87,7 @@ async function runTest() {
     if (receivedTextMessage.data.content !== hostText || receivedTextMessage.data.senderName !== 'CaptainBunny') {
       throw new Error('Text message content or sender mismatched');
     }
+    const textMessageId = receivedTextMessage.data.id;
 
     // ----------------------------------------------------
     // STEP 4: Realtime Bunny Sticker Transmission
@@ -119,11 +120,12 @@ async function runTest() {
     ) {
       throw new Error('Sticker message content, sticker metadata, or sender mismatched');
     }
+    const stickerMessageId = receivedStickerMessage.data.id;
 
     // ----------------------------------------------------
-    // STEP 5: Validation & Error Handling
+    // STEP 5: Validation & Error Handling (Send)
     // ----------------------------------------------------
-    console.log('\n🛡️ Step 5: Testing chat validation and error handling...');
+    console.log('\n🛡️ Step 5: Testing chat send validation...');
 
     // 5a. Empty message
     const emptyAck = await new Promise((res) => {
@@ -144,9 +146,109 @@ async function runTest() {
     }
 
     // ----------------------------------------------------
-    // STEP 6: REST Chat History Retrieval
+    // STEP 6: Realtime Edit Message Flow
     // ----------------------------------------------------
-    console.log('\n📜 Step 6: Verifying chat history persistence via REST API...');
+    console.log('\n✏️ Step 6: Testing realtime chat editing...');
+    const updatedContent = 'Updated: Welcome to Bunny Cove! Let the games begin! 🥕';
+
+    // Guest listens for realtime message_edited event
+    const guestReceivedEditPromise = new Promise((resolve) => {
+      guestSocket.on('chat:message_edited', (msg) => {
+        resolve(msg);
+      });
+    });
+
+    const editAck = await new Promise((res) => {
+      hostSocket.emit('chat:edit_message', { messageId: textMessageId, text: updatedContent }, res);
+    });
+    console.log('✅ Host edit ack:', editAck.code);
+
+    const guestReceivedEdit = await guestReceivedEditPromise;
+    console.log('✅ Guest received realtime edited message:', JSON.stringify(guestReceivedEdit.data));
+
+    if (
+      guestReceivedEdit.data.content !== updatedContent ||
+      guestReceivedEdit.data.isEdited !== true ||
+      !guestReceivedEdit.data.editedAt
+    ) {
+      throw new Error('Edited message verification failed');
+    }
+
+    // ----------------------------------------------------
+    // STEP 7: Edit Security & Validation Rejections
+    // ----------------------------------------------------
+    console.log('\n🛡️ Step 7: Testing edit permissions and negative scenarios...');
+
+    // 7a. Guest tries to edit Host's message (Not owner)
+    const unauthorizedEditAck = await new Promise((res) => {
+      guestSocket.emit('chat:edit_message', { messageId: textMessageId, text: 'Hacked by Guest!' }, res);
+    });
+    console.log('✅ Non-owner edit rejected with code:', unauthorizedEditAck.error?.code);
+    if (unauthorizedEditAck.error?.code !== 'chat_not_message_owner') {
+      throw new Error(`Expected chat_not_message_owner, got: ${JSON.stringify(unauthorizedEditAck)}`);
+    }
+
+    // 7b. Host tries to edit a sticker message
+    const editStickerAck = await new Promise((res) => {
+      hostSocket.emit('chat:edit_message', { messageId: stickerMessageId, text: 'Change sticker to text' }, res);
+    });
+    console.log('✅ Editing sticker rejected with code:', editStickerAck.error?.code);
+    if (editStickerAck.error?.code !== 'chat_cannot_edit_sticker') {
+      throw new Error(`Expected chat_cannot_edit_sticker, got: ${JSON.stringify(editStickerAck)}`);
+    }
+
+    // ----------------------------------------------------
+    // STEP 8: Realtime Delete / Recall Message Flow
+    // ----------------------------------------------------
+    console.log('\n🗑️ Step 8: Testing realtime chat recall / deletion...');
+
+    // Host listens for realtime message_deleted event
+    const hostReceivedDeletePromise = new Promise((resolve) => {
+      hostSocket.on('chat:message_deleted', (msg) => {
+        resolve(msg);
+      });
+    });
+
+    // Guest recalls/deletes their sticker message
+    const deleteAck = await new Promise((res) => {
+      guestSocket.emit('chat:delete_message', { messageId: stickerMessageId }, res);
+    });
+    console.log('✅ Guest delete ack:', deleteAck.code);
+
+    const hostReceivedDelete = await hostReceivedDeletePromise;
+    console.log('✅ Host received realtime deleted message notification:', JSON.stringify(hostReceivedDelete.data));
+
+    if (hostReceivedDelete.data.messageId !== stickerMessageId || hostReceivedDelete.data.isDeleted !== true) {
+      throw new Error('Deleted message verification failed');
+    }
+
+    // ----------------------------------------------------
+    // STEP 9: Delete Permissions & Negative Scenarios
+    // ----------------------------------------------------
+    console.log('\n🛡️ Step 9: Testing delete permissions and negative scenarios...');
+
+    // 9a. Non-existent message deletion
+    const notFoundDeleteAck = await new Promise((res) => {
+      hostSocket.emit('chat:delete_message', { messageId: '00000000-0000-0000-0000-000000000000' }, res);
+    });
+    console.log('✅ Non-existent message delete rejected with code:', notFoundDeleteAck.error?.code);
+    if (notFoundDeleteAck.error?.code !== 'chat_message_not_found') {
+      throw new Error(`Expected chat_message_not_found, got: ${JSON.stringify(notFoundDeleteAck)}`);
+    }
+
+    // 9b. Guest tries to delete Host's text message
+    const unauthorizedDeleteAck = await new Promise((res) => {
+      guestSocket.emit('chat:delete_message', { messageId: textMessageId }, res);
+    });
+    console.log('✅ Non-owner delete rejected with code:', unauthorizedDeleteAck.error?.code);
+    if (unauthorizedDeleteAck.error?.code !== 'chat_not_message_owner') {
+      throw new Error(`Expected chat_not_message_owner, got: ${JSON.stringify(unauthorizedDeleteAck)}`);
+    }
+
+    // ----------------------------------------------------
+    // STEP 10: REST Chat History Retrieval & Persistence Check
+    // ----------------------------------------------------
+    console.log('\n📜 Step 10: Verifying updated and deleted chat history via REST API...');
     const historyRes = await fetch(`${BASE_URL}/chat/rooms/${roomCode}/messages`);
     const historyJson = await historyRes.json();
     console.log('✅ Chat history response code:', historyJson.code);
@@ -157,11 +259,18 @@ async function runTest() {
     }
 
     const messages = historyJson.data.messages;
-    if (messages[0].type !== 'TEXT' || messages[1].type !== 'STICKER') {
-      throw new Error('Message order or types in history do not match expectations');
-    }
+    const textMsg = messages.find((m) => m.id === textMessageId);
+    const stickerMsg = messages.find((m) => m.id === stickerMessageId);
 
-    console.log('\n🎉 ALL REALTIME IN-ROOM CHAT & BUNNY STICKERS TESTS PASSED CLEANLY! 🎉');
+    if (!textMsg || textMsg.isEdited !== true || textMsg.content !== updatedContent) {
+      throw new Error('Edited text message not correctly reflected in persistent history');
+    }
+    if (!stickerMsg || stickerMsg.isDeleted !== true || stickerMsg.content !== 'This message was deleted') {
+      throw new Error('Recalled sticker message not correctly reflected in persistent history');
+    }
+    console.log('✅ Both edited and recalled message states verified in persistent storage!');
+
+    console.log('\n🎉 ALL REALTIME IN-ROOM CHAT, STICKERS, EDIT & RECALL TESTS PASSED CLEANLY! 🎉');
 
     // Cleanup sockets first
     hostSocket.disconnect();

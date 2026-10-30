@@ -35,3 +35,4 @@ export class SendChatMessageDto {
   @IsEnum(ChatMessageTypeDto)
   type?: ChatMessageTypeDto;
 }
+

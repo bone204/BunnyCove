@@ -139,6 +139,10 @@ model ChatMessage {
   senderName String?
   content    String
   type       MessageType @default(TEXT) // TEXT, STICKER, IMAGE, SYSTEM
+  isEdited   Boolean     @default(false)
+  editedAt   DateTime?
+  isDeleted  Boolean     @default(false)
+  deletedAt  DateTime?
   createdAt  DateTime    @default(now())
 
   sender     User?       @relation(fields: [senderId], references: [id], onDelete: Cascade)
