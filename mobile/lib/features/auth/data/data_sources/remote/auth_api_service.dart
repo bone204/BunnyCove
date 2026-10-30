@@ -31,7 +31,7 @@ class AuthApiServiceImpl implements AuthApiService {
     try {
       final response = await dioClient.dio.post(
         AppUrlsConstant.login,
-        data: {'email': email, 'password': password},
+        data: {'identifier': email, 'email': email, 'password': password},
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
         final data = response.data['data'] as Map<String, dynamic>;
@@ -69,7 +69,8 @@ class AuthApiServiceImpl implements AuthApiService {
         },
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final userJson = response.data['data'] as Map<String, dynamic>;
+        final data = response.data['data'] as Map<String, dynamic>;
+        final userJson = (data['user'] ?? data) as Map<String, dynamic>;
         return Right(UserModel.fromJson(userJson));
       }
       return Left(ServerFailure(

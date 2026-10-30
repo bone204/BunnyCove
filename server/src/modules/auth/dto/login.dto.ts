@@ -1,11 +1,22 @@
-import { IsNotEmpty, IsString, MinLength } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { IsString, MinLength, IsOptional } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class LoginDto {
-  @ApiProperty({ example: 'player@bunny-cove.com', description: 'Registered email or username' })
+  @ApiPropertyOptional({
+    example: 'player@bunny-cove.com',
+    description: 'Registered email or username',
+  })
   @IsString()
-  @IsNotEmpty()
-  identifier: string; // can be email or username
+  @IsOptional()
+  identifier?: string;
+
+  @ApiPropertyOptional({
+    example: 'player@bunny-cove.com',
+    description: 'Alternative email field for client compatibility',
+  })
+  @IsString()
+  @IsOptional()
+  email?: string;
 
   @ApiProperty({ example: 'Password123!', description: 'Account password' })
   @IsString()

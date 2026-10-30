@@ -11,3 +11,4 @@ export class EditChatMessageDto {
   @MaxLength(500)
   text: string;
 }
+

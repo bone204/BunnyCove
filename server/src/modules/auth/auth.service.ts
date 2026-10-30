@@ -69,7 +69,20 @@ export class AuthService {
     const passwordHash = await bcrypt.hash(dto.password, salt);
 
     let createdUser: any;
-    let username = await this.generateUniqueUsername();
+    let username: string;
+    if (dto.username?.trim()) {
+      const cleanUsername = dto.username.trim().toLowerCase();
+      const existing = await this.findUserByIdentifier(cleanUsername);
+      if (existing) {
+        throw new ConflictException({
+          code: ResponseCodes.USERNAME_ALREADY_EXISTS,
+          message: 'An account with this username already exists',
+        });
+      }
+      username = cleanUsername;
+    } else {
+      username = await this.generateUniqueUsername();
+    }
     const defaultAvatar = DEFAULT_AVATAR_URL;
 
     try {
@@ -172,7 +185,15 @@ export class AuthService {
   }
 
   async login(dto: LoginDto): Promise<AuthResult> {
-    const user = await this.findUserByIdentifier(dto.identifier);
+    const targetIdentifier = (dto.identifier || dto.email)?.trim();
+    if (!targetIdentifier) {
+      throw new UnauthorizedException({
+        code: ResponseCodes.INVALID_CREDENTIALS,
+        message: 'Invalid email/username or password',
+      });
+    }
+
+    const user = await this.findUserByIdentifier(targetIdentifier);
 
     if (!user || !user.passwordHash) {
       throw new UnauthorizedException({
