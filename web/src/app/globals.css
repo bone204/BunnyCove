@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* ========================================== */
+  /* LIGHT MODE (Sweet Cream & Honey Oak)       */
+  /* ========================================== */
+  --primary: #C68B59;
+  --primary-hover: #B87333;
+  --background: #FAF7F2;
+  --surface: #FFFFFF;
+  --foreground: #2C221E;
+  --text-secondary: #8C7A6B;
+  --border: #E6DCCF;
+  --success: #4E8752;
+  --warning: #E08E00;
+  --error: #D90429;
+
+  /* Game & Mascot Accents */
+  --accent-carrot: #FFA502;
+  --accent-bow: #FF7597;
+  --accent-stamp: #FF3366;
+}
+
+.dark {
+  /* ========================================== */
+  /* DARK MODE (Dark Walnut & Amber Honey Glow)  */
+  /* ========================================== */
+  --primary: #D99B66;
+  --primary-hover: #E5AC7B;
+  --background: #1F1A17;
+  --surface: #2B2420;
+  --foreground: #F5EFE6;
+  --text-secondary: #B3A598;
+  --border: #382E27;
+  --success: #62A867;
+  --warning: #F39C12;
+  --error: #FF5C7A;
+
+  /* Game & Mascot Accents */
+  --accent-carrot: #FFA502;
+  --accent-bow: #FF7597;
+  --accent-stamp: #FF3366;
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-merriweather), Georgia, serif;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+}
+
+@layer utilities {
+  .card-shadow {
+    box-shadow: 0 8px 24px -4px rgba(44, 34, 30, 0.06);
+  }
+
+  .dark .card-shadow {
+    box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.35);
+  }
+
+  .btn-shadow {
+    box-shadow: 0 4px 14px rgba(198, 139, 89, 0.25);
+  }
+}

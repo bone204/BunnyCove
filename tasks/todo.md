@@ -173,4 +173,40 @@
 - [ ] Phase 5: Implement Bingo 5x5 Game Engine on Server
 - [ ] Phase 7: Connect Flutter Mobile with Server (Room, Games, Chat, Auth)
 - [ ] Phase 8: iOS Specific Polish (Haptics, Audio, Slide Transitions)
-- [ ] Phase 9: Initialize Next.js/React Web Client in web/ with 3-Layer Clean Architecture
+### Phase 9: Initialize Next.js/React Web Client in `web/` (3-Layer Clean Architecture)
+
+- [x] 9.1 Project Scaffolding & Core Configurations:
+  - [x] Initialize Next.js 14+ project in `web/` (TypeScript, App Router, ESLint, Tailwind CSS)
+  - [x] Configure environment files (`.env.example`, `.env.local` with API & Socket URLs)
+  - [x] Install essential packages: `@reduxjs/toolkit`, `react-redux`, `react-hook-form`, `@hookform/resolvers`, `zod`, `socket.io-client`, `lucide-react`, `next-themes`, `clsx`, `tailwind-merge`
+  - [x] Configure Tailwind CSS & "Honey Oak & Sweet Cream" Design Tokens in `globals.css` (CSS variables for Light & Dark mode)
+  - [x] Integrate Merriweather serif font via `next/font/google` (`var(--font-merriweather)`)
+  - [x] Enforce global utilities (`cursor-pointer`, `select-none`, `container mx-auto px-4`)
+- [ ] 9.2 3-Layer Clean Architecture & Infrastructure Setup:
+  - [ ] Domain Layer (`src/domain/`): `entities/` (pure data models), `repositories/` (interfaces), `usecases/` (single-purpose business rules)
+  - [ ] Application Layer (`src/application/`): `dto/`, `mappers/`, `services/`
+  - [ ] Infrastructure Layer (`src/infrastructure/`):
+    - `constants/`: Sync `response-codes.ts` 1:1 with backend, `app-urls.ts`, `defaults.ts`
+    - `http/`: Base HTTP client wrapper with automatic Bearer token injection and refresh token handling
+    - `rtk/`: Configure Redux Toolkit store, auth slice, and base RTK Query API with caching
+    - `socket/`: Socket.IO client singleton connected to NestJS Gateways
+    - `repositories/`: Implement domain repository interfaces (`RtkAuthRepository`, etc.)
+    - `locales/`: i18n dictionaries (`en.json`, `vi.json`) and `useI18n` / `useLocalizedError` hooks
+- [ ] 9.3 Cross-Platform Shared UI Components (1:1 Parity with Mobile):
+  - [ ] `Button`: 16px radius, 52px height, 4 variants (Primary, Secondary Outline, Ghost, Danger), active scale & haptics/hover
+  - [ ] `Input` / `FormField`: 14px radius, 50px height, 1px idle -> 2px focus border in Primary, prefix/suffix icons, React Hook Form + Zod
+  - [ ] `Card` / `Container`: 20px radius, 1px wood border, soft warm drop-shadow, dynamic surface background
+  - [ ] `Badge` / `Pill`: 999px capsule, px-3 py-1 (Room Code, Ready status, ELO rank)
+  - [ ] `Toast` / `Snackbar`: 16px floating pill, status colors (success, error, warning, info)
+  - [ ] `Dialog` / `Modal`: 24px radius, backdrop blur, mascot header icon, standardized buttons
+  - [ ] `ThemeToggle`: Light/Dark switcher button on header
+  - [ ] `Avatar`: Circle / squircle with Host crown and online status indicator
+- [ ] 9.4 Thin App Router & Presentation Pages:
+  - [ ] Root Layout (`src/app/layout.tsx`): Wrap `ThemeProvider`, `ReduxProvider`, `ToastProvider`, Merriweather font
+  - [ ] Header & Navigation (`src/presentation/components/layout/Header.tsx`): Logo, ThemeToggle, Language switcher, user avatar
+  - [ ] Auth Pages (`src/app/(auth)/login/page.tsx`, `register/page.tsx` -> `LoginPage.tsx`, `RegisterPage.tsx`)
+  - [ ] Lobby Page (`src/app/lobby/page.tsx` -> `LobbyPage.tsx`): Player card, Create room, Join room, Games carousel
+  - [ ] Room Waiting Page (`src/app/room/[code]/page.tsx` -> `RoomWaitingPage.tsx`): Realtime socket room, Ready state, in-room Chat drawer with stickers
+- [ ] 9.5 Verification & Responsive Optimization:
+  - [ ] Responsive layout verification across Mobile (<640px), Tablet (640-1024px), Desktop (>1024px)
+  - [ ] Run `npm run lint` and `npm run build` for zero-error clean validation
