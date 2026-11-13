@@ -182,31 +182,32 @@
   - [x] Configure Tailwind CSS & "Honey Oak & Sweet Cream" Design Tokens in `globals.css` (CSS variables for Light & Dark mode)
   - [x] Integrate Merriweather serif font via `next/font/google` (`var(--font-merriweather)`)
   - [x] Enforce global utilities (`cursor-pointer`, `select-none`, `container mx-auto px-4`)
-- [ ] 9.2 3-Layer Clean Architecture & Infrastructure Setup:
-  - [ ] Domain Layer (`src/domain/`): `entities/` (pure data models), `repositories/` (interfaces), `usecases/` (single-purpose business rules)
-  - [ ] Application Layer (`src/application/`): `dto/`, `mappers/`, `services/`
-  - [ ] Infrastructure Layer (`src/infrastructure/`):
-    - `constants/`: Sync `response-codes.ts` 1:1 with backend, `app-urls.ts`, `defaults.ts`
-    - `http/`: Base HTTP client wrapper with automatic Bearer token injection and refresh token handling
-    - `rtk/`: Configure Redux Toolkit store, auth slice, and base RTK Query API with caching
-    - `socket/`: Socket.IO client singleton connected to NestJS Gateways
-    - `repositories/`: Implement domain repository interfaces (`RtkAuthRepository`, etc.)
-    - `locales/`: i18n dictionaries (`en.json`, `vi.json`) and `useI18n` / `useLocalizedError` hooks
-- [ ] 9.3 Cross-Platform Shared UI Components (1:1 Parity with Mobile):
-  - [ ] `Button`: 16px radius, 52px height, 4 variants (Primary, Secondary Outline, Ghost, Danger), active scale & haptics/hover
-  - [ ] `Input` / `FormField`: 14px radius, 50px height, 1px idle -> 2px focus border in Primary, prefix/suffix icons, React Hook Form + Zod
-  - [ ] `Card` / `Container`: 20px radius, 1px wood border, soft warm drop-shadow, dynamic surface background
-  - [ ] `Badge` / `Pill`: 999px capsule, px-3 py-1 (Room Code, Ready status, ELO rank)
-  - [ ] `Toast` / `Snackbar`: 16px floating pill, status colors (success, error, warning, info)
-  - [ ] `Dialog` / `Modal`: 24px radius, backdrop blur, mascot header icon, standardized buttons
-  - [ ] `ThemeToggle`: Light/Dark switcher button on header
-  - [ ] `Avatar`: Circle / squircle with Host crown and online status indicator
-- [ ] 9.4 Thin App Router & Presentation Pages:
-  - [ ] Root Layout (`src/app/layout.tsx`): Wrap `ThemeProvider`, `ReduxProvider`, `ToastProvider`, Merriweather font
-  - [ ] Header & Navigation (`src/presentation/components/layout/Header.tsx`): Logo, ThemeToggle, Language switcher, user avatar
-  - [ ] Auth Pages (`src/app/(auth)/login/page.tsx`, `register/page.tsx` -> `LoginPage.tsx`, `RegisterPage.tsx`)
+- [x] 9.2 3-Layer Clean Architecture & Infrastructure Setup:
+  - [x] Domain Layer (`src/domain/`): `entities/` (`user.entity.ts`, `auth.entity.ts`, `room.entity.ts`, `chat.entity.ts`), `repositories/` (`auth.repository.ts`, `room.repository.ts`), `usecases/` (`login.usecase.ts`, `register.usecase.ts`, `get-me.usecase.ts`)
+  - [x] Application Layer (`src/application/`): `dto/` (`auth.dto.ts`), `mappers/` (`user.mapper.ts`)
+  - [x] Infrastructure Layer (`src/infrastructure/`):
+    - [x] `constants/`: Sync `response-codes.ts` 1:1 with backend and mobile, `app-urls.ts`, `defaults.ts`
+    - [x] `http/`: Base `HttpClient` wrapper with Bearer token injection, auto-refresh on 401, error envelopes
+    - [x] `rtk/`: Redux Toolkit store (`store.ts`), `authSlice.ts`, `baseApi.ts` with tags, `authApi.ts` endpoints
+    - [x] `socket/`: Singleton `SocketClient` (`socket-client.ts`) connected to NestJS Gateways
+    - [x] `repositories/`: `RtkAuthRepository` implementing domain `AuthRepository` interface
+    - [x] `locales/`: i18n dictionaries (`en.json`, `vi.json`), `useI18n` hook, and `useLocalizedError` hook
+- [x] 9.3 Cross-Platform Shared UI Components (1:1 Parity with Mobile):
+  - [x] `Button`: 16px radius (`rounded-2xl`), 52px height, 4 variants (Primary, Secondary, Ghost, Danger), loading spinner, active scale
+  - [x] `Input`: 14px radius (`rounded-[14px]`), 50px height, 1px idle -> 2px focus border, prefix/suffix icons, password eye toggle, React Hook Form support
+  - [x] `Card`: 20px radius (`rounded-[20px]`), 1px wood border, soft warm shadow, interactive hover states
+  - [x] `Badge`: 999px capsule (`rounded-full`), px-3 py-1, variants (`roomCode`, `ready`, `rank`, `neutral`, `error`)
+  - [x] `Toast`: 16px floating pill (`rounded-2xl`), status types (`success`, `error`, `warning`, `info`), `ToastProvider` & `useToast()`
+  - [x] `Dialog`: 24px radius (`rounded-[24px]`), backdrop blur, status icon header, action buttons, support custom form children
+  - [x] `Avatar`: Squircle/circle image with fallback initials, Host crown indicator, online dot
+  - [x] `ThemeToggle`: Light/Dark toggle button on header
+- [/] 9.4 Thin App Router & Presentation Pages:
+  - [x] Root Layout (`src/app/layout.tsx`): Wrap `ThemeProvider`, `ReduxProvider`, `ToastProvider`, Merriweather font
+  - [x] Header & Navigation (`src/presentation/components/layout/Header.tsx`): Logo, ThemeToggle, Language switcher, user avatar & dropdown
+  - [x] Auth Pages (`src/app/(auth)/login/page.tsx`, `register/page.tsx` -> `LoginPage.tsx`, `RegisterPage.tsx`)
+  - [x] Home Page (`src/presentation/pages/HomePage.tsx`): Upgraded with Header, shared components, interactive room dialog & toasts
   - [ ] Lobby Page (`src/app/lobby/page.tsx` -> `LobbyPage.tsx`): Player card, Create room, Join room, Games carousel
   - [ ] Room Waiting Page (`src/app/room/[code]/page.tsx` -> `RoomWaitingPage.tsx`): Realtime socket room, Ready state, in-room Chat drawer with stickers
 - [ ] 9.5 Verification & Responsive Optimization:
   - [ ] Responsive layout verification across Mobile (<640px), Tablet (640-1024px), Desktop (>1024px)
-  - [ ] Run `npm run lint` and `npm run build` for zero-error clean validation
+  - [x] Run `npm run lint` and `npm run build` for zero-error clean validation (7/7 routes built cleanly)

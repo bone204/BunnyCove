@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Merriweather } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/presentation/providers/ThemeProvider";
+import { ReduxProvider } from "@/presentation/providers/ReduxProvider";
+import { ToastProvider } from "@/presentation/components/common/Toast";
 
 const merriweather = Merriweather({
   subsets: ["latin", "vietnamese"],
@@ -26,7 +28,11 @@ export default function RootLayout({
         className={`${merriweather.variable} font-serif antialiased bg-[var(--background)] text-[var(--foreground)] min-h-screen select-none`}
       >
         <ThemeProvider>
-          {children}
+          <ReduxProvider>
+            <ToastProvider>
+              {children}
+            </ToastProvider>
+          </ReduxProvider>
         </ThemeProvider>
       </body>
     </html>
