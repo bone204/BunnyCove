@@ -17,3 +17,4 @@ export const baseApi = createApi({
   tagTypes: ["Auth", "User", "Room", "Chat", "Notification", "Friend"],
   endpoints: () => ({}),
 });
+

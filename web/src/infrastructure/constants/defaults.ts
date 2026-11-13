@@ -20,3 +20,4 @@ export const AppDefaults = {
   turnTimeSeconds: 30,
   gracePeriodSeconds: 30,
 } as const;
+

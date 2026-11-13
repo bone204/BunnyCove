@@ -21,3 +21,4 @@ export interface UserStats {
   bestStreak: number;
   winRate: number;
 }
+

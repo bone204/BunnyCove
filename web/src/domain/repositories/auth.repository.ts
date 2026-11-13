@@ -30,3 +30,4 @@ export interface AuthRepository {
   forgotPassword(email: string): Promise<boolean>;
   resetPassword(params: ResetPasswordParams): Promise<boolean>;
 }
+

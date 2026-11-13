@@ -66,3 +66,4 @@ export const AppUrls = {
     message: (messageId: string) => `${BASE_URL}/chat/messages/${encodeURIComponent(messageId)}`,
   },
 } as const;
+

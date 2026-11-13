@@ -8,3 +8,4 @@ export class LoginUseCase {
     return this.authRepository.login(params);
   }
 }
+

@@ -8,3 +8,4 @@ export class GetMeUseCase {
     return this.authRepository.getMe();
   }
 }
+

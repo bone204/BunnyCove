@@ -10,3 +10,4 @@ export interface AuthSession {
   user: User;
   tokens: AuthTokens;
 }
+

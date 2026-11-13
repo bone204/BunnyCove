@@ -19,3 +19,4 @@ export interface Room {
   currentGame?: string | null;
   createdAt: number;
 }
+

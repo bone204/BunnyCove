@@ -18,3 +18,4 @@ export interface RoomRepository {
   toggleReady(code: string, isReady: boolean): Promise<Room>;
   leaveRoom(code: string): Promise<void>;
 }
+

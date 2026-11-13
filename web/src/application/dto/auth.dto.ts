@@ -50,3 +50,4 @@ export interface AuthResponseDto {
   user: UserResponseDto;
   tokens: AuthTokensDto;
 }
+

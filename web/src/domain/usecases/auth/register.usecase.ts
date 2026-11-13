@@ -8,3 +8,4 @@ export class RegisterUseCase {
     return this.authRepository.register(params);
   }
 }
+
